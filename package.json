@@ -1,0 +1,122 @@
+{
+  "name": "xiod-ui",
+  "version": "1.0.0",
+  "description": "89 customizable React components built with Base UI, Tailwind CSS 4, and XiodIcons. Typed props, composable APIs, and light and dark themes.",
+  "keywords": [
+    "accessible",
+    "base-ui",
+    "component-library",
+    "components",
+    "design-system",
+    "headless",
+    "react",
+    "tailwind",
+    "tailwindcss",
+    "typescript",
+    "ui",
+    "xiod-ui"
+  ],
+  "homepage": "https://github.com/ImKKingshuk/XiodUI#readme",
+  "bugs": {
+    "url": "https://github.com/ImKKingshuk/XiodUI/issues"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "ImKKingshuk",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ImKKingshuk/XiodUI.git"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    "./styles": "./dist/styles.css",
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json",
+    "./themes/*/scoped": "./dist/themes/*.scoped.css",
+    "./themes/*": "./dist/themes/*.css",
+    "./*": {
+      "types": "./dist/components/*.d.ts",
+      "default": "./dist/components/*.js"
+    },
+    "./hooks/*": {
+      "types": "./dist/hooks/*.d.ts",
+      "default": "./dist/hooks/*.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "bun run themes && tsdown",
+    "themes": "bun run themes:verify && bun scripts/build-themes.ts",
+    "themes:verify": "bun scripts/verify-palettes.ts",
+    "size": "bun scripts/size.ts",
+    "dev": "tsdown --watch",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json && tsc --noEmit -p tsconfig.release.json",
+    "audit": "bun scripts/audit.ts",
+    "lint": "oxlint --disable-nested-config --report-unused-disable-directives",
+    "lint:fix": "oxlint --disable-nested-config --report-unused-disable-directives --fix",
+    "format": "oxfmt --disable-nested-config .",
+    "format:check": "oxfmt --disable-nested-config --check .",
+    "test": "bun run test:components && bun run test:browser",
+    "test:components": "vitest run --config vitest.config.ts",
+    "test:browser": "playwright test",
+    "test:browser:serve": "vite --config vite.browser.config.ts --host 127.0.0.1 --port 4173",
+    "check": "bun run lint && bun run format:check && bun run typecheck && bun run test:components && bun run audit && bun run build",
+    "check:package": "bun scripts/release-check.ts",
+    "test:release": "vitest run --config vitest.release.config.ts",
+    "test:package": "bun scripts/test-package.ts",
+    "pack:package": "npm pack",
+    "pack:dry-run": "bun run check:release && npm pack --dry-run",
+    "publish:package": "npm publish",
+    "prepack": "bun run build && bun run check:package",
+    "check:release": "bun run check && bun run test:browser && bun run test:release && bun run test:package",
+    "prepublishOnly": "bun run check:release"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.8.0",
+    "class-variance-authority": "^0.7.1",
+    "cn": "^0.3.0",
+    "xiod-icons": "^1.0.0"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/core": "^0.18.5",
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@types/node": "^26.5.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "jsdom": "^30.0.1",
+    "oxc-minify": "^0.149.0",
+    "oxfmt": "0.67.0",
+    "oxlint": "1.82.0",
+    "oxlint-tsgolint": "7.0.2001",
+    "publint": "^0.3.24",
+    "rolldown": "^1.2.8",
+    "tailwindcss": "^4.3.3",
+    "tsdown": "^0.23.0",
+    "typescript": "6.0.3",
+    "unplugin-unused": "^0.6.0",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

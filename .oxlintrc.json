@@ -1,0 +1,101 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "eslint",
+    "typescript",
+    "react",
+    "unicorn",
+    "oxc",
+    "import",
+    "jsx-a11y",
+    "promise"
+  ],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
+  },
+  "options": {
+    "maxWarnings": 0,
+    "typeAware": true
+  },
+  "env": {
+    "browser": true,
+    "es2024": true
+  },
+  "settings": {
+    "react": {
+      "version": "19.0"
+    }
+  },
+  "ignorePatterns": ["dist/**", "node_modules/**"],
+  "rules": {
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "import/no-cycle": "error",
+    "typescript/no-explicit-any": "error",
+
+    // Library integration points intentionally narrow DOM/Base UI values after
+    // runtime checks; TypeScript's strict mode remains the source of truth.
+    "typescript/no-unsafe-type-assertion": "off",
+    // React effects commonly return cleanup functions only after a resource is
+    // acquired. Requiring a redundant `return undefined` obscures that pattern.
+    "typescript/consistent-return": "off",
+
+    // React 19 uses the automatic JSX runtime — importing React just to have it
+    // "in scope" is unnecessary, so these two legacy rules are false positives.
+    "react/react-in-jsx-scope": "off",
+
+    // Base UI primitives supply their own roles/labels/keyboard handling; these
+    // rules fire on the wrapper, not the rendered output.
+    "react/no-array-index-key": "off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "jsx-a11y/no-noninteractive-element-interactions": "off",
+    "jsx-a11y/prefer-tag-over-role": "off",
+
+    // Stylistic preferences that don't match this codebase's conventions.
+    "no-underscore-dangle": "off",
+    "unicorn/filename-case": "off",
+    "unicorn/prefer-query-selector": "off",
+    "unicorn/no-null": "off",
+
+    "no-shadow": "error",
+    "no-unused-vars": "error",
+    "no-unused-expressions": "error",
+    "unicorn/no-new-array": "error",
+    "jsx-a11y/no-autofocus": "error",
+
+    // These rules gate compatibility with the optional React Compiler. XiodUI
+    // does not compile with it, and its imperative canvas/resize components and
+    // Base UI `useRender` ref plumbing intentionally use patterns they reject.
+    // Keep general hook correctness and exhaustive-dependency checks enabled.
+    "react/immutability": "off",
+    "react/memo-dependencies": "off",
+    "react/refs": "off",
+    "react/set-state-in-effect": "off"
+  },
+  "overrides": [
+    {
+      "files": ["tsdown.config.ts"],
+      "env": { "node": true }
+    },
+    {
+      // Build/report scripts are CLIs — stdout is their output, not a stray
+      // debug statement.
+      "files": ["scripts/**"],
+      "env": { "node": true },
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
+      // Test bootstrap and browser entrypoints intentionally load setup/CSS
+      // modules for their side effects.
+      "files": ["tests/setup.ts", "tests/browser/main.tsx"],
+      "rules": {
+        "import/no-unassigned-import": "off"
+      }
+    }
+  ]
+}

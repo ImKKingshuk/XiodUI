@@ -1,0 +1,23 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 80,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": false,
+  "jsxSingleQuote": false,
+  "quoteProps": "as-needed",
+  "trailingComma": "all",
+  "bracketSpacing": true,
+  "bracketSameLine": false,
+  "arrowParens": "always",
+  "endOfLine": "lf",
+  "insertFinalNewline": true,
+  "sortImports": {},
+  // NOTE: `sortTailwindcss` is deliberately OFF. XiodUI uses `cn`, a
+  // tailwind-merge-style `cn` that resolves conflicting utilities by
+  // last-wins *within a class string*. Reordering classes inside a literal can
+  // therefore flip which utility survives the merge. Turn it on only after
+  // auditing the resulting diff visually.
+  "ignorePatterns": ["dist/**", "node_modules/**"],
+}
