@@ -1,0 +1,75 @@
+# Installed dependencies and package-manager caches (including nested fixtures)
+node_modules/
+.pnp/
+.pnp.*
+.npm/
+.pnpm-store/
+.yarn/
+
+# Generated build output
+/dist/
+/build/
+*.tsbuildinfo
+
+# Tool caches and test artifacts
+.cache/
+.turbo/
+.vite/
+.vitest/
+.eslintcache
+.stylelintcache
+.nyc_output/
+/coverage/
+/playwright-report/
+/blob-report/
+/test-results/
+# Logs and diagnostic dumps
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+lerna-debug.log*
+report.*.json
+*.cpuprofile
+*.heapprofile
+*.heapsnapshot
+
+# Environment files and credentials. Only sanitized templates may be committed.
+.env*
+!.env.example
+!.env.sample
+!.env.template
+.npmrc
+.netrc
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+
+# Local package archives and scratch output
+*.tgz
+*.tmp
+*.temp
+/.size-*/
+
+# Local editor/agent state; keep AGENTS.md and shared tool configs trackable.
+.idea/
+.vscode/
+.claude/
+.codex/
+*.swp
+*.swo
+*~
+
+# Operating-system metadata
+.DS_Store
+._*
+.AppleDouble/
+.LSOverride
+Thumbs.db
+Thumbs.db:encryptable
+Desktop.ini
+$RECYCLE.BIN/

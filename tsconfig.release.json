@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "declaration": false },
+  "include": [
+    "scripts/release-check.ts",
+    "scripts/release-check.test.ts",
+    "scripts/test-package.ts",
+    "vitest.release.config.ts"
+  ]
+}
