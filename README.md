@@ -1,15 +1,15 @@
 # XiodUI
 
-A React component library for building interfaces with consistent styling, flexible composition, and built-in light and dark themes.
+A precision-crafted React component library. 89 components on Base UI and Tailwind CSS 4, with native CSS motion, ready-made color palettes, and built-in light and dark themes — in one typed package you import a component at a time.
 
-XiodUI includes 89 components built with Base UI, Tailwind CSS 4, and XiodIcons.
+Icons come from [XiodIcons](https://icons.xiod.dev), installed with the package.
 
 ## Features
 
 - **Composable components** — combine buttons, forms, navigation, overlays, and layouts.
 - **Accessible foundations** — Base UI primitives provide behavior for supported interactive components.
 - **Customizable styling** — adjust CSS variables, component variants, and `className`.
-- **Light and dark themes** — use the default colors or choose from 19 palettes.
+- **Light and dark themes** — 20 palettes: the default Neutral plus 19 more to choose from.
 - **TypeScript support** — typed props and individual component imports.
 - **XiodIcons included** — built-in icons use the `xiod-icons` package.
 

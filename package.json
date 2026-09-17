@@ -1,7 +1,7 @@
 {
   "name": "xiod-ui",
   "version": "1.0.0",
-  "description": "89 customizable React components built with Base UI, Tailwind CSS 4, and XiodIcons. Typed props, composable APIs, and light and dark themes.",
+  "description": "89 precision-crafted React components on Base UI and Tailwind CSS 4. Native CSS motion, ready-made color palettes, light and dark themes, and typed per-component imports.",
   "keywords": [
     "accessible",
     "accessible-components",
