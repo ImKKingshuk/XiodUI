@@ -55,7 +55,8 @@ report.*.json
 *.temp
 /.size-*/
 
-# Local editor/agent state; keep AGENTS.md and shared tool configs trackable.
+# Local editor/agent state and agent instructions; shared tool configs stay trackable.
+AGENTS.md
 .idea/
 .vscode/
 .claude/
