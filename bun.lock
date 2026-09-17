@@ -8,7 +8,7 @@
         "@base-ui/react": "^1.8.0",
         "class-variance-authority": "^0.7.1",
         "cn": "^0.3.0",
-        "xiod-icons": "^1.0.0",
+        "xiod-icons": "^1.1.1",
       },
       "devDependencies": {
         "@arethetypeswrong/core": "^0.18.5",
@@ -625,7 +625,7 @@
 
     "why-is-node-running": ["why-is-node-running@2.3.0", "", { "dependencies": { "siginfo": "^2.0.0", "stackback": "0.0.2" }, "bin": { "why-is-node-running": "cli.js" } }, "sha512-hUrmaWBdVDcxvYqnyh09zunKzROWjbZTiNy8dBEjkS7ehEDQibXJ7XvlmtbwuTclUiIyN+CyXQD4Vmko8fNm8w=="],
 
-    "xiod-icons": ["xiod-icons@1.0.0", "", { "peerDependencies": { "react": ">=18.0.0 || >=19.0.0" } }, "sha512-f+8m78zjvsRqnReEI1BISqH/IVhoMJXCfaWhpRNY+9GzWtJIn4jtuph6VxCWBynr9rPSqsOX0wxEL6HcnDX0bQ=="],
+    "xiod-icons": ["xiod-icons@1.1.1", "", { "peerDependencies": { "react": ">=18.0.0 || >=19.0.0" } }, "sha512-9I4d55y6qK6j/DPRAdKUPywPg6TR48wn9cMoq058AiotpYEsKkjN4yviy6YPLQt5e6hlRJPe44NaQCMaC2L/Ng=="],
 
     "xml-name-validator": ["xml-name-validator@5.0.0", "", {}, "sha512-EvGK8EJ3DhaHfbRlETOWAS5pO9MZITeauHKJyb8wyajUfQUenkIg2MvLDTZ4T/TgIcm3HU0TFBgWWboAZ30UHg=="],
 

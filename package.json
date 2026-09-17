@@ -1,7 +1,7 @@
 {
   "name": "xiod-ui",
-  "version": "1.0.0",
-  "description": "89 precision-crafted React components on Base UI and Tailwind CSS 4. Native CSS motion, ready-made color palettes, light and dark themes, and typed per-component imports.",
+  "version": "1.0.1",
+  "description": "Precision-Crafted React Component Library - 89 Components, 20 Palettes, Native CSS Animations, Light and Dark Themes. Built on Base UI and Tailwind CSS 4. One npm Package, Nothing Extra to Install.",
   "keywords": [
     "accessible",
     "accessible-components",
@@ -34,7 +34,7 @@
     "ui-library",
     "xiod-ui"
   ],
-  "homepage": "https://github.com/ImKKingshuk/XiodUI#readme",
+  "homepage": "https://ui.xiod.dev",
   "bugs": {
     "url": "https://github.com/ImKKingshuk/XiodUI/issues"
   },
@@ -102,7 +102,7 @@
     "@base-ui/react": "^1.8.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.3.0",
-    "xiod-icons": "^1.0.0"
+    "xiod-icons": "^1.1.1"
   },
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.5",
