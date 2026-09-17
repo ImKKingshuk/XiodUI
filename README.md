@@ -1,8 +1,26 @@
 # XiodUI
 
-A precision-crafted React component library. 89 components on Base UI and Tailwind CSS 4, with native CSS motion, ready-made color palettes, and built-in light and dark themes — in one typed package you import a component at a time.
+Precision-Crafted React Component Library - 89 Components, 20 Palettes, Native CSS Animations, Light and Dark Themes. Built on Base UI and Tailwind CSS 4. One npm Package, Nothing Extra to Install.
 
-Icons come from [XiodIcons](https://icons.xiod.dev), installed with the package.
+XiodUI gives you production-ready buttons, forms, overlays, navigation, data display, and layout components that share one design language. Interactive behavior and accessibility come from Base UI primitives; styling comes from Tailwind CSS 4 and a set of CSS variables you can theme. Motion is written in plain CSS inside the components — so controls animate their own state, not just their enter and exit.
+
+Everything ships as a single versioned npm package. Import one component at a time from its own subpath (`xiod-ui/button`), and only what you import ends up in your bundle. Base UI and [XiodIcons](https://icons.xiod.dev) are installed with the package, so there is no CLI, no copy-paste, and no peer dependency to keep in sync.
+
+**Documentation:** [ui.xiod.dev](https://ui.xiod.dev)
+
+## Contents
+
+- [Features](#features)
+- [Comparison](#comparison)
+- [Installation](#installation)
+- [Quick start](#quick-start)
+- [Imports](#imports)
+- [Components](#components)
+- [Theming](#theming)
+  - [Palettes](#palettes)
+  - [Dark mode](#dark-mode)
+- [Support](#support)
+- [License](#license)
 
 ## Features
 
@@ -13,18 +31,56 @@ Icons come from [XiodIcons](https://icons.xiod.dev), installed with the package.
 - **TypeScript support** — typed props and individual component imports.
 - **XiodIcons included** — built-in icons use the `xiod-icons` package.
 
+## Comparison
+
+| Feature                                                          | XiodUI | shadcn/ui | HeroUI | Others |
+| :--------------------------------------------------------------- | :----: | :-------: | :----: | :----: |
+| Native CSS motion in the box — no tw-animate-css / framer-motion |   ✅   |    ❌     |   ❌   |   ❌   |
+| Controls animate their own state — not just enter / exit         |   ✅   |    ❌     |   ✅   |   ❌   |
+| Nothing extra to install beyond React                            |   ✅   |    ❌     |   ❌   |   ❌   |
+| Tailwind CSS v4 native                                           |   ✅   |    ✅     |   ✅   |   ❌   |
+| 20 ready-made palettes imported by name, not pasted in           |   ✅   |    ❌     |   ❌   |   ❌   |
+| 44px touch targets on coarse pointers (WCAG 2.5.5)               |   ✅   |    ❌     |   ❌   |   ❌   |
+| Versioned npm package (no copy-paste drift)                      |   ✅   |    ❌     |   ✅   |   ✅   |
+| Import one component, ship one component                         |   ✅   |    ✅     |   ✅   |   ❌   |
+| Primitives bundled — no peer dependency to keep in sync          |   ✅   |    ❌     |   ✅   |   ❌   |
+| Command, Carousel & Drawer built in — no cmdk / embla / vaul     |   ✅   |    ❌     |   ✅   |   ❌   |
+| One version number for the whole library                         |   ✅   |    ❌     |   ❌   |   ❌   |
+
+"Nothing extra to install" means beyond `react` and `react-dom`: XiodUI's own dependencies (Base UI, class-variance-authority, cn, and XiodIcons) are installed with the package. Your project still needs Tailwind CSS 4 configured.
+
 ## Installation
 
 XiodUI requires React 19.3 or later within React 19, matching React DOM, Node.js 20 or later, and a project configured with Tailwind CSS 4.3 or later.
 
 ```bash
+# npm
 npm install xiod-ui
+
+# pnpm
+pnpm add xiod-ui
+
+# yarn
+yarn add xiod-ui
+
+# bun
+bun add xiod-ui
 ```
 
 If React is not already installed:
 
 ```bash
+# npm
 npm install react@^19 react-dom@^19
+
+# pnpm
+pnpm add react@^19 react-dom@^19
+
+# yarn
+yarn add react@^19 react-dom@^19
+
+# bun
+bun add react@^19 react-dom@^19
 ```
 
 Base UI and XiodIcons are installed automatically. You do not need to install them separately to use XiodUI's built-in components.
@@ -89,17 +145,20 @@ Individual JavaScript modules allow bundlers to include the components you use. 
 
 ## Components
 
-| Category           | Examples                                                                    |
-| ------------------ | --------------------------------------------------------------------------- |
-| Actions            | Button, ButtonGroup, Toggle, Toolbar, CopyToClipboard                       |
-| Forms              | Input, Checkbox, Select, Combobox, Slider, Calendar, DatePicker, FileUpload |
-| Navigation         | Breadcrumb, Sidebar, Tabs, Menu, Pagination                                 |
-| Overlays           | Dialog, AlertDialog, Drawer, Popover, Tooltip, Toast                        |
-| Content            | Card, Table, Accordion, Avatar, Badge, Message, Timeline                    |
-| Feedback           | Alert, Progress, CircularProgress, Gauge, Loader, Skeleton                  |
-| Layout             | Grid, DashboardGrid, Carousel, Resizable, ScrollArea                        |
-| Specialized inputs | ColorPicker, InputPhone, InputPayment, InputOtp, InputSensitive             |
-| Visuals            | Orb, Waveform, DotMatrix, Marker                                            |
+All 89 components, grouped by what they do. Each is imported from its own subpath, such as `xiod-ui/button` or `xiod-ui/date-picker`.
+
+| Category           | Count | Components                                                                                                                                                                         |
+| ------------------ | :---: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Actions            |   8   | Button, ButtonGroup, ButtonSplit, Toggle, ToggleGroup, Toolbar, CopyToClipboard, KineticClick                                                                                      |
+| Forms              |  19   | Form, Field, Fieldset, Label, Input, InputGroup, Textarea, NumberField, Checkbox, Radio, Switch, Select, Combobox, Autocomplete, ListBox, Slider, Calendar, DatePicker, FileUpload |
+| Specialized inputs |   8   | ColorPicker, InputPhone, InputPayment, InputOtp, InputSensitive, OptionPicker, RulerPicker, WheelPicker                                                                            |
+| Navigation         |   9   | Breadcrumb, Sidebar, Tabs, Menu, Menubar, ContextMenu, NavigationMenu, Command, Pagination                                                                                         |
+| Overlays           |   8   | Dialog, AlertDialog, Drawer, Popover, PreviewCard, Tooltip, Toast, MorphicToast                                                                                                    |
+| Content            |  14   | Card, Frame, Table, Accordion, Collapsible, Avatar, Badge, CornerBadge, Kbd, Text, Message, Timeline, AgentSteps, Empty                                                            |
+| Feedback           |   7   | Alert, Progress, CircularProgress, Meter, Gauge, Loader, Skeleton                                                                                                                  |
+| Layout             |  11   | Grid, DashboardGrid, Group, AspectRatio, Separator, Carousel, Resizable, ScrollArea, ScrollBar, Draggable, Sortable                                                                |
+| Visuals            |   4   | Orb, Waveform, DotMatrix, Marker                                                                                                                                                   |
+| Theming            |   1   | ThemeProvider                                                                                                                                                                      |
 
 Components expose their own typed props and variants. Use your editor's TypeScript suggestions to explore the available options.
 
@@ -127,6 +186,40 @@ For a ready-made palette, add its stylesheet after the base styles:
 @import "xiod-ui/styles";
 @import "xiod-ui/themes/iris";
 ```
+
+### Palettes
+
+XiodUI ships 20 palettes: the default Neutral plus 19 more. Every palette includes light and dark modes and meets the same contrast thresholds.
+
+**Core** — restrained enough to ship as-is.
+
+| Palette | Import                   | Look                                           |
+| :------ | :----------------------- | :--------------------------------------------- |
+| Neutral | _(default)_              | The base theme, shipped with `xiod-ui/styles`. |
+| Clay    | `xiod-ui/themes/clay`    | Warm cream and terracotta.                     |
+| Sepia   | `xiod-ui/themes/sepia`   | Aged paper and tanned leather.                 |
+| Sage    | `xiod-ui/themes/sage`    | Muted garden green.                            |
+| Lagoon  | `xiod-ui/themes/lagoon`  | Deep teal on cool mineral.                     |
+| Cobalt  | `xiod-ui/themes/cobalt`  | Deep cobalt blue on cool grey.                 |
+| Iris    | `xiod-ui/themes/iris`    | Indigo and violet on soft lilac.               |
+| Roast   | `xiod-ui/themes/roast`   | Dark coffee and steamed cream.                 |
+| Crimson | `xiod-ui/themes/crimson` | Oxblood, olive and steel on gunmetal.          |
+| Sorbet  | `xiod-ui/themes/sorbet`  | Rose, sky and citrus.                          |
+
+**Expressive** — louder, with a point of view.
+
+| Palette    | Import                      | Look                                             |
+| :--------- | :-------------------------- | :----------------------------------------------- |
+| Cel        | `xiod-ui/themes/cel`        | Sky blue and marigold, flat and high-key.        |
+| Afterglow  | `xiod-ui/themes/afterglow`  | Sunset warmth by day, cerulean by night.         |
+| Ion        | `xiod-ui/themes/ion`        | Violet and readout green on instrument grey.     |
+| Cathode    | `xiod-ui/themes/cathode`    | Hot magenta and phosphor green on cold concrete. |
+| Riso       | `xiod-ui/themes/riso`       | Magenta and cyan misprint on newsprint.          |
+| Taffy      | `xiod-ui/themes/taffy`      | Watermelon, sky and lemon.                       |
+| Mochi      | `xiod-ui/themes/mochi`      | Milky orchid, mint and blush.                    |
+| Blacklight | `xiod-ui/themes/blacklight` | Ultraviolet, acid green and hot pink.            |
+| Toxin      | `xiod-ui/themes/toxin`      | Biohazard green and blood on wet concrete.       |
+| Cinder     | `xiod-ui/themes/cinder`     | Molten orange on cold ash.                       |
 
 ### Dark mode
 
