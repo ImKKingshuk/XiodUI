@@ -8,7 +8,10 @@ import {
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { ColorPicker } from "../../src/components/color-picker";
+import {
+  ColorPicker,
+  computeAdaptivePosition,
+} from "../../src/components/color-picker";
 import {
   InputPayment,
   InputPaymentBrandIcon,
@@ -340,5 +343,67 @@ describe("canvas and animated feedback contracts", () => {
       });
     });
     expect(await screen.findByRole("status")).toHaveTextContent("report saved");
+  });
+});
+
+// The two arcs sit on opposite sides, so "right" means left AND right.
+const at = (
+  centerX: number,
+  centerY: number,
+  windowWidth: number,
+  windowHeight: number,
+  overrides: Partial<Parameters<typeof computeAdaptivePosition>[0]> = {},
+) => {
+  const containerSize = 265;
+  return computeAdaptivePosition({
+    adaptivePositioning: true,
+    circularBarWidth: 12,
+    containerSize,
+    currentShiftOffset: { x: 0, y: 0 },
+    elementRect: {
+      height: containerSize,
+      left: centerX - containerSize / 2,
+      top: centerY - containerSize / 2,
+      width: containerSize,
+    } as DOMRect,
+    sliderOffset: 30,
+    windowWidth,
+    windowHeight,
+    ...overrides,
+  }).effectivePosition;
+};
+
+describe("computeAdaptivePosition", () => {
+  it("keeps the arcs horizontal when both sides have room but the top is tight", () => {
+    // Regression: a cramped top used to force a vertical placement even though
+    // left and right each had more than double the required clearance.
+    expect(at(267, 166, 533, 416)).toBe("left");
+  });
+
+  it("falls back to vertical only when the horizontal axis cannot fit", () => {
+    expect(at(150, 400, 300, 800)).toBe("bottom");
+    expect(at(100, 450, 200, 900)).toBe("bottom");
+  });
+
+  it("stays horizontal in a roomy viewport", () => {
+    expect(at(720, 450, 1440, 900)).toBe("right");
+  });
+
+  it("does not adapt when adaptive positioning is disabled", () => {
+    // Must match the resting value the component collapses back to, or the
+    // arcs jump sides while they fade out.
+    expect(at(267, 166, 533, 416, { adaptivePositioning: false })).toBe(
+      "right",
+    );
+  });
+
+  it("honours an explicit sliderPosition", () => {
+    expect(at(267, 166, 533, 416, { sliderPosition: "top" })).toBe("top");
+    expect(
+      at(267, 166, 533, 416, {
+        adaptivePositioning: false,
+        sliderPosition: "bottom",
+      }),
+    ).toBe("bottom");
   });
 });

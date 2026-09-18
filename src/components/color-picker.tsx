@@ -636,7 +636,10 @@ export function computeAdaptivePosition({
 
   let effectivePosition: SliderPosition = sliderPosition || "right";
 
-  if (!sliderPosition) {
+  // An explicit `sliderPosition` pins the axis, and `adaptivePositioning: false`
+  // means "do not adapt" — both must agree with the resting value the component
+  // falls back to when it collapses, or the sliders jump as they fade out.
+  if (!sliderPosition && adaptivePositioning) {
     const spaceRight = windowWidth - (centerX + newShiftX + halfSize);
     const spaceLeft = centerX + newShiftX - halfSize;
     const spaceTop = centerY + newShiftY - halfSize;
@@ -644,16 +647,22 @@ export function computeAdaptivePosition({
 
     const threshold = sliderOffset + circularBarWidth + 20;
 
-    if (spaceRight < threshold && spaceLeft > spaceRight) {
-      effectivePosition = "left";
-    } else if (spaceLeft < threshold && spaceRight > spaceLeft) {
-      effectivePosition = "right";
-    } else if (spaceBottom < threshold && spaceTop > spaceBottom) {
-      effectivePosition = "top";
-    } else if (spaceTop < threshold && spaceBottom > spaceTop) {
-      effectivePosition = "bottom";
+    // The two arcs sit on opposite sides, so an axis is only usable when BOTH
+    // of its sides have room. Testing one side at a time let a cramped top
+    // force a vertical placement even when left and right were both wide open.
+    const horizontal = Math.min(spaceLeft, spaceRight);
+    const vertical = Math.min(spaceTop, spaceBottom);
+    const widest = (): SliderPosition =>
+      spaceRight >= spaceLeft ? "right" : "left";
+    const tallest = (): SliderPosition =>
+      spaceBottom >= spaceTop ? "bottom" : "top";
+
+    if (horizontal >= threshold) {
+      effectivePosition = widest();
+    } else if (vertical >= threshold) {
+      effectivePosition = tallest();
     } else {
-      effectivePosition = "right";
+      effectivePosition = horizontal >= vertical ? widest() : tallest();
     }
   }
 
@@ -880,8 +889,11 @@ export function BlossomColorPicker({
       setShiftOffset(result.shiftOffset);
       setEffectivePosition(result.effectivePosition);
     } else if (!isExpanded) {
+      // The arcs stay mounted and fade out over `animationDuration`, so they
+      // are still on screen during the collapse. Resetting the axis here made
+      // them jump to the resting side for the length of that fade. Keep the
+      // position that was in effect while open; the next expand recomputes it.
       setShiftOffset({ x: 0, y: 0 });
-      setEffectivePosition(sliderPosition || "right");
     }
     prevExpandedRef.current = isExpanded;
   }, [
