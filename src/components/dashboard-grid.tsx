@@ -621,7 +621,19 @@ function DashboardTile({
     style:
       context && tileData
         ? {
-            transform: `translate3d(${tileData.x * 100}%, ${top}px, 0)`,
+            // A percentage in `translate3d` resolves against this tile's own
+            // border box, not the grid — but `width` below resolves against
+            // the grid. Using `x * 100%` mixes the two: a tile at x: 8 in a
+            // 12-column grid is 4 columns wide, so `translateX(800%)` moves it
+            // eight of its own widths — 32 columns — and it lands off-screen.
+            // It is only correct when w === 1.
+            //
+            // The offset wanted is `x * (containerWidth / cols)`. This tile's
+            // own width is `containerWidth * (w / cols) - margin`, so one
+            // column equals `(ownWidth + margin) / w`, giving `x / w` of the
+            // tile's width plus `x * margin / w` to make up the gutter the
+            // width subtracts.
+            transform: `translate3d(calc(${(tileData.x / Math.max(1, tileData.w)) * 100}% + ${(tileData.x * context.margin[0]) / Math.max(1, tileData.w)}px), ${top}px, 0)`,
             width: `calc(${tileData.w * (100 / context.cols)}% - ${context.margin[0]}px)`,
             height:
               tileData.h * context.rowHeight +

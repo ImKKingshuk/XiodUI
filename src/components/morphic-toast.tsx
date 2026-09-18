@@ -807,12 +807,16 @@ const MorphicToast = memo(function MorphicToast({
         )}
         style={canvasStyle}
       >
+        {/* `size-auto` is load-bearing: the root clamps every descendant svg
+            with `[&_svg:not([class*='size-'])]:size-4.5` so icons stay 18px.
+            Without a `size-` class this canvas matches that rule and collapses
+            to an 18px box, hiding the gooey pill and body entirely. */}
         <svg
           data-morphic-svg
           width={WIDTH}
           height={svgHeight}
           viewBox={viewBox}
-          className="overflow-visible"
+          className="size-auto overflow-visible"
         >
           <title>Morphic Notification</title>
           <GooeyDefs filterId={filterId} blur={blur} />

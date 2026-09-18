@@ -1478,13 +1478,18 @@ export function BlossomColorPicker({
       ARC_GRADIENT_STEPS,
     );
 
+    // `size-auto` is load-bearing on this svg and the two below it. The root
+    // normalizes icons with `[&_svg:not([class*='size-'])]:size-4`, and these
+    // are sized structural canvases, not icons — without a `size-` class they
+    // match that rule and collapse to 16px, so the arc sliders and the ring
+    // disappear while the picker looks otherwise fine.
     return (
       <svg
         ref={svgRef}
         width={size}
         height={size}
         onPointerDown={handleSliderPointerDown}
-        className="absolute pointer-events-none select-none"
+        className="size-auto absolute pointer-events-none select-none"
         style={{
           left: "50%",
           top: "50%",
@@ -1634,7 +1639,7 @@ export function BlossomColorPicker({
         width={size}
         height={size}
         onPointerDown={handleAlphaPointerDown}
-        className="absolute pointer-events-none select-none"
+        className="size-auto absolute pointer-events-none select-none"
         style={{
           left: "50%",
           top: "50%",
@@ -1732,7 +1737,7 @@ export function BlossomColorPicker({
       <svg
         width={size}
         height={size}
-        className="absolute pointer-events-none"
+        className="size-auto absolute pointer-events-none"
         style={{
           left: "50%",
           top: "50%",
