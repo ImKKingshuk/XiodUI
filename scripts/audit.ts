@@ -754,6 +754,59 @@ function auditFile(filePath: string): AuditResult {
   // Oxlint checks unused imports through `bun run lint`, included in `bun run check`.
   // Keep this audit focused on design-system rules rather than duplicating lint.
 
+  // ─── RULE 31: Structural SVG must opt out of the icon clamp ───
+  // 40 components carry `[&_svg:not([class*='size-'])]:size-4` to normalize
+  // icons. It compiles to a descendant selector at specificity (0,2,1), which
+  // beats a plain `.h-full` or `.w-6` at (0,1,0) — so any SVG that is a drawing
+  // surface rather than an icon gets pinned to icon size the moment it is
+  // composed inside a Button, Empty, InputGroup or Sidebar.
+  //
+  // The opt-out is any class containing `size-`; `size-auto` is the neutral one,
+  // and Tailwind emits it before `w-*` / `h-*`, so explicit dimensions still win.
+  // This has shipped as a bug twice — the ColorPicker arcs and the MorphicToast
+  // pill, both fixed in 1.0.2. This rule is what stops a third time.
+  for (const match of code.matchAll(/<svg\b([^>]*?)>/gs)) {
+    const attributes = match[1];
+    if (attributes.includes("size-")) continue;
+
+    // An icon states its size as a literal presentation attribute
+    // (`width="24"`) and is happy to be normalized — that is what the clamp is
+    // for. A drawing surface states it as a utility class, an inline style, or
+    // a computed attribute, and means it. Only the second kind is a bug.
+    const sizedByClass = /className="[^"]*\b[wh]-/.test(attributes);
+    const sizedByStyle = /style=\{\{[^}]*\b(width|height)\b/s.test(attributes);
+    const sizedByExpression = /\b(width|height)=\{/.test(attributes);
+    if (!sizedByClass && !sizedByStyle && !sizedByExpression) continue;
+
+    const line = code.slice(0, match.index).split("\n").length;
+    violations.push({
+      rule: "Unguarded Structural SVG",
+      line,
+      severity: "error",
+      message:
+        "Inline <svg> has no `size-` class, so the icon clamp " +
+        "`[&_svg:not([class*='size-'])]:size-4` will resize it when this " +
+        "component is nested in one of the 40 that apply it. Add `size-auto` " +
+        "(AGENTS.md §12).",
+    });
+  }
+
+  // ─── RULE 32: No dangerouslySetInnerHTML ───
+  // Never, in any component. The only thing it was ever used for here was
+  // injecting a static <style>, and React renders a string child of <style> as
+  // CSS text already — `<style href="…" precedence="default">{CSS}</style>`
+  // does the same job with no escape hatch and no XSS surface to reason about.
+  for (const match of code.matchAll(/dangerouslySetInnerHTML/g)) {
+    violations.push({
+      rule: "dangerouslySetInnerHTML",
+      line: code.slice(0, match.index).split("\n").length,
+      severity: "error",
+      message:
+        "dangerouslySetInnerHTML is not allowed. For a <style> element pass " +
+        "the CSS as a string child instead (AGENTS.md §12).",
+    });
+  }
+
   return {
     file: baseName,
     violations,

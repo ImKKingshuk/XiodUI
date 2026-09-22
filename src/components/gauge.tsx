@@ -81,7 +81,7 @@ export function Gauge({
     children: (
       <>
         <svg
-          className="absolute top-0 left-0 overflow-visible pointer-events-none"
+          className="size-auto absolute top-0 left-0 overflow-visible pointer-events-none"
           style={{ width: safeSize, height: safeSize }}
           viewBox={`0 0 ${safeSize} ${safeSize}`}
         >

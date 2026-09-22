@@ -95,7 +95,7 @@ function Loader({
       case "expressive":
         return (
           <svg
-            className="h-full w-full animate-spin text-current"
+            className="size-auto h-full w-full animate-spin text-current"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -127,7 +127,7 @@ function Loader({
       case "circular-arrows":
         return (
           <svg
-            className="h-full w-full animate-spin text-current"
+            className="size-auto h-full w-full animate-spin text-current"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -166,7 +166,7 @@ function Loader({
       case "radial-pulse":
         return (
           <svg
-            className="h-full w-full text-current"
+            className="size-auto h-full w-full text-current"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
             data-slot="loader-radial-pulse"
@@ -197,7 +197,7 @@ function Loader({
       case "arc-head":
         return (
           <svg
-            className="h-full w-full animate-spin text-current"
+            className="size-auto h-full w-full animate-spin text-current"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -222,7 +222,7 @@ function Loader({
       case "segmented-ring":
         return (
           <svg
-            className="h-full w-full animate-spin text-current"
+            className="size-auto h-full w-full animate-spin text-current"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
             data-slot="loader-segmented-ring"
@@ -245,7 +245,7 @@ function Loader({
       case "chunked-circular":
         return (
           <svg
-            className="h-full w-full text-current"
+            className="size-auto h-full w-full text-current"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
             data-slot="loader-chunked-circular"
@@ -276,7 +276,7 @@ function Loader({
       case "petal":
         return (
           <svg
-            className="h-full w-full animate-spin text-current"
+            className="size-auto h-full w-full animate-spin text-current"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
             data-slot="loader-petal"
@@ -296,7 +296,7 @@ function Loader({
       case "orbiting-dots":
         return (
           <svg
-            className="h-full w-full animate-spin text-current"
+            className="size-auto h-full w-full animate-spin text-current"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
             data-slot="loader-orbiting-dots"
@@ -327,7 +327,7 @@ function Loader({
       case "dotted-ring":
         return (
           <svg
-            className="h-full w-full text-current"
+            className="size-auto h-full w-full text-current"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
             data-slot="loader-dotted-ring"
@@ -356,7 +356,7 @@ function Loader({
       case "radial-arrow":
         return (
           <svg
-            className="h-full w-full animate-spin text-current"
+            className="size-auto h-full w-full animate-spin text-current"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
             data-slot="loader-radial-arrow"
@@ -384,7 +384,7 @@ function Loader({
       case "bar-segment":
         return (
           <svg
-            className="h-full w-full animate-spin text-current"
+            className="size-auto h-full w-full animate-spin text-current"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
             data-slot="loader-bar-segment"
@@ -405,7 +405,7 @@ function Loader({
       case "orbiting-ball":
         return (
           <svg
-            className="h-full w-full text-current"
+            className="size-auto h-full w-full text-current"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
             data-slot="loader-orbiting-ball"
@@ -461,7 +461,7 @@ function Loader({
       default:
         return (
           <svg
-            className="h-full w-full animate-spin text-current"
+            className="size-auto h-full w-full animate-spin text-current"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"

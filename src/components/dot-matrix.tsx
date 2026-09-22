@@ -847,7 +847,7 @@ export function DotMatrix({
         height={viewBoxHeight}
         viewBox={`${-padding} ${-padding} ${viewBoxWidth} ${viewBoxHeight}`}
         xmlns="http://www.w3.org/2000/svg"
-        className="block overflow-visible"
+        className="size-auto block overflow-visible"
         aria-label={ariaLabel}
         role="img"
       >
@@ -910,7 +910,7 @@ export function DotMatrix({
           </filter>
         </defs>
 
-        <style>
+        <style href="xiod-ui-dot-matrix" precedence="default">
           {`
             .dmx-dot {
               transform-origin: center;

@@ -1139,7 +1139,7 @@ function InputPaymentBrandIcon({
     switch (brand) {
       case "visa":
         return (
-          <svg viewBox="0 0 24 24" className="w-6 h-4">
+          <svg viewBox="0 0 24 24" className="size-auto w-6 h-4">
             <title>Visa</title>
             <path
               d="M9.6 15.6h1.7l1.1-6.4H10.7l-1.1 6.4zm4.2-6.4c-.6-.3-1.1-.4-1.1-.8 0-.3.3-.5.9-.5.6 0 1 .2 1.3.3l.2-1.5c-.4-.1-1-.3-1.8-.3-1.9 0-3.3 1-3.3 2.5 0 1.1 1 1.7 1.7 2 .7.4 1 .6 1 .9 0 .5-.6.7-1.1.7-.8 0-1.3-.2-1.8-.4l-.2 1.5c.5.2 1.3.4 2.1.4 2 0 3.3-1 3.3-2.5 0-1.6-2.6-1.7-2.6-2.3zm7.1 3.2c.1-.3.6-1.7.6-1.7s.1-.3.2-.7l-.1-.1s-.5 2.5-.5 2.5h-1.3l-1.5-6.4h1.8l1.1 3 1.1-3h1.7l-2.6 6.4h-1.4zm-15-3.2L4.2 15.6H2.5L.9 9.2h1.8l.9 4 .9-4h1.4z"
@@ -1150,7 +1150,7 @@ function InputPaymentBrandIcon({
         );
       case "mastercard":
         return (
-          <svg viewBox="0 0 24 24" className="w-6 h-4">
+          <svg viewBox="0 0 24 24" className="size-auto w-6 h-4">
             <title>Mastercard</title>
             <circle cx="8.5" cy="12" r="5.5" fill="#EB001B" />
             <circle
@@ -1168,7 +1168,7 @@ function InputPaymentBrandIcon({
         );
       case "amex":
         return (
-          <svg viewBox="0 0 24 24" className="w-6 h-4">
+          <svg viewBox="0 0 24 24" className="size-auto w-6 h-4">
             <title>American Express</title>
             <rect width="24" height="16" y="4" rx="2" fill="#006FCF" />
             <path
@@ -1179,7 +1179,7 @@ function InputPaymentBrandIcon({
         );
       case "rupay":
         return (
-          <svg viewBox="0 0 24 24" className="w-6 h-4">
+          <svg viewBox="0 0 24 24" className="size-auto w-6 h-4">
             <title>RuPay</title>
             <rect width="24" height="16" y="4" rx="2" fill="#0F172A" />
             <path
@@ -1192,7 +1192,7 @@ function InputPaymentBrandIcon({
         );
       case "discover":
         return (
-          <svg viewBox="0 0 24 24" className="w-6 h-4">
+          <svg viewBox="0 0 24 24" className="size-auto w-6 h-4">
             <title>Discover</title>
             <rect width="24" height="16" y="4" rx="2" fill="#1E293B" />
             <circle cx="14.5" cy="12" r="3.2" fill="#F9A01B" />
@@ -1204,7 +1204,7 @@ function InputPaymentBrandIcon({
         );
       case "dinersclub":
         return (
-          <svg viewBox="0 0 24 24" className="w-6 h-4">
+          <svg viewBox="0 0 24 24" className="size-auto w-6 h-4">
             <title>Diners Club</title>
             <rect
               width="24"
@@ -1224,7 +1224,7 @@ function InputPaymentBrandIcon({
         );
       case "jcb":
         return (
-          <svg viewBox="0 0 24 24" className="w-6 h-4">
+          <svg viewBox="0 0 24 24" className="size-auto w-6 h-4">
             <title>JCB</title>
             <rect width="6" height="14" x="3" y="5" rx="1.5" fill="#004098" />
             <rect width="6" height="14" x="9" y="5" rx="1.5" fill="#E60012" />
@@ -1251,7 +1251,7 @@ function InputPaymentBrandIcon({
         );
       case "unionpay":
         return (
-          <svg viewBox="0 0 24 24" className="w-6 h-4">
+          <svg viewBox="0 0 24 24" className="size-auto w-6 h-4">
             <title>UnionPay</title>
             <rect
               width="24"
@@ -1272,7 +1272,7 @@ function InputPaymentBrandIcon({
         );
       case "mir":
         return (
-          <svg viewBox="0 0 24 24" className="w-6 h-4">
+          <svg viewBox="0 0 24 24" className="size-auto w-6 h-4">
             <title>Mir</title>
             <rect width="24" height="16" y="4" rx="2" fill="#008B47" />
             <path d="M14 8h6v8h-6z" fill="#006CB5" />
@@ -1320,7 +1320,7 @@ function InputPaymentUpiProviderIcon({
     switch (upiProvider) {
       case "gpay":
         return (
-          <svg viewBox="0 0 24 24" className="w-6 h-4">
+          <svg viewBox="0 0 24 24" className="size-auto w-6 h-4">
             <title>Google Pay</title>
             <rect width="24" height="16" y="4" rx="2" fill="#1E293B" />
             <path
@@ -1339,7 +1339,7 @@ function InputPaymentUpiProviderIcon({
         );
       case "phonepe":
         return (
-          <svg viewBox="0 0 24 24" className="w-6 h-4">
+          <svg viewBox="0 0 24 24" className="size-auto w-6 h-4">
             <title>PhonePe</title>
             <rect width="24" height="16" y="4" rx="2" fill="#5F259F" />
             <path
@@ -1351,7 +1351,7 @@ function InputPaymentUpiProviderIcon({
         );
       case "paytm":
         return (
-          <svg viewBox="0 0 24 24" className="w-6 h-4">
+          <svg viewBox="0 0 24 24" className="size-auto w-6 h-4">
             <title>Paytm</title>
             <rect width="24" height="16" y="4" rx="2" fill="#002E6E" />
             <path
@@ -1362,7 +1362,7 @@ function InputPaymentUpiProviderIcon({
         );
       case "amazonpay":
         return (
-          <svg viewBox="0 0 24 24" className="w-6 h-4">
+          <svg viewBox="0 0 24 24" className="size-auto w-6 h-4">
             <title>Amazon Pay</title>
             <rect width="24" height="16" y="4" rx="2" fill="#141920" />
             <path
@@ -1377,7 +1377,7 @@ function InputPaymentUpiProviderIcon({
         );
       case "bhim":
         return (
-          <svg viewBox="0 0 24 24" className="w-6 h-4">
+          <svg viewBox="0 0 24 24" className="size-auto w-6 h-4">
             <title>BHIM UPI</title>
             <rect width="24" height="16" y="4" rx="2" fill="#0F172A" />
             <path
@@ -1390,7 +1390,7 @@ function InputPaymentUpiProviderIcon({
         );
       case "cred":
         return (
-          <svg viewBox="0 0 24 24" className="w-6 h-4">
+          <svg viewBox="0 0 24 24" className="size-auto w-6 h-4">
             <title>CRED</title>
             <rect width="24" height="16" y="4" rx="2" fill="#000000" />
             <path
@@ -1401,7 +1401,7 @@ function InputPaymentUpiProviderIcon({
         );
       case "whatsapp":
         return (
-          <svg viewBox="0 0 24 24" className="w-6 h-4">
+          <svg viewBox="0 0 24 24" className="size-auto w-6 h-4">
             <title>WhatsApp Pay</title>
             <rect width="24" height="16" y="4" rx="2" fill="#25D366" />
             <path

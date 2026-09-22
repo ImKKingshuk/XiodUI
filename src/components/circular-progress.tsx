@@ -123,7 +123,7 @@ export function CircularProgress({
     style: { width: size, height: size },
     children: (
       <svg
-        className="h-full w-full -rotate-90 pointer-events-none"
+        className="size-auto h-full w-full -rotate-90 pointer-events-none"
         viewBox={`0 0 ${size} ${size}`}
       >
         {variant === "expressive" ? (

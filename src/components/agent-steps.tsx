@@ -215,8 +215,12 @@ export function AgentSteps({
     "data-slot": "agent-steps",
     children: (
       <>
-        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: inline static animations are safe and self-contained */}
-        <style dangerouslySetInnerHTML={{ __html: STYLE_INLINE }} />
+        {/* Static, self-contained keyframes. `href` + `precedence` let React
+            hoist this into <head> and emit it once however many AgentSteps
+            are mounted. */}
+        <style href="xiod-ui-agent-steps" precedence="default">
+          {STYLE_INLINE}
+        </style>
 
         {isSingleMode ? (
           <AgentStep
