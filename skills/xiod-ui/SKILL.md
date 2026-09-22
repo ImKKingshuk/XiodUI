@@ -1,7 +1,7 @@
 ---
 name: xiod-ui
 description: Build React UIs with XiodUI (the `xiod-ui` npm package) — 89 accessible components, 19 colour palettes, built on Base UI and Tailwind CSS 4. Use when installing xiod-ui, importing or composing its components (Button, Dialog, Field, Form, Select, Toast, ColorPicker, Sidebar, and the rest), wiring dark mode or a palette, or fixing an import that does not resolve. Also use when a task mentions XiodUI, xiod-ui, ui.xiod.dev, or asks for components that turn out to be from this library.
-license: SEE LICENSE IN LICENSE — PolyForm Perimeter 1.0.1
+license: PolyForm Perimeter 1.0.1
 metadata:
   package: xiod-ui
   homepage: https://ui.xiod.dev
