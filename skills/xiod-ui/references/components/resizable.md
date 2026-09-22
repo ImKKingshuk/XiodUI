@@ -6,6 +6,9 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "xiod-ui/re
 
 ## ResizableHandle
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | disabled | `boolean \| undefined` | `false` |
@@ -13,6 +16,9 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "xiod-ui/re
 | withHandle | `boolean \| undefined` | `false` |
 
 ## ResizablePanel
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -30,6 +36,9 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "xiod-ui/re
 | panelRef | `RefObject<ImperativePanelHandle \| null> \| undefined` | — |
 
 ## ResizablePanelGroup
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |

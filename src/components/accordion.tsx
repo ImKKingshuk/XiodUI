@@ -63,10 +63,4 @@ function AccordionPanel({
   );
 }
 
-export {
-  Accordion,
-  AccordionItem,
-  AccordionPanel,
-  AccordionPanel as AccordionContent,
-  AccordionTrigger,
-};
+export { Accordion, AccordionItem, AccordionPanel, AccordionTrigger };

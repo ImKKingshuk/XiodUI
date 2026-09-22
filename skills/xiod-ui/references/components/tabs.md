@@ -1,7 +1,7 @@
 # tabs
 
 ```tsx
-import { Tabs, TabsContent, TabsList, TabsPanel, TabsTab, TabsTrigger } from "xiod-ui/tabs";
+import { Tabs, TabsList, TabsPanel, TabsTab } from "xiod-ui/tabs";
 ```
 
 ## Tabs
@@ -24,23 +24,6 @@ remain available through the exported TypeScript type.
 - `orientation` — The component orientation (layout flow direction).
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 - `value` — The value of the currently active `Tab`. Use when the component is controlled. When the value is `null`, no Tab will be active.
-
-## TabsContent
-
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: TabsPanelState) => string \| undefined) \| undefined` | — |
-| keepMounted | `boolean \| undefined` | — |
-| style | `CSSProperties \| ((state: TabsPanelState) => CSSProperties \| undefined) \| undefined` | — |
-| **value** | `any` | — |
-
-- `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `keepMounted` — Whether to keep the HTML element in the DOM while the panel is hidden.
-- `style` — Style applied to the element, or a function that returns a style object based on the component's state.
-- `value` — The value of the TabPanel. It will be shown when the Tab with the corresponding value is active.
 
 ## TabsList
 
@@ -78,25 +61,6 @@ remain available through the exported TypeScript type.
 - `value` — The value of the TabPanel. It will be shown when the Tab with the corresponding value is active.
 
 ## TabsTab
-
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: TabsTabState) => string \| undefined) \| undefined` | — |
-| disabled | `boolean \| undefined` | — |
-| nativeButton | `boolean \| undefined` | — |
-| style | `CSSProperties \| ((state: TabsTabState) => CSSProperties \| undefined) \| undefined` | — |
-| **value** | `any` | — |
-
-- `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `disabled` — Whether the Tab is disabled. If a first Tab on a `<Tabs.List>` is disabled, it won't initially be selected. Instead, the next enabled Tab will be selected. However, it does not work like this during server-side rendering, as it is not known during pre-rendering which Tabs are disabled. To work around it, ensure that `defaultValue` or `value` on `<Tabs.Root>` is set to an enabled Tab's value.
-- `nativeButton` — Whether the component renders a native `<button>` element when replacing it via the `render` prop. Set to `false` if the rendered element is not a button (for example, `<div>`).
-- `style` — Style applied to the element, or a function that returns a style object based on the component's state.
-- `value` — The value of the Tab.
-
-## TabsTrigger
 
 Supports `render={<Element />}` for composition. Inherited DOM props
 remain available through the exported TypeScript type.

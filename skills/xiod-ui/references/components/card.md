@@ -1,7 +1,7 @@
 # card
 
 ```tsx
-import { Card, CardAction, CardContent, CardDescription, CardFooter, CardFrame, CardFrameDescription, CardFrameFooter, CardFrameHeader, CardFrameTitle, CardHeader, CardPanel, CardTitle } from "xiod-ui/card";
+import { Card, CardAction, CardDescription, CardFooter, CardFrame, CardFrameDescription, CardFrameFooter, CardFrameHeader, CardFrameTitle, CardHeader, CardPanel, CardTitle } from "xiod-ui/card";
 ```
 
 ## Card
@@ -13,14 +13,6 @@ No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
 ## CardAction
-
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
-
-## CardContent
 
 Supports `render={<Element />}` for composition. Inherited DOM props
 remain available through the exported TypeScript type.

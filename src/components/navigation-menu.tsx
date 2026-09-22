@@ -212,17 +212,22 @@ function NavigationMenuPopup({
 
 function NavigationMenuIndicator({
   className,
+  render,
   ...props
-}: React.ComponentProps<"div">): React.JSX.Element {
-  // NavigationMenu back-ui does not have an explicit Indicator out of the box like Radix did (it's abstracted via positioner/popup animation),
-  // but if needed we can expose this placeholder to keep backward-compatible names.
-  return (
-    <div
-      className={cn("hidden", className)}
-      data-slot="navigation-menu-indicator"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"div">): React.ReactElement {
+  // There is no separate indicator element: the active-item affordance is
+  // handled by the positioner and popup animation. This stays as a no-op
+  // placeholder so the part is available if that ever changes.
+  const defaultProps = {
+    className: cn("hidden", className),
+    "data-slot": "navigation-menu-indicator",
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 export {

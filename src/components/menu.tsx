@@ -1,6 +1,8 @@
 "use client";
 
 import { Menu as MenuPrimitive } from "@base-ui/react/menu";
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cn } from "cn";
 import type * as React from "react";
 import { ChevronRight as ChevronRightIcon } from "xiod-icons/icons/ChevronRight";
@@ -240,18 +242,22 @@ function MenuSeparator({
 
 function MenuShortcut({
   className,
+  render,
   ...props
-}: React.ComponentProps<"kbd">): React.JSX.Element {
-  return (
-    <kbd
-      className={cn(
-        "ms-auto font-medium font-sans text-muted-foreground/72 text-xs tracking-widest",
-        className,
-      )}
-      data-slot="menu-shortcut"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"kbd">): React.ReactElement {
+  const defaultProps = {
+    className: cn(
+      "ms-auto font-medium font-sans text-muted-foreground/72 text-xs tracking-widest",
+      className,
+    ),
+    "data-slot": "menu-shortcut",
+  };
+
+  return useRender({
+    defaultTagName: "kbd",
+    props: mergeProps<"kbd">(defaultProps, props),
+    render,
+  });
 }
 
 function MenuSub(props: MenuPrimitive.SubmenuRoot.Props): React.JSX.Element {
@@ -329,36 +335,20 @@ const MenuArrow = MenuPrimitive.Arrow;
 
 export {
   Menu,
-  Menu as DropdownMenu,
   MenuArrow,
   MenuCheckboxItem,
-  MenuCheckboxItem as DropdownMenuCheckboxItem,
   MenuCreateHandle,
-  MenuCreateHandle as DropdownMenuCreateHandle,
   MenuGroup,
-  MenuGroup as DropdownMenuGroup,
   MenuGroupLabel,
-  MenuGroupLabel as DropdownMenuLabel,
   MenuItem,
-  MenuItem as DropdownMenuItem,
   MenuPopup,
-  MenuPopup as DropdownMenuContent,
   MenuPortal,
-  MenuPortal as DropdownMenuPortal,
   MenuRadioGroup,
-  MenuRadioGroup as DropdownMenuRadioGroup,
   MenuRadioItem,
-  MenuRadioItem as DropdownMenuRadioItem,
   MenuSeparator,
-  MenuSeparator as DropdownMenuSeparator,
   MenuShortcut,
-  MenuShortcut as DropdownMenuShortcut,
   MenuSub,
-  MenuSub as DropdownMenuSub,
   MenuSubPopup,
-  MenuSubPopup as DropdownMenuSubContent,
   MenuSubTrigger,
-  MenuSubTrigger as DropdownMenuSubTrigger,
   MenuTrigger,
-  MenuTrigger as DropdownMenuTrigger,
 };

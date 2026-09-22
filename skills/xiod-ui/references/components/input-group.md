@@ -6,10 +6,16 @@ import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText, InputGrou
 
 ## InputGroup
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
 ## InputGroupAddon
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -36,6 +42,9 @@ remain available through the exported TypeScript type.
 - `value` — The value of the input. Use when controlled.
 
 ## InputGroupText
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.

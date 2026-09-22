@@ -25,27 +25,29 @@ const groupVariants = cva(
   },
 );
 
+interface GroupProps
+  extends useRender.ComponentProps<"div">, VariantProps<typeof groupVariants> {}
+
 function Group({
   className,
   orientation,
   children,
+  render,
   ...props
-}: {
-  className?: string;
-  orientation?: VariantProps<typeof groupVariants>["orientation"];
-  children: React.ReactNode;
-} & React.ComponentProps<"div">): React.JSX.Element {
-  return (
-    <div
-      className={cn(groupVariants({ orientation }), className)}
-      data-orientation={orientation}
-      data-slot="group"
-      role="group"
-      {...props}
-    >
-      {children}
-    </div>
-  );
+}: GroupProps): React.ReactElement {
+  const defaultProps = {
+    className: cn(groupVariants({ orientation }), className),
+    "data-orientation": orientation,
+    "data-slot": "group",
+    role: "group",
+    children,
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 function GroupText({
@@ -86,6 +88,5 @@ function GroupSeparator({
   );
 }
 
-// NOTE: the `ButtonGroup*` aliases that used to live here were removed — they
-// collided with the dedicated `button-group` component, which owns those names.
+export type { GroupProps };
 export { Group, GroupSeparator, GroupText, groupVariants };

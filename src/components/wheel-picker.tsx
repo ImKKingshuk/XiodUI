@@ -1,5 +1,7 @@
 "use client";
 
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";
 import * as React from "react";
@@ -30,13 +32,14 @@ export function useWheelPickerGroup(): WheelPickerGroupContextValue | null {
   return React.useContext(WheelPickerGroupContext);
 }
 
-export interface WheelPickerGroupProps extends React.ComponentPropsWithoutRef<"div"> {
-  children: React.ReactNode;
+export interface WheelPickerGroupProps extends useRender.ComponentProps<"div"> {
+  children?: React.ReactNode;
 }
 
 export function WheelPickerGroup({
   className,
   children,
+  render,
   ...props
 }: WheelPickerGroupProps): React.JSX.Element {
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -75,18 +78,24 @@ export function WheelPickerGroup({
     [activeIndex, register, getPickerRef, getPickerIndices],
   );
 
+  const defaultProps = {
+    className: cn(
+      "relative flex items-stretch justify-center border border-border/80 bg-background/50 rounded-2xl p-[calc(--spacing(2)-1px)] select-none shadow-xs/5 max-w-full overflow-hidden before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-2xl)-1px)] before:shadow-[0_1px_--theme(--color-black/4%)] dark:before:shadow-[0_-1px_--theme(--color-white/6%)]",
+      className,
+    ),
+    "data-slot": "wheel-picker-group",
+    children,
+  };
+
+  const element = useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
+
   return (
     <WheelPickerGroupContext.Provider value={value}>
-      <div
-        className={cn(
-          "relative flex items-stretch justify-center border border-border/80 bg-background/50 rounded-2xl p-[calc(--spacing(2)-1px)] select-none shadow-xs/5 max-w-full overflow-hidden before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-2xl)-1px)] before:shadow-[0_1px_--theme(--color-black/4%)] dark:before:shadow-[0_-1px_--theme(--color-white/6%)]",
-          className,
-        )}
-        data-slot="wheel-picker-group"
-        {...props}
-      >
-        {children}
-      </div>
+      {element}
     </WheelPickerGroupContext.Provider>
   );
 }
@@ -185,7 +194,7 @@ function useCallbackRef<T extends (...args: never[]) => unknown>(
   );
 }
 
-// Radix-like controllable state hook
+// Controlled or uncontrolled state, resolved from whichever the caller gave.
 function useControllableState<T>({
   prop,
   defaultProp,
@@ -254,7 +263,7 @@ export const wheelPickerVariants = cva(
 export interface WheelPickerProps<T extends WheelPickerValue = WheelPickerValue>
   extends
     Omit<
-      React.ComponentPropsWithoutRef<"div">,
+      useRender.ComponentProps<"div">,
       "value" | "defaultValue" | "onChange"
     >,
     VariantProps<typeof wheelPickerVariants> {
@@ -323,6 +332,7 @@ export function WheelPicker<T extends WheelPickerValue = WheelPickerValue>({
   optionItemHeight,
   classNames,
   size = "md",
+  render,
   ...props
 }: WheelPickerProps<T>): React.JSX.Element {
   // Option height computed dynamically from size variant if not overridden
@@ -1211,72 +1221,77 @@ export function WheelPicker<T extends WheelPickerValue = WheelPickerValue>({
         : String(selectedOption.value)))
     : undefined;
 
-  return (
-    <div
-      ref={containerRefCallback}
-      className={cn(
-        wheelPickerVariants({ size }),
-        "relative flex-1 cursor-default select-none focus:outline-none focus-visible:outline-none [perspective:2000px] [transform-style:preserve-3d] pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11",
-        className,
-      )}
-      tabIndex={tabIndex}
-      role="spinbutton"
-      aria-label={props["aria-label"] ?? "Wheel picker"}
-      aria-valuemin={optionsProp.length > 0 ? 0 : undefined}
-      aria-valuemax={
-        optionsProp.length > 0 ? optionsProp.length - 1 : undefined
-      }
-      aria-valuenow={selectedIndex >= 0 ? selectedIndex : undefined}
-      aria-valuetext={selectedText}
-      onKeyDown={handleKeyDown}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-      style={{
-        height: containerHeight,
-      }}
-      data-slot="wheel-picker"
-      {...props}
-    >
-      {/* Top and Bottom Fade-out Overlays */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-background to-transparent z-10" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-background to-transparent z-10" />
+  const defaultProps = {
+    ref: containerRefCallback,
+    className: cn(
+      wheelPickerVariants({ size }),
+      "relative flex-1 cursor-default select-none focus:outline-none focus-visible:outline-none [perspective:2000px] [transform-style:preserve-3d] pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11",
+      className,
+    ),
+    tabIndex,
+    role: "spinbutton",
+    "aria-label": props["aria-label"] ?? "Wheel picker",
+    "aria-valuemin": optionsProp.length > 0 ? 0 : undefined,
+    "aria-valuemax":
+      optionsProp.length > 0 ? optionsProp.length - 1 : undefined,
+    "aria-valuenow": selectedIndex >= 0 ? selectedIndex : undefined,
+    "aria-valuetext": selectedText,
+    onKeyDown: handleKeyDown,
+    onFocus: handleFocus,
+    onBlur: handleBlur,
+    style: {
+      height: containerHeight,
+    },
+    "data-slot": "wheel-picker",
+    children: (
+      <>
+        {/* Top and Bottom Fade-out Overlays */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-background to-transparent z-10" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-background to-transparent z-10" />
 
-      {/* 3D Wheel cylinder list */}
-      <ul
-        aria-hidden="true"
-        ref={wheelItemsRef}
-        className="absolute top-1/2 left-0 block w-full h-0 m-0 p-0 list-none will-change-transform [transform-style:preserve-3d]"
-        data-slot="wheel-picker-cylinder"
-      >
-        {renderWheelItems}
-      </ul>
-
-      {/* Flat selected item preview window overlay */}
-      <div
-        className={cn(
-          "absolute top-1/2 -translate-y-1/2 w-full overflow-hidden border-y border-border/80 bg-accent/40 shadow-xs/5 before:pointer-events-none before:absolute before:inset-0 before:shadow-[0_1px_--theme(--color-black/4%)] dark:before:shadow-[0_-1px_--theme(--color-white/6%)]",
-          isFocused &&
-            "border-primary/80 bg-accent/60 ring-2 ring-ring/30 dark:ring-ring/20",
-          classNames?.highlightWrapper,
-        )}
-        style={{
-          height: itemHeight,
-          lineHeight: `${itemHeight}px`,
-        }}
-        data-slot="wheel-picker-highlight-window"
-      >
+        {/* 3D Wheel cylinder list */}
         <ul
           aria-hidden="true"
-          ref={highlightListRef}
-          className="absolute left-0 w-full m-0 p-0 list-none"
-          style={{
-            top: infinite ? -itemHeight : undefined,
-          }}
-          data-slot="wheel-picker-highlight-list"
+          ref={wheelItemsRef}
+          className="absolute top-1/2 left-0 block w-full h-0 m-0 p-0 list-none will-change-transform [transform-style:preserve-3d]"
+          data-slot="wheel-picker-cylinder"
         >
-          {renderHighlightItems}
+          {renderWheelItems}
         </ul>
-      </div>
-    </div>
-  );
+
+        {/* Flat selected item preview window overlay */}
+        <div
+          className={cn(
+            "absolute top-1/2 -translate-y-1/2 w-full overflow-hidden border-y border-border/80 bg-accent/40 shadow-xs/5 before:pointer-events-none before:absolute before:inset-0 before:shadow-[0_1px_--theme(--color-black/4%)] dark:before:shadow-[0_-1px_--theme(--color-white/6%)]",
+            isFocused &&
+              "border-primary/80 bg-accent/60 ring-2 ring-ring/30 dark:ring-ring/20",
+            classNames?.highlightWrapper,
+          )}
+          style={{
+            height: itemHeight,
+            lineHeight: `${itemHeight}px`,
+          }}
+          data-slot="wheel-picker-highlight-window"
+        >
+          <ul
+            aria-hidden="true"
+            ref={highlightListRef}
+            className="absolute left-0 w-full m-0 p-0 list-none"
+            style={{
+              top: infinite ? -itemHeight : undefined,
+            }}
+            data-slot="wheel-picker-highlight-list"
+          >
+            {renderHighlightItems}
+          </ul>
+        </div>
+      </>
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }

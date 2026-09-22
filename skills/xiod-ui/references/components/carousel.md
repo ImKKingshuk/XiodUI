@@ -1,10 +1,13 @@
 # carousel
 
 ```tsx
-import { Carousel, CarouselContent, CarouselDots, CarouselItem, CarouselNext, CarouselPrevious, useCarousel, useEmblaCarousel } from "xiod-ui/carousel";
+import { Carousel, CarouselContent, CarouselDots, CarouselItem, CarouselNext, CarouselPrevious, useCarousel, useCarouselViewport } from "xiod-ui/carousel";
 ```
 
 ## Carousel
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -18,15 +21,24 @@ import { Carousel, CarouselContent, CarouselDots, CarouselItem, CarouselNext, Ca
 
 ## CarouselContent
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
 ## CarouselDots
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
 ## CarouselItem
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
@@ -53,11 +65,19 @@ remain available through the exported TypeScript type.
 
 ## useCarousel
 
-This hook accepts no arguments.
+```tsx
+useCarousel()
+```
 
-## useEmblaCarousel
+## useCarouselViewport
 
-| Prop | Type | Default |
+```tsx
+useCarouselViewport(options?, plugins?)
+```
+
+`options` — `CarouselOptions`:
+
+| Field | Type | Default |
 | :--- | :--- | :--- |
 | align | `"center" \| "start" \| "end" \| undefined` | — |
 | axis | `"x" \| "y" \| undefined` | — |
@@ -65,5 +85,7 @@ This hook accepts no arguments.
 | dragFree | `boolean \| undefined` | — |
 | loop | `boolean \| undefined` | — |
 | speed | `number \| undefined` | — |
+
+- `plugins` — `CarouselPlugin[]`
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

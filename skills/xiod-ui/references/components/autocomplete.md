@@ -290,6 +290,10 @@ remain available through the exported TypeScript type.
 
 ## useAutocompleteFilter
 
-This hook accepts no arguments.
+```tsx
+useAutocompleteFilter(options?)
+```
+
+- `options` — `GetFilterParameters \| undefined`
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

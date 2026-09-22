@@ -1,5 +1,7 @@
 "use client";
 
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cn } from "cn";
 import * as React from "react";
 import { GripHorizontal } from "xiod-icons/icons/GripHorizontal";
@@ -472,7 +474,7 @@ function adjustLayout({
 
 // --- Resizable Panel Group ---
 
-export interface ResizablePanelGroupProps extends React.ComponentProps<"div"> {
+export interface ResizablePanelGroupProps extends useRender.ComponentProps<"div"> {
   direction?: "horizontal" | "vertical";
   onLayoutChange?: (layout: number[]) => void;
   onLayoutChanged?: (layout: number[]) => void;
@@ -497,6 +499,7 @@ function ResizablePanelGroup({
   storage,
   groupRef,
   disabled = false,
+  render,
   ...props
 }: ResizablePanelGroupProps): React.JSX.Element {
   const id = React.useId();
@@ -1241,33 +1244,39 @@ function ResizablePanelGroup({
     ],
   );
 
+  const defaultProps = {
+    ref: (node: HTMLDivElement | null) => {
+      containerRef.current = node;
+    },
+    className: cn(
+      "flex size-full data-[panel-group-direction=vertical]:flex-col",
+      className,
+    ),
+    "data-panel-group": true,
+    "data-panel-group-direction": direction,
+    "data-slot": "resizable-group",
+    style: {
+      touchAction: direction === "horizontal" ? "pan-y" : "pan-x",
+    },
+    children,
+  };
+
+  const element = useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
+
   return (
     <ResizableGroupContext.Provider value={contextValue}>
-      <div
-        ref={(node) => {
-          containerRef.current = node;
-        }}
-        className={cn(
-          "flex size-full data-[panel-group-direction=vertical]:flex-col",
-          className,
-        )}
-        data-panel-group
-        data-panel-group-direction={direction}
-        data-slot="resizable-group"
-        style={{
-          touchAction: direction === "horizontal" ? "pan-y" : "pan-x",
-        }}
-        {...props}
-      >
-        {children}
-      </div>
+      {element}
     </ResizableGroupContext.Provider>
   );
 }
 
 // --- Resizable Panel ---
 
-export interface ResizablePanelProps extends React.ComponentProps<"div"> {
+export interface ResizablePanelProps extends useRender.ComponentProps<"div"> {
   id?: string;
   defaultSize?: number | string;
   minSize?: number | string;
@@ -1298,6 +1307,7 @@ function ResizablePanel({
   onExpand,
   panelRef,
   style,
+  render,
   ...props
 }: ResizablePanelProps): React.JSX.Element {
   const reactId = React.useId();
@@ -1494,6 +1504,23 @@ function ResizablePanel({
     ...style,
   };
 
+  const innerDefaultProps = {
+    className: cn(
+      "size-full select-none relative",
+      isCollapsed && "pointer-events-none",
+      className,
+    ),
+    style: innerStyle,
+    "data-slot": "resizable-panel",
+    children,
+  };
+
+  const innerElement = useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(innerDefaultProps, props),
+    render,
+  });
+
   return (
     <div
       ref={(node) => {
@@ -1504,26 +1531,15 @@ function ResizablePanel({
       data-disabled={disabled || undefined}
       data-state={isCollapsed ? "collapsed" : "expanded"}
       data-slot="resizable-panel-outer"
-      {...props}
     >
-      <div
-        className={cn(
-          "size-full select-none relative",
-          isCollapsed && "pointer-events-none",
-          className,
-        )}
-        style={innerStyle}
-        data-slot="resizable-panel"
-      >
-        {children}
-      </div>
+      {innerElement}
     </div>
   );
 }
 
 // --- Resizable Handle ---
 
-export interface ResizableHandleProps extends React.ComponentProps<"button"> {
+export interface ResizableHandleProps extends useRender.ComponentProps<"button"> {
   withHandle?: boolean;
   disabled?: boolean;
   disableDoubleClick?: boolean;
@@ -1535,6 +1551,8 @@ function ResizableHandle({
   withHandle = false,
   disabled = false,
   disableDoubleClick = false,
+  render,
+  children,
   ...props
 }: ResizableHandleProps): React.JSX.Element {
   const id = React.useId();
@@ -1644,53 +1662,65 @@ function ResizableHandle({
     dataSeparator = "focus";
   }
 
-  return (
-    <button
-      ref={(node) => {
-        ref.current = node;
-      }}
-      type="button"
-      className={handleClasses}
-      onPointerDown={handlePointerDown}
-      onKeyDown={onKeyDown}
-      onDoubleClick={onDoubleClick}
-      onFocus={() => setIsFocused(true)}
-      onBlur={() => setIsFocused(false)}
-      role="separator"
-      tabIndex={disabled ? -1 : 0}
-      aria-orientation={isHorizontal ? "vertical" : "horizontal"}
-      aria-valuenow={ariaValueNow}
-      aria-valuemin={ariaValueMin}
-      aria-valuemax={ariaValueMax}
-      aria-controls={controlledPanelId}
-      aria-disabled={disabled || undefined}
-      data-separator={dataSeparator}
-      data-slot="resizable-handle"
-      data-state={isDragging ? "dragging" : "idle"}
-      style={{
-        touchAction: "none",
-        ...style,
-      }}
-      {...props}
-    >
-      {withHandle && (
-        <div
-          className={cn(
-            "absolute rounded-md bg-background border shadow-xs/5 flex items-center justify-center pointer-events-none z-20 hover:scale-105 transition-transform [&_svg:not([class*='size-'])]:size-2 [&_svg]:pointer-events-none [&_svg]:shrink-0",
-            isHorizontal
-              ? "h-6 w-3.5 left-1/2 -translate-x-1/2"
-              : "h-3.5 w-6 top-1/2 -translate-y-1/2",
-          )}
-        >
-          {isHorizontal ? (
-            <GripVertical className="size-2 text-muted-foreground/64" />
-          ) : (
-            <GripHorizontal className="size-2 text-muted-foreground/64" />
-          )}
-        </div>
-      )}
-    </button>
-  );
+  const typeValue: React.ButtonHTMLAttributes<HTMLButtonElement>["type"] =
+    render ? undefined : "button";
+
+  const defaultProps = {
+    ref: (node: HTMLButtonElement | null) => {
+      ref.current = node;
+    },
+    type: typeValue,
+    className: handleClasses,
+    onPointerDown: handlePointerDown,
+    onKeyDown,
+    onDoubleClick,
+    onFocus: () => setIsFocused(true),
+    onBlur: () => setIsFocused(false),
+    role: "separator",
+    tabIndex: disabled ? -1 : 0,
+    "aria-orientation": isHorizontal
+      ? ("vertical" as const)
+      : ("horizontal" as const),
+    "aria-valuenow": ariaValueNow,
+    "aria-valuemin": ariaValueMin,
+    "aria-valuemax": ariaValueMax,
+    "aria-controls": controlledPanelId,
+    "aria-disabled": disabled || undefined,
+    "data-separator": dataSeparator,
+    "data-slot": "resizable-handle",
+    "data-state": isDragging ? "dragging" : "idle",
+    style: {
+      touchAction: "none",
+      ...style,
+    },
+    children: (
+      <>
+        {children}
+        {withHandle && (
+          <div
+            className={cn(
+              "absolute rounded-md bg-background border shadow-xs/5 flex items-center justify-center pointer-events-none z-20 hover:scale-105 transition-transform [&_svg:not([class*='size-'])]:size-2 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+              isHorizontal
+                ? "h-6 w-3.5 left-1/2 -translate-x-1/2"
+                : "h-3.5 w-6 top-1/2 -translate-y-1/2",
+            )}
+          >
+            {isHorizontal ? (
+              <GripVertical className="size-2 text-muted-foreground/64" />
+            ) : (
+              <GripHorizontal className="size-2 text-muted-foreground/64" />
+            )}
+          </div>
+        )}
+      </>
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "button",
+    props: mergeProps<"button">(defaultProps, props),
+    render,
+  });
 }
 
 export { ResizableHandle, ResizablePanel, ResizablePanelGroup };

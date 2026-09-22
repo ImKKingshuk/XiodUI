@@ -148,7 +148,6 @@ export {
   PopoverCreateHandle,
   PopoverDescription,
   PopoverPopup,
-  PopoverPopup as PopoverContent,
   PopoverTitle,
   PopoverTrigger,
 };

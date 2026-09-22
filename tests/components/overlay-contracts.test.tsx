@@ -55,7 +55,7 @@ import {
 import {
   ContextMenu,
   ContextMenuCheckboxItem,
-  ContextMenuContent,
+  ContextMenuPopup,
   ContextMenuGroup,
   ContextMenuItem,
   ContextMenuLabel,
@@ -92,7 +92,7 @@ import {
 import {
   Menubar,
   MenubarCheckboxItem,
-  MenubarContent,
+  MenubarPopup,
   MenubarItem,
   MenubarMenu,
   MenubarRadioGroup,
@@ -324,7 +324,7 @@ describe("menu contracts", () => {
     render(
       <ContextMenu>
         <ContextMenuTrigger>Context target</ContextMenuTrigger>
-        <ContextMenuContent>
+        <ContextMenuPopup>
           <ContextMenuGroup>
             <ContextMenuLabel>Actions</ContextMenuLabel>
             <ContextMenuItem>
@@ -338,7 +338,7 @@ describe("menu contracts", () => {
             <ContextMenuRadioItem value="small">Small</ContextMenuRadioItem>
             <ContextMenuRadioItem value="large">Large</ContextMenuRadioItem>
           </ContextMenuRadioGroup>
-        </ContextMenuContent>
+        </ContextMenuPopup>
       </ContextMenu>,
     );
 
@@ -363,22 +363,22 @@ describe("menu contracts", () => {
       <Menubar>
         <MenubarMenu>
           <MenubarTrigger>File</MenubarTrigger>
-          <MenubarContent>
+          <MenubarPopup>
             <MenubarItem>
               New
               <MenubarShortcut>⌘N</MenubarShortcut>
             </MenubarItem>
             <MenubarSeparator />
             <MenubarCheckboxItem checked>Autosave</MenubarCheckboxItem>
-          </MenubarContent>
+          </MenubarPopup>
         </MenubarMenu>
         <MenubarMenu>
           <MenubarTrigger>Edit</MenubarTrigger>
-          <MenubarContent>
+          <MenubarPopup>
             <MenubarRadioGroup value="word">
               <MenubarRadioItem value="word">Word wrap</MenubarRadioItem>
             </MenubarRadioGroup>
-          </MenubarContent>
+          </MenubarPopup>
         </MenubarMenu>
       </Menubar>,
     );

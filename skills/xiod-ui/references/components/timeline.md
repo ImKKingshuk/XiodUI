@@ -78,6 +78,8 @@ TypeScript type for inherited element or primitive props.
 
 ## useTimeline
 
-This hook accepts no arguments.
+```tsx
+useTimeline()
+```
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

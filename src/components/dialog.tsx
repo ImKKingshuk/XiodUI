@@ -1,6 +1,8 @@
 "use client";
 
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cn } from "cn";
 import type * as React from "react";
 import { Cancel as XIcon } from "xiod-icons/icons/Cancel";
@@ -107,41 +109,49 @@ function DialogPopup({
 
 function DialogHeader({
   className,
+  render,
   ...props
-}: React.ComponentProps<"div">): React.JSX.Element {
-  return (
-    <div
-      className={cn(
-        "flex flex-col gap-2 p-6 in-[[data-slot=dialog-popup]:has([data-slot=dialog-panel])]:pb-3 max-sm:pb-4",
-        className,
-      )}
-      data-slot="dialog-header"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"div">): React.ReactElement {
+  const defaultProps = {
+    className: cn(
+      "flex flex-col gap-2 p-6 in-[[data-slot=dialog-popup]:has([data-slot=dialog-panel])]:pb-3 max-sm:pb-4",
+      className,
+    ),
+    "data-slot": "dialog-header",
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 function DialogFooter({
   className,
   variant = "default",
+  render,
   ...props
-}: React.ComponentProps<"div"> & {
+}: useRender.ComponentProps<"div"> & {
   variant?: "default" | "bare";
-}): React.JSX.Element {
-  return (
-    <div
-      className={cn(
-        "flex flex-col-reverse gap-2 px-6 sm:flex-row sm:justify-end sm:rounded-b-[calc(var(--radius-2xl)-1px)]",
-        variant === "default" &&
-          "border-t bg-muted/72 pt-[calc(--spacing(4)-1px)] pb-4",
-        variant === "bare" &&
-          "in-[[data-slot=dialog-popup]:has([data-slot=dialog-panel])]:pt-3 pt-4 pb-6",
-        className,
-      )}
-      data-slot="dialog-footer"
-      {...props}
-    />
-  );
+}): React.ReactElement {
+  const defaultProps = {
+    className: cn(
+      "flex flex-col-reverse gap-2 px-6 sm:flex-row sm:justify-end sm:rounded-b-[calc(var(--radius-2xl)-1px)]",
+      variant === "default" &&
+        "border-t bg-muted/72 pt-[calc(--spacing(4)-1px)] pb-4",
+      variant === "bare" &&
+        "in-[[data-slot=dialog-popup]:has([data-slot=dialog-panel])]:pt-3 pt-4 pb-6",
+      className,
+    ),
+    "data-slot": "dialog-footer",
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 function DialogTitle({
@@ -176,18 +186,26 @@ function DialogDescription({
 function DialogPanel({
   className,
   scrollFade = true,
+  render,
   ...props
-}: React.ComponentProps<"div"> & { scrollFade?: boolean }): React.JSX.Element {
+}: useRender.ComponentProps<"div"> & {
+  scrollFade?: boolean;
+}): React.ReactElement {
+  const defaultProps = {
+    className: cn(
+      "p-6 in-[[data-slot=dialog-popup]:has([data-slot=dialog-header])]:pt-1 in-[[data-slot=dialog-popup]:has([data-slot=dialog-footer]:not(.border-t))]:pb-1",
+      className,
+    ),
+    "data-slot": "dialog-panel",
+  };
+
   return (
     <ScrollArea scrollFade={scrollFade}>
-      <div
-        className={cn(
-          "p-6 in-[[data-slot=dialog-popup]:has([data-slot=dialog-header])]:pt-1 in-[[data-slot=dialog-popup]:has([data-slot=dialog-footer]:not(.border-t))]:pb-1",
-          className,
-        )}
-        data-slot="dialog-panel"
-        {...props}
-      />
+      {useRender({
+        defaultTagName: "div",
+        props: mergeProps<"div">(defaultProps, props),
+        render,
+      })}
     </ScrollArea>
   );
 }
@@ -195,7 +213,6 @@ function DialogPanel({
 export {
   Dialog,
   DialogBackdrop,
-  DialogBackdrop as DialogOverlay,
   DialogClose,
   DialogCreateHandle,
   DialogDescription,
@@ -203,7 +220,6 @@ export {
   DialogHeader,
   DialogPanel,
   DialogPopup,
-  DialogPopup as DialogContent,
   DialogPortal,
   DialogTitle,
   DialogTrigger,

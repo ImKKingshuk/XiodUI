@@ -308,48 +308,56 @@ function SidebarTrigger({
 
 function SidebarRail({
   className,
+  render,
   ...props
-}: React.ComponentProps<"button">): React.JSX.Element {
+}: useRender.ComponentProps<"button">): React.ReactElement {
   const { toggleSidebar } = useSidebar();
 
-  return (
-    <button
-      aria-label="Toggle Sidebar"
-      className={cn(
-        "-translate-x-1/2 group-data-[side=left]:-right-4 absolute inset-y-0 z-20 hidden w-4 transition-[color,background-color] ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border group-data-[side=right]:left-0 sm:flex",
-        "in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize",
-        "[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize",
-        "group-data-[collapsible=offcanvas]:translate-x-0 hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:after:left-full",
-        "[[data-side=left][data-collapsible=offcanvas]_&]:-right-2",
-        "[[data-side=right][data-collapsible=offcanvas]_&]:-left-2",
-        className,
-      )}
-      data-sidebar="rail"
-      data-slot="sidebar-rail"
-      onClick={toggleSidebar}
-      tabIndex={-1}
-      title="Toggle Sidebar"
-      type="button"
-      {...props}
-    />
-  );
+  const defaultProps = {
+    "aria-label": "Toggle Sidebar",
+    className: cn(
+      "-translate-x-1/2 group-data-[side=left]:-right-4 absolute inset-y-0 z-20 hidden w-4 transition-[color,background-color] ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border group-data-[side=right]:left-0 sm:flex",
+      "in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize",
+      "[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize",
+      "group-data-[collapsible=offcanvas]:translate-x-0 hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:after:left-full",
+      "[[data-side=left][data-collapsible=offcanvas]_&]:-right-2",
+      "[[data-side=right][data-collapsible=offcanvas]_&]:-left-2",
+      className,
+    ),
+    "data-sidebar": "rail",
+    "data-slot": "sidebar-rail",
+    onClick: toggleSidebar,
+    tabIndex: -1,
+    title: "Toggle Sidebar",
+    type: "button" as const,
+  };
+
+  return useRender({
+    defaultTagName: "button",
+    props: mergeProps<"button">(defaultProps, props),
+    render,
+  });
 }
 
 function SidebarInset({
   className,
+  render,
   ...props
-}: React.ComponentProps<"main">): React.JSX.Element {
-  return (
-    <main
-      className={cn(
-        "relative flex w-full flex-1 flex-col bg-background",
-        "md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ms-2 md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ms-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm/5",
-        className,
-      )}
-      data-slot="sidebar-inset"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"main">): React.ReactElement {
+  const defaultProps = {
+    className: cn(
+      "relative flex w-full flex-1 flex-col bg-background",
+      "md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ms-2 md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ms-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm/5",
+      className,
+    ),
+    "data-slot": "sidebar-inset",
+  };
+
+  return useRender({
+    defaultTagName: "main",
+    props: mergeProps<"main">(defaultProps, props),
+    render,
+  });
 }
 
 function SidebarInput({
@@ -368,30 +376,38 @@ function SidebarInput({
 
 function SidebarHeader({
   className,
+  render,
   ...props
-}: React.ComponentProps<"div">): React.JSX.Element {
-  return (
-    <div
-      className={cn("flex flex-col gap-2 p-2", className)}
-      data-sidebar="header"
-      data-slot="sidebar-header"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"div">): React.ReactElement {
+  const defaultProps = {
+    className: cn("flex flex-col gap-2 p-2", className),
+    "data-sidebar": "header",
+    "data-slot": "sidebar-header",
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 function SidebarFooter({
   className,
+  render,
   ...props
-}: React.ComponentProps<"div">): React.JSX.Element {
-  return (
-    <div
-      className={cn("flex flex-col gap-2 p-2", className)}
-      data-sidebar="footer"
-      data-slot="sidebar-footer"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"div">): React.ReactElement {
+  const defaultProps = {
+    className: cn("flex flex-col gap-2 p-2", className),
+    "data-sidebar": "footer",
+    "data-slot": "sidebar-footer",
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 function SidebarSeparator({
@@ -432,16 +448,20 @@ function SidebarContent({
 
 function SidebarGroup({
   className,
+  render,
   ...props
-}: React.ComponentProps<"div">): React.JSX.Element {
-  return (
-    <div
-      className={cn("relative flex w-full min-w-0 flex-col p-2", className)}
-      data-sidebar="group"
-      data-slot="sidebar-group"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"div">): React.ReactElement {
+  const defaultProps = {
+    className: cn("relative flex w-full min-w-0 flex-col p-2", className),
+    "data-sidebar": "group",
+    "data-slot": "sidebar-group",
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 function SidebarGroupLabel({
@@ -492,44 +512,56 @@ function SidebarGroupAction({
 
 function SidebarGroupContent({
   className,
+  render,
   ...props
-}: React.ComponentProps<"div">): React.JSX.Element {
-  return (
-    <div
-      className={cn("w-full text-sm", className)}
-      data-sidebar="group-content"
-      data-slot="sidebar-group-content"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"div">): React.ReactElement {
+  const defaultProps = {
+    className: cn("w-full text-sm", className),
+    "data-sidebar": "group-content",
+    "data-slot": "sidebar-group-content",
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 function SidebarMenu({
   className,
+  render,
   ...props
-}: React.ComponentProps<"ul">): React.JSX.Element {
-  return (
-    <ul
-      className={cn("flex w-full min-w-0 flex-col gap-1", className)}
-      data-sidebar="menu"
-      data-slot="sidebar-menu"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"ul">): React.ReactElement {
+  const defaultProps = {
+    className: cn("flex w-full min-w-0 flex-col gap-1", className),
+    "data-sidebar": "menu",
+    "data-slot": "sidebar-menu",
+  };
+
+  return useRender({
+    defaultTagName: "ul",
+    props: mergeProps<"ul">(defaultProps, props),
+    render,
+  });
 }
 
 function SidebarMenuItem({
   className,
+  render,
   ...props
-}: React.ComponentProps<"li">): React.JSX.Element {
-  return (
-    <li
-      className={cn("group/menu-item relative", className)}
-      data-sidebar="menu-item"
-      data-slot="sidebar-menu-item"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"li">): React.ReactElement {
+  const defaultProps = {
+    className: cn("group/menu-item relative", className),
+    "data-sidebar": "menu-item",
+    "data-slot": "sidebar-menu-item",
+  };
+
+  return useRender({
+    defaultTagName: "li",
+    props: mergeProps<"li">(defaultProps, props),
+    render,
+  });
 }
 
 export const sidebarMenuButtonVariants = cva(
@@ -643,33 +675,38 @@ function SidebarMenuAction({
 
 function SidebarMenuBadge({
   className,
+  render,
   ...props
-}: React.ComponentProps<"div">): React.JSX.Element {
-  return (
-    <div
-      className={cn(
-        "pointer-events-none absolute right-1 flex h-5 min-w-5 select-none items-center justify-center rounded-lg px-1 font-medium text-sidebar-foreground text-xs tabular-nums",
-        "peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active=true]/menu-button:text-sidebar-accent-foreground",
-        "peer-data-[size=sm]/menu-button:top-1",
-        "peer-data-[size=default]/menu-button:top-1.5",
-        "peer-data-[size=lg]/menu-button:top-2.5",
-        "group-data-[collapsible=icon]:hidden",
-        className,
-      )}
-      data-sidebar="menu-badge"
-      data-slot="sidebar-menu-badge"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"div">): React.ReactElement {
+  const defaultProps = {
+    className: cn(
+      "pointer-events-none absolute right-1 flex h-5 min-w-5 select-none items-center justify-center rounded-lg px-1 font-medium text-sidebar-foreground text-xs tabular-nums",
+      "peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active=true]/menu-button:text-sidebar-accent-foreground",
+      "peer-data-[size=sm]/menu-button:top-1",
+      "peer-data-[size=default]/menu-button:top-1.5",
+      "peer-data-[size=lg]/menu-button:top-2.5",
+      "group-data-[collapsible=icon]:hidden",
+      className,
+    ),
+    "data-sidebar": "menu-badge",
+    "data-slot": "sidebar-menu-badge",
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 function SidebarMenuSkeleton({
   className,
   showIcon = false,
+  render,
   ...props
-}: React.ComponentProps<"div"> & {
+}: useRender.ComponentProps<"div"> & {
   showIcon?: boolean;
-}): React.JSX.Element {
+}): React.ReactElement {
   const skeletonId = React.useId();
   const width = `${
     50 +
@@ -680,62 +717,76 @@ function SidebarMenuSkeleton({
       40)
   }%`;
 
-  return (
-    <div
-      className={cn("flex h-8 items-center gap-2 rounded-lg px-2", className)}
-      data-sidebar="menu-skeleton"
-      data-slot="sidebar-menu-skeleton"
-      {...props}
-    >
-      {showIcon && (
+  const defaultProps = {
+    className: cn("flex h-8 items-center gap-2 rounded-lg px-2", className),
+    "data-sidebar": "menu-skeleton",
+    "data-slot": "sidebar-menu-skeleton",
+    children: (
+      <>
+        {showIcon && (
+          <Skeleton
+            className="size-4 rounded-lg"
+            data-sidebar="menu-skeleton-icon"
+          />
+        )}
         <Skeleton
-          className="size-4 rounded-lg"
-          data-sidebar="menu-skeleton-icon"
+          className="h-4 max-w-(--skeleton-width) flex-1"
+          data-sidebar="menu-skeleton-text"
+          style={
+            {
+              "--skeleton-width": width,
+            } as React.CSSProperties
+          }
         />
-      )}
-      <Skeleton
-        className="h-4 max-w-(--skeleton-width) flex-1"
-        data-sidebar="menu-skeleton-text"
-        style={
-          {
-            "--skeleton-width": width,
-          } as React.CSSProperties
-        }
-      />
-    </div>
-  );
+      </>
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 function SidebarMenuSub({
   className,
+  render,
   ...props
-}: React.ComponentProps<"ul">): React.JSX.Element {
-  return (
-    <ul
-      className={cn(
-        "mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-sidebar-border border-l ps-[calc(--spacing(2.5)-1px)] pe-2.5 py-0.5",
-        "group-data-[collapsible=icon]:hidden",
-        className,
-      )}
-      data-sidebar="menu-sub"
-      data-slot="sidebar-menu-sub"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"ul">): React.ReactElement {
+  const defaultProps = {
+    className: cn(
+      "mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-sidebar-border border-l ps-[calc(--spacing(2.5)-1px)] pe-2.5 py-0.5",
+      "group-data-[collapsible=icon]:hidden",
+      className,
+    ),
+    "data-sidebar": "menu-sub",
+    "data-slot": "sidebar-menu-sub",
+  };
+
+  return useRender({
+    defaultTagName: "ul",
+    props: mergeProps<"ul">(defaultProps, props),
+    render,
+  });
 }
 
 function SidebarMenuSubItem({
   className,
+  render,
   ...props
-}: React.ComponentProps<"li">): React.JSX.Element {
-  return (
-    <li
-      className={cn("group/menu-sub-item relative", className)}
-      data-sidebar="menu-sub-item"
-      data-slot="sidebar-menu-sub-item"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"li">): React.ReactElement {
+  const defaultProps = {
+    className: cn("group/menu-sub-item relative", className),
+    "data-sidebar": "menu-sub-item",
+    "data-slot": "sidebar-menu-sub-item",
+  };
+
+  return useRender({
+    defaultTagName: "li",
+    props: mergeProps<"li">(defaultProps, props),
+    render,
+  });
 }
 
 function SidebarMenuSubButton({

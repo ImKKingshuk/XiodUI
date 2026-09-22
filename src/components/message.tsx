@@ -10,113 +10,137 @@ import type * as React from "react";
 // Message Thread Containers
 // ============================================================================
 
-export interface MessageGroupProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface MessageGroupProps extends useRender.ComponentProps<"div"> {}
 
 export function MessageGroup({
   className,
+  render,
   ...props
-}: MessageGroupProps): React.JSX.Element {
-  return (
-    <div
-      data-slot="message-group"
-      className={cn("flex min-w-0 flex-col gap-2", className)}
-      {...props}
-    />
-  );
+}: MessageGroupProps): React.ReactElement {
+  const defaultProps = {
+    "data-slot": "message-group",
+    className: cn("flex min-w-0 flex-col gap-2", className),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
-export interface MessageProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface MessageProps extends useRender.ComponentProps<"div"> {
   align?: "start" | "end";
 }
 
 export function Message({
   className,
   align = "start",
+  render,
   ...props
-}: MessageProps): React.JSX.Element {
-  return (
-    <div
-      data-slot="message"
-      data-align={align}
-      className={cn(
-        "group/message relative flex w-full min-w-0 gap-3 text-sm data-[align=end]:flex-row-reverse",
-        className,
-      )}
-      {...props}
-    />
-  );
+}: MessageProps): React.ReactElement {
+  const defaultProps = {
+    "data-slot": "message",
+    "data-align": align,
+    className: cn(
+      "group/message relative flex w-full min-w-0 gap-3 text-sm data-[align=end]:flex-row-reverse",
+      className,
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
-export interface MessageAvatarProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface MessageAvatarProps extends useRender.ComponentProps<"div"> {}
 
 export function MessageAvatar({
   className,
+  render,
   ...props
-}: MessageAvatarProps): React.JSX.Element {
-  return (
-    <div
-      data-slot="message-avatar"
-      className={cn(
-        "flex w-8 h-8 shrink-0 items-center justify-center self-end overflow-hidden rounded-full bg-muted select-none group-has-data-[slot=message-footer]/message:-translate-y-6 transition-transform duration-200",
-        className,
-      )}
-      {...props}
-    />
-  );
+}: MessageAvatarProps): React.ReactElement {
+  const defaultProps = {
+    "data-slot": "message-avatar",
+    className: cn(
+      "flex w-8 h-8 shrink-0 items-center justify-center self-end overflow-hidden rounded-full bg-muted select-none group-has-data-[slot=message-footer]/message:-translate-y-6 transition-transform duration-200",
+      className,
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
-export interface MessageContentProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface MessageContentProps extends useRender.ComponentProps<"div"> {}
 
 export function MessageContent({
   className,
+  render,
   ...props
-}: MessageContentProps): React.JSX.Element {
-  return (
-    <div
-      data-slot="message-content"
-      className={cn(
-        "flex w-full min-w-0 flex-col gap-1.5 break-words group-data-[align=end]/message:*:data-[slot=bubble]:self-end group-data-[align=end]/message:*:data-[slot=message-header]:self-end group-data-[align=end]/message:*:data-[slot=message-footer]:self-end",
-        className,
-      )}
-      {...props}
-    />
-  );
+}: MessageContentProps): React.ReactElement {
+  const defaultProps = {
+    "data-slot": "message-content",
+    className: cn(
+      "flex w-full min-w-0 flex-col gap-1.5 break-words group-data-[align=end]/message:*:data-[slot=bubble]:self-end group-data-[align=end]/message:*:data-[slot=message-header]:self-end group-data-[align=end]/message:*:data-[slot=message-footer]:self-end",
+      className,
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
-export interface MessageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface MessageHeaderProps extends useRender.ComponentProps<"div"> {}
 
 export function MessageHeader({
   className,
+  render,
   ...props
-}: MessageHeaderProps): React.JSX.Element {
-  return (
-    <div
-      data-slot="message-header"
-      className={cn(
-        "flex max-w-full min-w-0 items-center px-3.5 text-xs font-medium text-muted-foreground",
-        className,
-      )}
-      {...props}
-    />
-  );
+}: MessageHeaderProps): React.ReactElement {
+  const defaultProps = {
+    "data-slot": "message-header",
+    className: cn(
+      "flex max-w-full min-w-0 items-center px-3.5 text-xs font-medium text-muted-foreground",
+      className,
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
-export interface MessageFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface MessageFooterProps extends useRender.ComponentProps<"div"> {}
 
 export function MessageFooter({
   className,
+  render,
   ...props
-}: MessageFooterProps): React.JSX.Element {
-  return (
-    <div
-      data-slot="message-footer"
-      className={cn(
-        "flex max-w-full min-w-0 items-center px-3.5 text-xs font-medium text-muted-foreground group-data-[align=end]/message:justify-end",
-        className,
-      )}
-      {...props}
-    />
-  );
+}: MessageFooterProps): React.ReactElement {
+  const defaultProps = {
+    "data-slot": "message-footer",
+    className: cn(
+      "flex max-w-full min-w-0 items-center px-3.5 text-xs font-medium text-muted-foreground group-data-[align=end]/message:justify-end",
+      className,
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 // ============================================================================
@@ -151,9 +175,7 @@ export const bubbleVariants = cva(
 );
 
 export interface BubbleProps
-  extends
-    React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof bubbleVariants> {
+  extends useRender.ComponentProps<"div">, VariantProps<typeof bubbleVariants> {
   align?: "start" | "end";
 }
 
@@ -161,22 +183,26 @@ export function Bubble({
   variant = "default",
   align = "start",
   className,
+  render,
   ...props
-}: BubbleProps): React.JSX.Element {
-  return (
-    <div
-      data-slot="bubble"
-      data-variant={variant}
-      data-align={align}
-      className={cn(
-        bubbleVariants({ variant }),
-        "has-[[data-slot=bubble-reactions][data-side=bottom]]:mb-2.5",
-        "has-[[data-slot=bubble-reactions][data-side=top]]:mt-2.5",
-        className,
-      )}
-      {...props}
-    />
-  );
+}: BubbleProps): React.ReactElement {
+  const defaultProps = {
+    "data-slot": "bubble",
+    "data-variant": variant,
+    "data-align": align,
+    className: cn(
+      bubbleVariants({ variant }),
+      "has-[[data-slot=bubble-reactions][data-side=bottom]]:mb-2.5",
+      "has-[[data-slot=bubble-reactions][data-side=top]]:mt-2.5",
+      className,
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 export function BubbleContent({
@@ -224,22 +250,26 @@ export const bubbleReactionsVariants = cva(
 
 export interface BubbleReactionsProps
   extends
-    React.HTMLAttributes<HTMLDivElement>,
+    useRender.ComponentProps<"div">,
     VariantProps<typeof bubbleReactionsVariants> {}
 
 export function BubbleReactions({
   side = "bottom",
   align = "end",
   className,
+  render,
   ...props
-}: BubbleReactionsProps): React.JSX.Element {
-  return (
-    <div
-      data-slot="bubble-reactions"
-      data-align={align}
-      data-side={side}
-      className={cn(bubbleReactionsVariants({ side, align }), className)}
-      {...props}
-    />
-  );
+}: BubbleReactionsProps): React.ReactElement {
+  const defaultProps = {
+    "data-slot": "bubble-reactions",
+    "data-align": align,
+    "data-side": side,
+    className: cn(bubbleReactionsVariants({ side, align }), className),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }

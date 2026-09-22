@@ -1,7 +1,7 @@
 # dialog
 
 ```tsx
-import { Dialog, DialogBackdrop, DialogClose, DialogContent, DialogCreateHandle, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPanel, DialogPopup, DialogPortal, DialogTitle, DialogTrigger, DialogViewport } from "xiod-ui/dialog";
+import { Dialog, DialogBackdrop, DialogClose, DialogCreateHandle, DialogDescription, DialogFooter, DialogHeader, DialogPanel, DialogPopup, DialogPortal, DialogTitle, DialogTrigger, DialogViewport } from "xiod-ui/dialog";
 ```
 
 ## Dialog
@@ -62,26 +62,6 @@ remain available through the exported TypeScript type.
 - `nativeButton` — Whether the component renders a native `<button>` element when replacing it via the `render` prop. Set to `false` if the rendered element is not a button (for example, `<div>`).
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
-## DialogContent
-
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| bottomStickOnMobile | `boolean \| undefined` | `true` |
-| className | `string \| ((state: DialogPopupState) => string \| undefined) \| undefined` | — |
-| closeProps | `DialogCloseProps \| undefined` | — |
-| finalFocus | `boolean \| RefObject<HTMLElement \| null> \| ((closeType: InteractionType) => boolean \| void \| HTMLElement \| null) \| undefined` | — |
-| initialFocus | `boolean \| RefObject<HTMLElement \| null> \| ((openType: InteractionType) => boolean \| void \| HTMLElement \| null) \| undefined` | — |
-| showCloseButton | `boolean \| undefined` | `true` |
-| style | `CSSProperties \| ((state: DialogPopupState) => CSSProperties \| undefined) \| undefined` | — |
-
-- `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `finalFocus` — Determines the element to focus when the dialog is closed. - `false`: Do not move focus. - `true`: Move focus based on the default behavior (trigger or previously focused element). - `RefObject`: Move focus to the ref element. - `function`: Called with the interaction type (`mouse`, `touch`, `pen`, or `keyboard`). Return an element to focus, `true` to use the default behavior, `null` to fall back to the default behavior, or `false`/`undefined` to do nothing.
-- `initialFocus` — Determines the element to focus when the dialog is opened. By default, focus moves to the first tabbable element inside the popup, except when the dialog is opened by touch — then the popup itself is focused to avoid opening the virtual keyboard. - `false`: Do not move focus. - `true`: Move focus based on the default behavior (first tabbable element or popup). - `RefObject`: Move focus to the ref element. - `function`: Called with the interaction type (`mouse`, `touch`, `pen`, or `keyboard`). Return an element to focus, `true` to use the default behavior, `null` to fall back to the default behavior, or `false`/`undefined` to do nothing.
-- `style` — Style applied to the element, or a function that returns a style object based on the component's state.
-
 ## DialogCreateHandle
 
 No XiodUI-specific props were detected. Refer to the exported
@@ -102,31 +82,25 @@ remain available through the exported TypeScript type.
 
 ## DialogFooter
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | variant | `"default" \| "bare" \| undefined` | `"default"` |
 
 ## DialogHeader
 
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
-
-## DialogOverlay
-
 Supports `render={<Element />}` for composition. Inherited DOM props
 remain available through the exported TypeScript type.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: DialogBackdropState) => string \| undefined) \| undefined` | — |
-| forceRender | `boolean \| undefined` | — |
-| style | `CSSProperties \| ((state: DialogBackdropState) => CSSProperties \| undefined) \| undefined` | — |
-
-- `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `forceRender` — Whether the backdrop is forced to render even when nested.
-- `style` — Style applied to the element, or a function that returns a style object based on the component's state.
+No XiodUI-specific props were detected. Refer to the exported
+TypeScript type for inherited element or primitive props.
 
 ## DialogPanel
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |

@@ -682,7 +682,7 @@ export const attachmentVariants = cva(
 
 export interface AttachmentProps
   extends
-    React.HTMLAttributes<HTMLDivElement>,
+    useRender.ComponentProps<"div">,
     VariantProps<typeof attachmentVariants> {
   state?: AttachmentState;
 }
@@ -692,26 +692,30 @@ export function Attachment({
   state = "done",
   size = "default",
   orientation = "horizontal",
+  render,
   ...props
-}: AttachmentProps): React.JSX.Element {
-  return (
-    <div
-      data-slot="attachment"
-      data-state={state}
-      data-size={size}
-      data-orientation={orientation}
-      className={cn(
-        attachmentVariants({ size, orientation }),
-        state === "error"
-          ? "border-destructive/30 bg-destructive/4"
-          : "border-border/80 bg-background/50",
-        state === "idle" && "border-dashed",
-        "before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-2xl)-1px)] group-data-[size=xs]/attachment:before:rounded-[calc(var(--radius-xl)-1px)] before:shadow-[0_1px_--theme(--color-black/4%)] dark:before:shadow-[0_-1px_--theme(--color-white/6%)]",
-        className,
-      )}
-      {...props}
-    />
-  );
+}: AttachmentProps): React.ReactElement {
+  const defaultProps = {
+    "data-slot": "attachment",
+    "data-state": state,
+    "data-size": size,
+    "data-orientation": orientation,
+    className: cn(
+      attachmentVariants({ size, orientation }),
+      state === "error"
+        ? "border-destructive/30 bg-destructive/4"
+        : "border-border/80 bg-background/50",
+      state === "idle" && "border-dashed",
+      "before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-2xl)-1px)] group-data-[size=xs]/attachment:before:rounded-[calc(var(--radius-xl)-1px)] before:shadow-[0_1px_--theme(--color-black/4%)] dark:before:shadow-[0_-1px_--theme(--color-white/6%)]",
+      className,
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 export const attachmentMediaVariants = cva(
@@ -732,86 +736,106 @@ export const attachmentMediaVariants = cva(
 
 export interface AttachmentMediaProps
   extends
-    React.HTMLAttributes<HTMLDivElement>,
+    useRender.ComponentProps<"div">,
     VariantProps<typeof attachmentMediaVariants> {}
 
 export function AttachmentMedia({
   className,
   variant = "icon",
+  render,
   ...props
-}: AttachmentMediaProps): React.JSX.Element {
-  return (
-    <div
-      data-slot="attachment-media"
-      data-variant={variant}
-      className={cn(attachmentMediaVariants({ variant }), className)}
-      {...props}
-    />
-  );
+}: AttachmentMediaProps): React.ReactElement {
+  const defaultProps = {
+    "data-slot": "attachment-media",
+    "data-variant": variant,
+    className: cn(attachmentMediaVariants({ variant }), className),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 export function AttachmentContent({
   className,
+  render,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>): React.JSX.Element {
-  return (
-    <div
-      data-slot="attachment-content"
-      className={cn(
-        "max-w-full min-w-0 flex-1 leading-tight group-data-[orientation=vertical]/attachment:px-1",
-        className,
-      )}
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"div">): React.ReactElement {
+  const defaultProps = {
+    "data-slot": "attachment-content",
+    className: cn(
+      "max-w-full min-w-0 flex-1 leading-tight group-data-[orientation=vertical]/attachment:px-1",
+      className,
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 export function AttachmentTitle({
   className,
+  render,
   ...props
-}: React.HTMLAttributes<HTMLSpanElement>): React.JSX.Element {
-  return (
-    <span
-      data-slot="attachment-title"
-      className={cn(
-        "block max-w-full min-w-0 truncate font-medium text-foreground group-data-[state=processing]/attachment:animate-pulse group-data-[state=uploading]/attachment:animate-pulse",
-        className,
-      )}
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"span">): React.ReactElement {
+  const defaultProps = {
+    "data-slot": "attachment-title",
+    className: cn(
+      "block max-w-full min-w-0 truncate font-medium text-foreground group-data-[state=processing]/attachment:animate-pulse group-data-[state=uploading]/attachment:animate-pulse",
+      className,
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "span",
+    props: mergeProps<"span">(defaultProps, props),
+    render,
+  });
 }
 
 export function AttachmentDescription({
   className,
+  render,
   ...props
-}: React.HTMLAttributes<HTMLSpanElement>): React.JSX.Element {
-  return (
-    <span
-      data-slot="attachment-description"
-      className={cn(
-        "mt-0.5 block min-w-0 truncate text-xs text-muted-foreground group-data-[state=error]/attachment:text-destructive/80 max-w-full",
-        className,
-      )}
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"span">): React.ReactElement {
+  const defaultProps = {
+    "data-slot": "attachment-description",
+    className: cn(
+      "mt-0.5 block min-w-0 truncate text-xs text-muted-foreground group-data-[state=error]/attachment:text-destructive/80 max-w-full",
+      className,
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "span",
+    props: mergeProps<"span">(defaultProps, props),
+    render,
+  });
 }
 
 export function AttachmentActions({
   className,
+  render,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>): React.JSX.Element {
-  return (
-    <div
-      data-slot="attachment-actions"
-      className={cn(
-        "relative z-20 flex shrink-0 items-center group-data-[orientation=vertical]/attachment:absolute group-data-[orientation=vertical]/attachment:top-3 group-data-[orientation=vertical]/attachment:right-3 group-data-[orientation=vertical]/attachment:gap-1",
-        className,
-      )}
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"div">): React.ReactElement {
+  const defaultProps = {
+    "data-slot": "attachment-actions",
+    className: cn(
+      "relative z-20 flex shrink-0 items-center group-data-[orientation=vertical]/attachment:absolute group-data-[orientation=vertical]/attachment:top-3 group-data-[orientation=vertical]/attachment:right-3 group-data-[orientation=vertical]/attachment:gap-1",
+      className,
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 export function AttachmentAction({
@@ -861,16 +885,20 @@ export function AttachmentTrigger({
 
 export function AttachmentGroup({
   className,
+  render,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>): React.JSX.Element {
-  return (
-    <div
-      data-slot="attachment-group"
-      className={cn(
-        "flex min-w-0 snap-x snap-mandatory scrollbar-none gap-3 overflow-x-auto overscroll-x-contain py-1 *:data-[slot=attachment]:flex-none *:data-[slot=attachment]:snap-start",
-        className,
-      )}
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"div">): React.ReactElement {
+  const defaultProps = {
+    "data-slot": "attachment-group",
+    className: cn(
+      "flex min-w-0 snap-x snap-mandatory scrollbar-none gap-3 overflow-x-auto overscroll-x-contain py-1 *:data-[slot=attachment]:flex-none *:data-[slot=attachment]:snap-start",
+      className,
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }

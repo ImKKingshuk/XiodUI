@@ -6,6 +6,9 @@ import { BlossomColorPicker, ColorPicker } from "xiod-ui/color-picker";
 
 ## BlossomColorPicker
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | adaptivePositioning | `boolean \| undefined` | `true` |
@@ -21,7 +24,6 @@ import { BlossomColorPicker, ColorPicker } from "xiod-ui/color-picker";
 | onCollapse | `((color: BlossomColorPickerColor) => void) \| undefined` | — |
 | openOnHover | `boolean \| undefined` | `false` |
 | petalSize | `number \| undefined` | `32` |
-| ref | `Ref<HTMLDivElement> \| undefined` | — |
 | showAlphaSlider | `boolean \| undefined` | `true` |
 | showCoreColor | `boolean \| undefined` | `true` |
 | showOpacitySlider | `boolean \| undefined` | `true` |
@@ -31,6 +33,9 @@ import { BlossomColorPicker, ColorPicker } from "xiod-ui/color-picker";
 | value | `BlossomColorPickerValue \| undefined` | — |
 
 ## ColorPicker
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -49,7 +54,6 @@ import { BlossomColorPicker, ColorPicker } from "xiod-ui/color-picker";
 | onCollapse | `((color: BlossomColorPickerColor) => void) \| undefined` | — |
 | openOnHover | `boolean \| undefined` | `false` |
 | petalSize | `number \| undefined` | `32` |
-| ref | `Ref<HTMLDivElement> \| undefined` | — |
 | showAlphaSlider | `boolean \| undefined` | `true` |
 | showCoreColor | `boolean \| undefined` | `true` |
 | showOpacitySlider | `boolean \| undefined` | — |

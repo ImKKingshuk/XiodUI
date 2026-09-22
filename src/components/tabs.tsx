@@ -86,11 +86,4 @@ function TabsPanel({
   );
 }
 
-export {
-  Tabs,
-  TabsList,
-  TabsPanel,
-  TabsPanel as TabsContent,
-  TabsTab,
-  TabsTab as TabsTrigger,
-};
+export { Tabs, TabsList, TabsPanel, TabsTab };

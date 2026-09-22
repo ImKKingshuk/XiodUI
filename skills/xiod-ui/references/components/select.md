@@ -1,7 +1,7 @@
 # select
 
 ```tsx
-import { Select, SelectButton, SelectContent, SelectGroup, SelectGroupLabel, SelectItem, SelectPopup, SelectSeparator, SelectTrigger, SelectValue } from "xiod-ui/select";
+import { Select, SelectButton, SelectGroup, SelectGroupLabel, SelectItem, SelectPopup, SelectSeparator, SelectTrigger, SelectValue } from "xiod-ui/select";
 ```
 
 ## Select
@@ -65,28 +65,6 @@ remain available through the exported TypeScript type.
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | size | `"sm" \| "default" \| "lg" \| null \| undefined` | `"default"` |
-
-## SelectContent
-
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| align | `Align \| undefined` | `"start"` |
-| alignItemWithTrigger | `boolean \| undefined` | `true` |
-| alignOffset | `number \| OffsetFunction \| undefined` | `0` |
-| anchor | `Element \| VirtualElement \| RefObject<Element \| null> \| (() => Element \| VirtualElement \| null) \| null \| undefined` | — |
-| children | `ReactNode` | — |
-| className | `string \| ((state: SelectPopupState) => string \| undefined) \| undefined` | — |
-| finalFocus | `boolean \| RefObject<HTMLElement \| null> \| ((closeType: InteractionType) => boolean \| void \| HTMLElement \| null) \| undefined` | — |
-| side | `Side \| undefined` | `"bottom"` |
-| sideOffset | `number \| OffsetFunction \| undefined` | `4` |
-| style | `CSSProperties \| ((state: SelectPopupState) => CSSProperties \| undefined) \| undefined` | — |
-
-- `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `finalFocus` — Determines the element to focus when the select popup is closed. - `false`: Do not move focus. - `true`: Move focus based on the default behavior (trigger or previously focused element). - `RefObject`: Move focus to the ref element. - `function`: Called with the interaction type (`mouse`, `touch`, `pen`, or `keyboard`). Return an element to focus, `true` to use the default behavior, or `false`/`undefined` to do nothing.
-- `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## SelectGroup
 

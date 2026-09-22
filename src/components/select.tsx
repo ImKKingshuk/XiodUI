@@ -238,9 +238,8 @@ export {
   SelectGroupLabel,
   SelectItem,
   SelectPopup,
-  SelectPopup as SelectContent,
   SelectSeparator,
   SelectTrigger,
-  SelectValue,
   selectTriggerVariants,
+  SelectValue,
 };

@@ -239,6 +239,5 @@ export {
   CardFrameTitle,
   CardHeader,
   CardPanel,
-  CardPanel as CardContent,
   CardTitle,
 };

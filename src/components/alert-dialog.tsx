@@ -1,6 +1,8 @@
 "use client";
 
 import { AlertDialog as AlertDialogPrimitive } from "@base-ui/react/alert-dialog";
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cn } from "cn";
 import type * as React from "react";
 
@@ -83,40 +85,48 @@ function AlertDialogPopup({
 
 function AlertDialogHeader({
   className,
+  render,
   ...props
-}: React.ComponentProps<"div">): React.JSX.Element {
-  return (
-    <div
-      className={cn(
-        "flex flex-col gap-2 p-6 text-center max-sm:pb-4 sm:text-left",
-        className,
-      )}
-      data-slot="alert-dialog-header"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"div">): React.ReactElement {
+  const defaultProps = {
+    className: cn(
+      "flex flex-col gap-2 p-6 text-center max-sm:pb-4 sm:text-left",
+      className,
+    ),
+    "data-slot": "alert-dialog-header",
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 function AlertDialogFooter({
   className,
   variant = "default",
+  render,
   ...props
-}: React.ComponentProps<"div"> & {
+}: useRender.ComponentProps<"div"> & {
   variant?: "default" | "bare";
-}): React.JSX.Element {
-  return (
-    <div
-      className={cn(
-        "flex flex-col-reverse gap-2 px-6 sm:flex-row sm:justify-end sm:rounded-b-[calc(var(--radius-2xl)-1px)]",
-        variant === "default" &&
-          "border-t bg-muted/72 pt-[calc(--spacing(4)-1px)] pb-4",
-        variant === "bare" && "pb-6",
-        className,
-      )}
-      data-slot="alert-dialog-footer"
-      {...props}
-    />
-  );
+}): React.ReactElement {
+  const defaultProps = {
+    className: cn(
+      "flex flex-col-reverse gap-2 px-6 sm:flex-row sm:justify-end sm:rounded-b-[calc(var(--radius-2xl)-1px)]",
+      variant === "default" &&
+        "border-t bg-muted/72 pt-[calc(--spacing(4)-1px)] pb-4",
+      variant === "bare" && "pb-6",
+      className,
+    ),
+    "data-slot": "alert-dialog-footer",
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 function AlertDialogTitle({
@@ -159,14 +169,12 @@ function AlertDialogClose(
 export {
   AlertDialog,
   AlertDialogBackdrop,
-  AlertDialogBackdrop as AlertDialogOverlay,
   AlertDialogClose,
   AlertDialogCreateHandle,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogPopup,
-  AlertDialogPopup as AlertDialogContent,
   AlertDialogPortal,
   AlertDialogTitle,
   AlertDialogTrigger,

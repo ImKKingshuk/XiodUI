@@ -1,7 +1,7 @@
 # context-menu
 
 ```tsx
-import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger } from "xiod-ui/context-menu";
+import { ContextMenu, ContextMenuCheckboxItem, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPopup, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubPopup, ContextMenuSubTrigger, ContextMenuTrigger } from "xiod-ui/context-menu";
 ```
 
 ## ContextMenu
@@ -61,27 +61,6 @@ remain available through the exported TypeScript type.
 - `onClick` — The click handler for the menu item.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
-## ContextMenuContent
-
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| align | `Align \| undefined` | `"start"` |
-| alignOffset | `number \| OffsetFunction \| undefined` | — |
-| children | `ReactNode` | — |
-| className | `string \| ((state: MenuPopupState) => string \| undefined) \| undefined` | — |
-| finalFocus | `boolean \| RefObject<HTMLElement \| null> \| ((closeType: InteractionType) => boolean \| void \| HTMLElement \| null) \| undefined` | — |
-| id | `string \| undefined` | — |
-| side | `Side \| undefined` | `"bottom"` |
-| sideOffset | `number \| OffsetFunction \| undefined` | `8` |
-| style | `CSSProperties \| ((state: MenuPopupState) => CSSProperties \| undefined) \| undefined` | — |
-
-- `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `finalFocus` — Determines the element to focus when the menu is closed. - `false`: Do not move focus. - `true`: Move focus based on the default behavior (trigger or previously focused element). - `RefObject`: Move focus to the ref element. - `function`: Called with the interaction type (`mouse`, `touch`, `pen`, or `keyboard`). Return an element to focus, `true` to use the default behavior, or `false`/`undefined` to do nothing.
-- `style` — Style applied to the element, or a function that returns a style object based on the component's state.
-
 ## ContextMenuGroup
 
 Supports `render={<Element />}` for composition. Inherited DOM props
@@ -135,6 +114,27 @@ remain available through the exported TypeScript type.
 | style | `CSSProperties \| ((state: MenuGroupLabelState) => CSSProperties \| undefined) \| undefined` | — |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
+- `style` — Style applied to the element, or a function that returns a style object based on the component's state.
+
+## ContextMenuPopup
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
+| Prop | Type | Default |
+| :--- | :--- | :--- |
+| align | `Align \| undefined` | `"start"` |
+| alignOffset | `number \| OffsetFunction \| undefined` | — |
+| children | `ReactNode` | — |
+| className | `string \| ((state: MenuPopupState) => string \| undefined) \| undefined` | — |
+| finalFocus | `boolean \| RefObject<HTMLElement \| null> \| ((closeType: InteractionType) => boolean \| void \| HTMLElement \| null) \| undefined` | — |
+| id | `string \| undefined` | — |
+| side | `Side \| undefined` | `"bottom"` |
+| sideOffset | `number \| OffsetFunction \| undefined` | `8` |
+| style | `CSSProperties \| ((state: MenuPopupState) => CSSProperties \| undefined) \| undefined` | — |
+
+- `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
+- `finalFocus` — Determines the element to focus when the menu is closed. - `false`: Do not move focus. - `true`: Move focus based on the default behavior (trigger or previously focused element). - `RefObject`: Move focus to the ref element. - `function`: Called with the interaction type (`mouse`, `touch`, `pen`, or `keyboard`). Return an element to focus, `true` to use the default behavior, or `false`/`undefined` to do nothing.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## ContextMenuPortal
@@ -220,6 +220,9 @@ remain available through the exported TypeScript type.
 
 ## ContextMenuShortcut
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
@@ -251,7 +254,7 @@ TypeScript type for inherited element or primitive props.
 - `open` — Whether the menu is currently open.
 - `orientation` — The visual orientation of the menu. Controls whether roving focus uses up/down or left/right arrow keys.
 
-## ContextMenuSubContent
+## ContextMenuSubPopup
 
 Supports `render={<Element />}` for composition. Inherited DOM props
 remain available through the exported TypeScript type.

@@ -1,9 +1,10 @@
 "use client";
 
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cn } from "cn";
 import type * as React from "react";
 import {
-  memo,
   type ReactNode,
   useCallback,
   useEffect,
@@ -38,7 +39,7 @@ export type KineticClickVariant =
 
 export type KineticClickTrigger = "click" | "mousedown";
 
-export interface KineticClickProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface KineticClickProps extends useRender.ComponentProps<"div"> {
   /**
    * The animation variant to trigger on click.
    * @default "spark"
@@ -854,7 +855,7 @@ function isNeutralColor(color: string): boolean {
 }
 
 /* ------------------------------- Component -------------------------------- */
-const KineticClick = memo(function KineticClick({
+function KineticClick({
   variant = "spark",
   color = "currentColor",
   colorFrom = "auto",
@@ -865,6 +866,7 @@ const KineticClick = memo(function KineticClick({
   className,
   style,
   children,
+  render,
   ...props
 }: KineticClickProps): React.JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -1554,18 +1556,20 @@ const KineticClick = memo(function KineticClick({
     [trigger === "mousedown" ? "onMouseDown" : "onClick"]: handleTrigger,
   };
 
-  return (
-    <div
-      ref={containerRef}
-      style={{ display: "contents", ...style }}
-      className={cn(className)}
-      data-slot="kinetic-click"
-      {...triggerHandlers}
-      {...props}
-    >
-      {children}
-    </div>
-  );
-});
+  const defaultProps = {
+    ref: containerRef,
+    style: { display: "contents", ...style },
+    className: cn(className),
+    "data-slot": "kinetic-click",
+    children,
+    ...triggerHandlers,
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
+}
 
 export { KineticClick };

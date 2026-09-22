@@ -14,38 +14,57 @@ import { type Button, buttonVariants } from "./button";
 
 function Pagination({
   className,
+  render,
   ...props
-}: React.ComponentProps<"nav">): React.JSX.Element {
-  return (
-    <nav
-      aria-label="pagination"
-      className={cn(
-        "mx-auto flex w-full justify-center [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
-        className,
-      )}
-      data-slot="pagination"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"nav">): React.ReactElement {
+  const defaultProps = {
+    "aria-label": "pagination",
+    className: cn(
+      "mx-auto flex w-full justify-center [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+      className,
+    ),
+    "data-slot": "pagination",
+  };
+
+  return useRender({
+    defaultTagName: "nav",
+    props: mergeProps<"nav">(defaultProps, props),
+    render,
+  });
 }
 
 function PaginationContent({
   className,
+  render,
   ...props
-}: React.ComponentProps<"ul">): React.JSX.Element {
-  return (
-    <ul
-      className={cn("flex flex-row items-center gap-1", className)}
-      data-slot="pagination-content"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"ul">): React.ReactElement {
+  const defaultProps = {
+    className: cn("flex flex-row items-center gap-1", className),
+    "data-slot": "pagination-content",
+  };
+
+  return useRender({
+    defaultTagName: "ul",
+    props: mergeProps<"ul">(defaultProps, props),
+    render,
+  });
 }
 
 function PaginationItem({
+  className,
+  render,
   ...props
-}: React.ComponentProps<"li">): React.JSX.Element {
-  return <li data-slot="pagination-item" {...props} />;
+}: useRender.ComponentProps<"li">): React.ReactElement {
+  const defaultProps = {
+    className: cn(className),
+    "data-slot": "pagination-item",
+  };
+
+  return useRender({
+    defaultTagName: "li",
+    props: mergeProps<"li">(defaultProps, props),
+    render,
+  });
 }
 
 type PaginationLinkProps = {
@@ -152,19 +171,26 @@ function PaginationLast({
 
 function PaginationEllipsis({
   className,
+  render,
   ...props
-}: React.ComponentProps<"span">): React.JSX.Element {
-  return (
-    <span
-      aria-hidden
-      className={cn("flex min-w-7 justify-center", className)}
-      data-slot="pagination-ellipsis"
-      {...props}
-    >
-      <MoreHorizontalIcon className="size-5 sm:size-4" />
-      <span className="sr-only">More pages</span>
-    </span>
-  );
+}: useRender.ComponentProps<"span">): React.ReactElement {
+  const defaultProps = {
+    "aria-hidden": true,
+    className: cn("flex min-w-7 justify-center", className),
+    "data-slot": "pagination-ellipsis",
+    children: (
+      <>
+        <MoreHorizontalIcon className="size-5 sm:size-4" />
+        <span className="sr-only">More pages</span>
+      </>
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "span",
+    props: mergeProps<"span">(defaultProps, props),
+    render,
+  });
 }
 
 export interface PaginationInputProps extends Omit<

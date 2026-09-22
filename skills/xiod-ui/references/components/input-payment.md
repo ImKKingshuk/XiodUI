@@ -368,14 +368,20 @@ remain available through the exported TypeScript type.
 
 ## useInputPayment
 
-This hook accepts no arguments.
+```tsx
+useInputPayment()
+```
 
 ## usePaymentInput
 
-This hook accepts no arguments.
+```tsx
+usePaymentInput()
+```
 
 ## usePaymentInputContext
 
-This hook accepts no arguments.
+```tsx
+usePaymentInputContext()
+```
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

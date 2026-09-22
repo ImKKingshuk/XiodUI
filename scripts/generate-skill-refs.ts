@@ -37,11 +37,19 @@ interface PropEntry {
   required: boolean;
 }
 
+interface ParamEntry {
+  name: string;
+  type: string;
+  optional: boolean;
+}
+
 interface ExportEntry {
   kind: "component" | "hook" | "manager";
   name: string;
   description?: string;
   props: PropEntry[];
+  /** Undefined when the call signature could not be resolved. */
+  params?: ParamEntry[];
   supportsRender: boolean;
 }
 
@@ -155,21 +163,66 @@ function collectDefaults(declaration: ts.Declaration): Map<string, string> {
   return defaults;
 }
 
+function callSignatureOf(
+  checker: ts.TypeChecker,
+  symbol: ts.Symbol,
+  declaration: ts.Declaration,
+): ts.Signature | undefined {
+  return checker
+    .getTypeOfSymbolAtLocation(symbol, declaration)
+    .getCallSignatures()[0];
+}
+
 /** The props object is the first parameter of the first call signature. */
 function propsTypeOf(
   checker: ts.TypeChecker,
   symbol: ts.Symbol,
   declaration: ts.Declaration,
 ): ts.Type | undefined {
-  const type = checker.getTypeOfSymbolAtLocation(symbol, declaration);
-  const signature = type.getCallSignatures()[0];
-  const parameter = signature?.getParameters()[0];
+  const parameter = callSignatureOf(
+    checker,
+    symbol,
+    declaration,
+  )?.getParameters()[0];
   if (!parameter) return undefined;
 
   const parameterDeclaration = firstDeclaration(parameter);
   if (!parameterDeclaration) return undefined;
 
   return checker.getTypeOfSymbolAtLocation(parameter, parameterDeclaration);
+}
+
+/**
+ * The full parameter list. A component takes one props object, so only the
+ * first parameter matters; a hook can take several, and reporting just the
+ * first would silently hide the rest.
+ */
+function readParams(
+  checker: ts.TypeChecker,
+  signature: ts.Signature,
+): ParamEntry[] {
+  return signature.getParameters().map((parameter) => {
+    const declaration = firstDeclaration(parameter);
+    const type = declaration
+      ? checker
+          .typeToString(
+            checker.getTypeOfSymbolAtLocation(parameter, declaration),
+          )
+          .replaceAll(/\s+/g, " ")
+      : "unknown";
+
+    return {
+      name: parameter.getName(),
+      type,
+      // A parameter with an initializer is optional at the call site even
+      // though it carries no question token.
+      optional:
+        declaration !== undefined &&
+        ts.isParameter(declaration) &&
+        (declaration.questionToken !== undefined ||
+          declaration.initializer !== undefined),
+    };
+  });
 }
 
 function describe(checker: ts.TypeChecker, symbol: ts.Symbol): string {
@@ -241,6 +294,79 @@ function cell(value: string): string {
   return value.replaceAll("|", "\\|").replaceAll("\n", " ");
 }
 
+function propsTable(props: PropEntry[], firstHeading: string): string[] {
+  const lines = [
+    `| ${firstHeading} | Type | Default |`,
+    "| :--- | :--- | :--- |",
+  ];
+
+  for (const prop of props) {
+    const name = prop.required ? `**${prop.name}**` : prop.name;
+    lines.push(
+      `| ${name} | \`${cell(prop.type)}\` | ${prop.default ? `\`${cell(prop.default)}\`` : "—"} |`,
+    );
+  }
+  lines.push("");
+
+  const documented = props.filter((prop) => prop.description);
+  for (const prop of documented) {
+    lines.push(`- \`${prop.name}\` — ${prop.description}`);
+  }
+  if (documented.length > 0) lines.push("");
+
+  return lines;
+}
+
+/**
+ * A hook is documented by its arity, not by a prop table. `props` here holds
+ * the members of the first argument, which says nothing about how many
+ * arguments there are — an empty list means "no documented fields on the first
+ * argument", never "takes nothing".
+ */
+function renderHook(entry: ExportEntry): string[] {
+  const { params } = entry;
+
+  if (!params) {
+    return [
+      "Call signature could not be resolved. Refer to the exported",
+      "TypeScript type.",
+      "",
+    ];
+  }
+
+  const lines = [
+    "```tsx",
+    `${entry.name}(${params
+      .map((parameter) =>
+        parameter.optional ? `${parameter.name}?` : parameter.name,
+      )
+      .join(", ")})`,
+    "```",
+    "",
+  ];
+
+  if (params.length === 0) return lines;
+
+  const [first, ...rest] = params;
+
+  if (entry.props.length > 0) {
+    lines.push(`\`${first.name}\` — \`${cell(first.type)}\`:`, "");
+    lines.push(...propsTable(entry.props, "Field"));
+  } else {
+    lines.push(`- \`${first.name}\` — \`${cell(first.type)}\``);
+    if (rest.length === 0) lines.push("");
+  }
+
+  if (rest.length > 0) {
+    for (const parameter of rest) {
+      lines.push(`- \`${parameter.name}\` — \`${cell(parameter.type)}\``);
+    }
+    lines.push("");
+  }
+
+  return lines;
+}
+
 function renderPage(slug: string, exports: ExportEntry[]): string {
   const lines: string[] = [`# ${slug}`, ""];
 
@@ -263,10 +389,13 @@ function renderPage(slug: string, exports: ExportEntry[]): string {
       );
     }
 
+    if (entry.kind === "hook") {
+      lines.push(...renderHook(entry));
+      continue;
+    }
+
     if (entry.props.length === 0) {
-      if (entry.kind === "hook") {
-        lines.push("This hook accepts no arguments.", "");
-      } else if (entry.kind === "manager") {
+      if (entry.kind === "manager") {
         lines.push(
           "Imperative manager export; it is not a React component.",
           "",
@@ -281,20 +410,7 @@ function renderPage(slug: string, exports: ExportEntry[]): string {
       continue;
     }
 
-    lines.push("| Prop | Type | Default |", "| :--- | :--- | :--- |");
-    for (const prop of entry.props) {
-      const name = prop.required ? `**${prop.name}**` : prop.name;
-      lines.push(
-        `| ${name} | \`${cell(prop.type)}\` | ${prop.default ? `\`${cell(prop.default)}\`` : "—"} |`,
-      );
-    }
-    lines.push("");
-
-    const documented = entry.props.filter((prop) => prop.description);
-    for (const prop of documented) {
-      lines.push(`- \`${prop.name}\` — ${prop.description}`);
-    }
-    if (documented.length > 0) lines.push("");
+    lines.push(...propsTable(entry.props, "Prop"));
   }
 
   lines.push("Required props are bold. Full docs: https://ui.xiod.dev/docs");
@@ -353,12 +469,14 @@ for (const file of files) {
     if (!kind) continue;
 
     const propsType = propsTypeOf(checker, symbol, declaration);
+    const signature = callSignatureOf(checker, symbol, declaration);
 
     exports.push({
       kind,
       name,
       description: describe(checker, exported) || undefined,
       props: readProps(checker, symbol, declaration, recipes),
+      params: signature ? readParams(checker, signature) : undefined,
       supportsRender: propsType?.getProperty("render") !== undefined,
     });
   }

@@ -6,9 +6,14 @@ import { useWheelPickerGroup, WheelPicker, WheelPickerGroup } from "xiod-ui/whee
 
 ## useWheelPickerGroup
 
-This hook accepts no arguments.
+```tsx
+useWheelPickerGroup()
+```
 
 ## WheelPicker
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -26,8 +31,11 @@ This hook accepts no arguments.
 
 ## WheelPickerGroup
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 | Prop | Type | Default |
 | :--- | :--- | :--- |
-| **children** | `ReactNode` | — |
+| children | `ReactNode` | — |
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

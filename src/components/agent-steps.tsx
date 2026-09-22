@@ -1,5 +1,7 @@
 "use client";
 
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";
 import * as React from "react";
@@ -130,7 +132,7 @@ export interface AgentStepItem {
 
 export interface AgentStepsProps
   extends
-    React.HTMLAttributes<HTMLDivElement>,
+    useRender.ComponentProps<"div">,
     VariantProps<typeof agentStepsVariants> {
   /** [Single-mode] The current active step label */
   label?: React.ReactNode;
@@ -162,8 +164,9 @@ export function AgentSteps({
   showSpinner = false,
   className,
   children,
+  render,
   ...props
-}: AgentStepsProps): React.JSX.Element {
+}: AgentStepsProps): React.ReactElement {
   // If children are not provided, fall back to backward-compatible automatic rendering mode
   const isSingleMode = !children;
 
@@ -203,17 +206,15 @@ export function AgentSteps({
     [size],
   );
 
-  return (
-    <AgentStepsContext.Provider value={contextValue}>
-      <div
-        className={cn(
-          agentStepsVariants({ size }),
-          "[&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
-          className,
-        )}
-        data-slot="agent-steps"
-        {...props}
-      >
+  const defaultProps = {
+    className: cn(
+      agentStepsVariants({ size }),
+      "[&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+      className,
+    ),
+    "data-slot": "agent-steps",
+    children: (
+      <>
         {/* biome-ignore lint/security/noDangerouslySetInnerHtml: inline static animations are safe and self-contained */}
         <style dangerouslySetInnerHTML={{ __html: STYLE_INLINE }} />
 
@@ -234,16 +235,23 @@ export function AgentSteps({
         ) : (
           children
         )}
-      </div>
+      </>
+    ),
+  };
+
+  return (
+    <AgentStepsContext.Provider value={contextValue}>
+      {useRender({
+        defaultTagName: "div",
+        props: mergeProps<"div">(defaultProps, props),
+        render,
+      })}
     </AgentStepsContext.Provider>
   );
 }
 
 // ============================================================================
-// Compound Subcomponents
-// ============================================================================
-
-export interface AgentStepProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface AgentStepProps extends useRender.ComponentProps<"div"> {
   status?: "waiting" | "running" | "completed" | "failed";
 }
 
@@ -251,25 +259,29 @@ export function AgentStep({
   status = "running",
   className,
   children,
+  render,
   ...props
-}: AgentStepProps): React.JSX.Element {
+}: AgentStepProps): React.ReactElement {
   const contextValue = React.useMemo(() => ({ status }), [status]);
+  const defaultProps = {
+    className: cn("flex items-center gap-2", className),
+    "data-status": status,
+    "data-slot": "agent-step",
+    children,
+  };
 
   return (
     <AgentStepContext.Provider value={contextValue}>
-      <div
-        className={cn("flex items-center gap-2", className)}
-        data-status={status}
-        data-slot="agent-step"
-        {...props}
-      >
-        {children}
-      </div>
+      {useRender({
+        defaultTagName: "div",
+        props: mergeProps<"div">(defaultProps, props),
+        render,
+      })}
     </AgentStepContext.Provider>
   );
 }
 
-export interface AgentStepIconProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface AgentStepIconProps extends useRender.ComponentProps<"div"> {
   icon?: AgentStepIconValue;
   showSpinner?: boolean;
 }
@@ -278,8 +290,9 @@ export function AgentStepIcon({
   icon,
   showSpinner = false,
   className,
+  render,
   ...props
-}: AgentStepIconProps): React.JSX.Element {
+}: AgentStepIconProps): React.ReactElement {
   const { size } = useAgentSteps();
   const { status } = useAgentStep();
 
@@ -364,29 +377,39 @@ export function AgentStepIcon({
     className,
   );
 
-  return (
-    <div className={iconFrameClasses} data-slot="agent-step-icon" {...props}>
-      {status === "running" && showSpinner && (
+  const defaultProps = {
+    className: iconFrameClasses,
+    "data-slot": "agent-step-icon",
+    children: (
+      <>
+        {status === "running" && showSpinner && (
+          <div
+            className={cn(
+              "absolute inset-[-1.5px] rounded-full border border-dashed border-primary/60 animate-spin pointer-events-none",
+              size === "sm" && "inset-[-1.5px]",
+              size === "md" && "inset-[-2px]",
+              size === "lg" && "inset-[-3px]",
+            )}
+          />
+        )}
         <div
-          className={cn(
-            "absolute inset-[-1.5px] rounded-full border border-dashed border-primary/60 animate-spin pointer-events-none",
-            size === "sm" && "inset-[-1.5px]",
-            size === "md" && "inset-[-2px]",
-            size === "lg" && "inset-[-3px]",
-          )}
-        />
-      )}
-      <div
-        key={`${status}-${typeof icon === "string" ? icon : "custom"}`}
-        className="flex items-center justify-center size-full animate-agent-step-icon"
-      >
-        {iconElement}
-      </div>
-    </div>
-  );
+          key={`${status}-${typeof icon === "string" ? icon : "custom"}`}
+          className="flex items-center justify-center size-full animate-agent-step-icon"
+        >
+          {iconElement}
+        </div>
+      </>
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
-export interface AgentStepLabelProps extends React.HTMLAttributes<HTMLSpanElement> {
+export interface AgentStepLabelProps extends useRender.ComponentProps<"span"> {
   shimmer?: boolean;
 }
 
@@ -394,8 +417,9 @@ export function AgentStepLabel({
   shimmer = true,
   className,
   children,
+  render,
   ...props
-}: AgentStepLabelProps): React.JSX.Element {
+}: AgentStepLabelProps): React.ReactElement {
   const { status } = useAgentStep();
 
   // Double buffering states to prevent unmounting and key resets
@@ -420,41 +444,47 @@ export function AgentStepLabel({
   const isAActive = activeBuffer === "A";
   const isRunning = status === "running" && shimmer;
 
-  return (
-    <span
-      className={cn(
-        "relative inline-grid grid-cols-1 grid-rows-1 items-center overflow-hidden h-5 min-w-[80px]",
-        className,
-      )}
-      data-slot="agent-step-label"
-      {...props}
-    >
-      <span
-        className={cn(
-          "col-start-1 row-start-1 flex items-center whitespace-nowrap agent-step-text-base",
-          isAActive ? "opacity-100" : "opacity-0 pointer-events-none",
-          isRunning && "agent-shimmer-text-base",
-          status === "waiting" && "text-muted-foreground",
-          status === "completed" && "text-foreground font-semibold",
-          status === "failed" && "text-destructive font-semibold",
-        )}
-      >
-        {labelA}
-      </span>
-      <span
-        className={cn(
-          "col-start-1 row-start-1 flex items-center whitespace-nowrap agent-step-text-base",
-          !isAActive ? "opacity-100" : "opacity-0 pointer-events-none",
-          isRunning && "agent-shimmer-text-base",
-          status === "waiting" && "text-muted-foreground",
-          status === "completed" && "text-foreground font-semibold",
-          status === "failed" && "text-destructive font-semibold",
-        )}
-      >
-        {labelB}
-      </span>
-    </span>
-  );
+  const defaultProps = {
+    className: cn(
+      "relative inline-grid grid-cols-1 grid-rows-1 items-center overflow-hidden h-5 min-w-[80px]",
+      className,
+    ),
+    "data-slot": "agent-step-label",
+    children: (
+      <>
+        <span
+          className={cn(
+            "col-start-1 row-start-1 flex items-center whitespace-nowrap agent-step-text-base",
+            isAActive ? "opacity-100" : "opacity-0 pointer-events-none",
+            isRunning && "agent-shimmer-text-base",
+            status === "waiting" && "text-muted-foreground",
+            status === "completed" && "text-foreground font-semibold",
+            status === "failed" && "text-destructive font-semibold",
+          )}
+        >
+          {labelA}
+        </span>
+        <span
+          className={cn(
+            "col-start-1 row-start-1 flex items-center whitespace-nowrap agent-step-text-base",
+            !isAActive ? "opacity-100" : "opacity-0 pointer-events-none",
+            isRunning && "agent-shimmer-text-base",
+            status === "waiting" && "text-muted-foreground",
+            status === "completed" && "text-foreground font-semibold",
+            status === "failed" && "text-destructive font-semibold",
+          )}
+        >
+          {labelB}
+        </span>
+      </>
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "span",
+    props: mergeProps<"span">(defaultProps, props),
+    render,
+  });
 }
 
 // Backward-compatible export alias

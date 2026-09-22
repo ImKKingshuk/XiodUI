@@ -1,7 +1,7 @@
 # collapsible
 
 ```tsx
-import { Collapsible, CollapsibleContent, CollapsiblePanel, CollapsibleTrigger } from "xiod-ui/collapsible";
+import { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "xiod-ui/collapsible";
 ```
 
 ## Collapsible
@@ -23,23 +23,6 @@ remain available through the exported TypeScript type.
 - `disabled` — Whether the component should ignore user interaction.
 - `onOpenChange` — Event handler called when the panel is opened or closed.
 - `open` — Whether the collapsible panel is currently open. To render an uncontrolled collapsible, use the `defaultOpen` prop instead.
-- `style` — Style applied to the element, or a function that returns a style object based on the component's state.
-
-## CollapsibleContent
-
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: CollapsiblePanelState) => string \| undefined) \| undefined` | — |
-| hiddenUntilFound | `boolean \| undefined` | — |
-| keepMounted | `boolean \| undefined` | — |
-| style | `CSSProperties \| ((state: CollapsiblePanelState) => CSSProperties \| undefined) \| undefined` | — |
-
-- `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `hiddenUntilFound` — Allows the browser's built-in page search to find and expand the panel contents. Overrides the `keepMounted` prop and uses `hidden="until-found"` to hide the element without removing it from the DOM.
-- `keepMounted` — Whether to keep the element in the DOM while the panel is hidden. This prop is ignored when `hiddenUntilFound` is used.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## CollapsiblePanel

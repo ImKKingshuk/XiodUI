@@ -6,6 +6,9 @@ import { Bubble, BubbleContent, BubbleReactions, Message, MessageAvatar, Message
 
 ## Bubble
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | align | `"start" \| "end" \| undefined` | `"start"` |
@@ -21,6 +24,9 @@ TypeScript type for inherited element or primitive props.
 
 ## BubbleReactions
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | align | `"start" \| "end" \| null \| undefined` | `"end"` |
@@ -28,31 +34,49 @@ TypeScript type for inherited element or primitive props.
 
 ## Message
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | align | `"start" \| "end" \| undefined` | `"start"` |
 
 ## MessageAvatar
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
 ## MessageContent
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
 ## MessageFooter
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
 ## MessageGroup
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
 ## MessageHeader
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.

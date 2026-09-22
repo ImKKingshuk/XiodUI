@@ -55,39 +55,47 @@ export function Marker({
   });
 }
 
-export interface MarkerIconProps extends React.HTMLAttributes<HTMLSpanElement> {}
+export interface MarkerIconProps extends useRender.ComponentProps<"span"> {}
 
 export function MarkerIcon({
   className,
+  render,
   ...props
-}: MarkerIconProps): React.JSX.Element {
-  return (
-    <span
-      data-slot="marker-icon"
-      aria-hidden="true"
-      className={cn(
-        "shrink-0 flex items-center justify-center text-muted-foreground/80 group-data-[size=sm]/marker:size-3.5 group-data-[size=default]/marker:size-4 group-data-[size=lg]/marker:size-5 [&_svg:not([class*='size-'])]:size-full",
-        className,
-      )}
-      {...props}
-    />
-  );
+}: MarkerIconProps): React.ReactElement {
+  const defaultProps = {
+    "data-slot": "marker-icon",
+    "aria-hidden": true,
+    className: cn(
+      "shrink-0 flex items-center justify-center text-muted-foreground/80 group-data-[size=sm]/marker:size-3.5 group-data-[size=default]/marker:size-4 group-data-[size=lg]/marker:size-5 [&_svg:not([class*='size-'])]:size-full",
+      className,
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "span",
+    props: mergeProps<"span">(defaultProps, props),
+    render,
+  });
 }
 
-export interface MarkerContentProps extends React.HTMLAttributes<HTMLSpanElement> {}
+export interface MarkerContentProps extends useRender.ComponentProps<"span"> {}
 
 export function MarkerContent({
   className,
+  render,
   ...props
-}: MarkerContentProps): React.JSX.Element {
-  return (
-    <span
-      data-slot="marker-content"
-      className={cn(
-        "min-w-0 break-words group-data-[variant=separator]/marker:flex-none group-data-[variant=separator]/marker:text-center",
-        className,
-      )}
-      {...props}
-    />
-  );
+}: MarkerContentProps): React.ReactElement {
+  const defaultProps = {
+    "data-slot": "marker-content",
+    className: cn(
+      "min-w-0 break-words group-data-[variant=separator]/marker:flex-none group-data-[variant=separator]/marker:text-center",
+      className,
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "span",
+    props: mergeProps<"span">(defaultProps, props),
+    render,
+  });
 }

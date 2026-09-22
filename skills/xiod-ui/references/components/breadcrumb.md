@@ -6,15 +6,24 @@ import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, Breadcr
 
 ## Breadcrumb
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
 ## BreadcrumbEllipsis
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
 ## BreadcrumbItem
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
@@ -29,15 +38,24 @@ TypeScript type for inherited element or primitive props.
 
 ## BreadcrumbList
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
 ## BreadcrumbPage
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
 ## BreadcrumbSeparator
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.

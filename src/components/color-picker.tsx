@@ -1,5 +1,7 @@
 "use client";
 
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cn } from "cn";
 import * as React from "react";
 import { ChevronDown } from "xiod-icons/icons/ChevronDown";
@@ -677,7 +679,7 @@ export function computeAdaptivePosition({
 // ==========================================
 
 export interface BlossomColorPickerProps extends Omit<
-  React.HTMLAttributes<HTMLDivElement>,
+  useRender.ComponentProps<"div">,
   "value" | "defaultValue" | "onChange"
 > {
   value?: BlossomColorPickerValue;
@@ -725,6 +727,7 @@ export function BlossomColorPicker({
   collapsible = true,
   className,
   ref,
+  render,
   ...props
 }: BlossomColorPickerProps & {
   ref?: React.Ref<HTMLDivElement>;
@@ -1782,60 +1785,56 @@ export function BlossomColorPicker({
     );
   };
 
-  if (!mounted) {
-    const size = collapsible && !initialExpanded ? coreSize : containerSize;
-    const initialH = defaultValue?.hue ?? DEFAULT_VALUE.hue;
-    const initialS = defaultValue?.saturation ?? DEFAULT_VALUE.saturation;
-    const initialL =
-      defaultValue?.lightness ?? sliderValueToLightness(initialS);
-    const initialA = (defaultValue?.alpha ?? DEFAULT_VALUE.alpha) / 100;
-    const initialBgColor = `hsla(${initialH}, ${initialS}%, ${initialL}%, ${initialA})`;
+  const size = !mounted
+    ? collapsible && !initialExpanded
+      ? coreSize
+      : containerSize
+    : isExpanded
+      ? containerSize
+      : coreSize;
+  const initialH = defaultValue?.hue ?? DEFAULT_VALUE.hue;
+  const initialS = defaultValue?.saturation ?? DEFAULT_VALUE.saturation;
+  const initialL = defaultValue?.lightness ?? sliderValueToLightness(initialS);
+  const initialA = (defaultValue?.alpha ?? DEFAULT_VALUE.alpha) / 100;
+  const initialBgColor = `hsla(${initialH}, ${initialS}%, ${initialL}%, ${initialA})`;
 
-    return (
+  const defaultProps = {
+    ref: rootRef,
+    role: "group",
+    "aria-label": "Color picker",
+    "data-slot": "blossom-color-picker",
+    className: cn(
+      "relative inline-flex items-center justify-center select-none",
+      mounted &&
+        "[&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+      className,
+    ),
+    style: {
+      width: `${size}px`,
+      height: `${size}px`,
+      ...(mounted
+        ? {
+            transition: `width ${animationDuration}ms ${BLOOM_EASING_CSS}, height ${animationDuration}ms ${BLOOM_EASING_CSS}`,
+          }
+        : {}),
+    },
+    ...(mounted
+      ? {
+          onMouseEnter: handleMouseEnter,
+          onMouseMove: handleMouseMove,
+          onMouseLeave: handleMouseLeave,
+        }
+      : {}),
+    children: !mounted ? (
       <div
-        ref={rootRef}
-        role="group"
-        aria-label="Color picker"
-        className={cn(
-          "relative inline-flex items-center justify-center select-none",
-          className,
-        )}
+        className="relative rounded-full border border-black/5 dark:border-white/10"
         style={{
-          width: `${size}px`,
-          height: `${size}px`,
+          width: `${coreSize}px`,
+          height: `${coreSize}px`,
+          backgroundColor: initialBgColor,
         }}
-      >
-        <div
-          className="relative rounded-full border border-black/5 dark:border-white/10"
-          style={{
-            width: `${coreSize}px`,
-            height: `${coreSize}px`,
-            backgroundColor: initialBgColor,
-          }}
-        />
-      </div>
-    );
-  }
-
-  return (
-    <div
-      ref={rootRef}
-      role="group"
-      aria-label="Color picker"
-      {...props}
-      onMouseEnter={handleMouseEnter}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className={cn(
-        "relative inline-flex items-center justify-center select-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
-        className,
-      )}
-      style={{
-        width: isExpanded ? `${containerSize}px` : `${coreSize}px`,
-        height: isExpanded ? `${containerSize}px` : `${coreSize}px`,
-        transition: `width ${animationDuration}ms ${BLOOM_EASING_CSS}, height ${animationDuration}ms ${BLOOM_EASING_CSS}`,
-      }}
-    >
+      />
+    ) : (
       <div
         className="absolute flex items-center justify-center"
         style={{
@@ -1902,8 +1901,14 @@ export function BlossomColorPicker({
           )}
         </button>
       </div>
-    </div>
-  );
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 // ==========================================
@@ -1941,6 +1946,7 @@ export function ColorPicker({
   darkMode,
   className,
   ref,
+  render,
   ...props
 }: ColorPickerProps & { ref?: React.Ref<HTMLDivElement> }): React.JSX.Element {
   // Mode of inputs: HEX, RGBA, HSLA
@@ -2172,233 +2178,255 @@ export function ColorPicker({
     }
   };
 
-  return (
-    <div
-      ref={ref}
-      data-slot="color-picker"
-      {...props}
-      className={cn(
-        "inline-flex flex-col rounded-2xl border bg-card text-card-foreground shadow-xs/5 overflow-hidden w-[250px] select-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
-        darkMode && "dark",
-        className,
-      )}
-    >
-      {/* Top region: blossom color picker */}
-      <div className="flex justify-center items-center pt-10 pb-[calc(--spacing(10)-1px)] px-4 bg-muted/20 border-b">
-        <BlossomColorPicker
-          value={currentValue}
-          colors={colors}
-          onChange={handleRadialPickerChange}
-          onCollapse={onCollapse}
-          disabled={disabled}
-          openOnHover={openOnHover}
-          initialExpanded={initialExpanded}
-          animationDuration={animationDuration}
-          showAlphaSlider={showAlphaSlider}
-          showOpacitySlider={false}
-          coreSize={coreSize}
-          petalSize={petalSize}
-          showCoreColor={showCoreColor}
-          sliderPosition={sliderPosition}
-          adaptivePositioning={adaptivePositioning}
-          circularBarWidth={circularBarWidth}
-          sliderWidth={sliderWidth}
-          sliderOffset={sliderOffset}
-          collapsible={collapsible}
-        />
-      </div>
+  const defaultProps = {
+    ref,
+    "data-slot": "color-picker",
+    className: cn(
+      "inline-flex flex-col rounded-2xl border bg-card text-card-foreground shadow-xs/5 overflow-hidden w-[250px] select-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+      darkMode && "dark",
+      className,
+    ),
+    children: (
+      <>
+        {/* Top region: blossom color picker */}
+        <div className="flex justify-center items-center pt-10 pb-[calc(--spacing(10)-1px)] px-4 bg-muted/20 border-b">
+          <BlossomColorPicker
+            value={currentValue}
+            colors={colors}
+            onChange={handleRadialPickerChange}
+            onCollapse={onCollapse}
+            disabled={disabled}
+            openOnHover={openOnHover}
+            initialExpanded={initialExpanded}
+            animationDuration={animationDuration}
+            showAlphaSlider={showAlphaSlider}
+            showOpacitySlider={false}
+            coreSize={coreSize}
+            petalSize={petalSize}
+            showCoreColor={showCoreColor}
+            sliderPosition={sliderPosition}
+            adaptivePositioning={adaptivePositioning}
+            circularBarWidth={circularBarWidth}
+            sliderWidth={sliderWidth}
+            sliderOffset={sliderOffset}
+            collapsible={collapsible}
+          />
+        </div>
 
-      {/* Bottom region: sliders, inputs, formats */}
-      <div className="p-4 flex flex-col gap-4">
-        {/* Alpha slider row */}
-        <div className="flex items-center gap-3">
-          {/* Color Swatch Preview */}
-          <div className="relative size-9 rounded-full border border-black/5 dark:border-white/10 overflow-hidden shrink-0">
-            {/* Swatch checkerboard grid */}
-            <div className="absolute inset-0 bg-[linear-gradient(45deg,#ccc_25%,transparent_25%),linear-gradient(-45deg,#ccc_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#ccc_75%),linear-gradient(-45deg,transparent_75%,#ccc_75%)] bg-size-[8px_8px] bg-position-[0_0,0_4px,4px_-4px,-4px_0px] bg-white opacity-40" />
-            <div
-              className="absolute inset-0 rounded-full shadow-inner"
-              style={{ backgroundColor: parsedOutput.rgba }}
-            />
-          </div>
-
-          {/* Custom Alpha Slider */}
-          <div className="relative flex-1 h-3 flex items-center">
-            <div className="relative w-full h-2.5 rounded-full border border-black/5 overflow-hidden">
+        {/* Bottom region: sliders, inputs, formats */}
+        <div className="p-4 flex flex-col gap-4">
+          {/* Alpha slider row */}
+          <div className="flex items-center gap-3">
+            {/* Color Swatch Preview */}
+            <div className="relative size-9 rounded-full border border-black/5 dark:border-white/10 overflow-hidden shrink-0">
+              {/* Swatch checkerboard grid */}
               <div className="absolute inset-0 bg-[linear-gradient(45deg,#ccc_25%,transparent_25%),linear-gradient(-45deg,#ccc_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#ccc_75%),linear-gradient(-45deg,transparent_75%,#ccc_75%)] bg-size-[8px_8px] bg-position-[0_0,0_4px,4px_-4px,-4px_0px] bg-white opacity-40" />
               <div
-                className="absolute inset-0"
-                style={{
-                  background: `linear-gradient(to right, rgba(${parsedOutput.r}, ${parsedOutput.g}, ${parsedOutput.b}, 0), rgb(${parsedOutput.r}, ${parsedOutput.g}, ${parsedOutput.b}))`,
-                }}
+                className="absolute inset-0 rounded-full shadow-inner"
+                style={{ backgroundColor: parsedOutput.rgba }}
               />
             </div>
 
-            {/* Slider thumb */}
-            <div
-              className="absolute size-3.5 -ml-1.75 bg-card border border-input shadow-xs/5 rounded-full pointer-events-none top-1/2 -translate-y-1/2"
-              style={{ left: `${currentValue.alpha}%` }}
-            />
-
-            <input
-              type="range"
-              aria-label="Opacity"
-              min={0}
-              max={100}
-              disabled={disabled}
-              value={currentValue.alpha}
-              onChange={(e) => handleAlphaChange(Number(e.target.value))}
-              className="absolute inset-0 opacity-0 cursor-pointer w-full h-full disabled:cursor-not-allowed"
-            />
-          </div>
-        </div>
-
-        {/* Formats and inputs row */}
-        <div className="flex gap-2 items-start">
-          <div className="flex-1 flex gap-1.5 min-w-0">
-            {colorMode === "HEX" && (
-              <div className="flex-1 flex flex-col items-center gap-1">
-                <input
-                  type="text"
-                  aria-label="Hex color"
-                  disabled={disabled}
-                  value={hexInput}
-                  onChange={(e) => handleHexInputChange(e.target.value)}
-                  className="w-full h-7 rounded-md border border-input bg-background/50 px-[calc(--spacing(2)-1px)] py-[calc(--spacing(1)-1px)] text-center font-mono text-xs uppercase shadow-2xs outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 disabled:opacity-64"
+            {/* Custom Alpha Slider */}
+            <div className="relative flex-1 h-3 flex items-center">
+              <div className="relative w-full h-2.5 rounded-full border border-black/5 overflow-hidden">
+                <div className="absolute inset-0 bg-[linear-gradient(45deg,#ccc_25%,transparent_25%),linear-gradient(-45deg,#ccc_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#ccc_75%),linear-gradient(-45deg,transparent_75%,#ccc_75%)] bg-size-[8px_8px] bg-position-[0_0,0_4px,4px_-4px,-4px_0px] bg-white opacity-40" />
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background: `linear-gradient(to right, rgba(${parsedOutput.r}, ${parsedOutput.g}, ${parsedOutput.b}, 0), rgb(${parsedOutput.r}, ${parsedOutput.g}, ${parsedOutput.b}))`,
+                  }}
                 />
-                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                  Hex
-                </span>
               </div>
-            )}
 
-            {colorMode === "RGBA" && (
-              <>
-                <div className="flex-1 flex flex-col items-center gap-1">
-                  <input
-                    type="text"
-                    aria-label="Red"
-                    disabled={disabled}
-                    value={rgbaInputs.r}
-                    onChange={(e) => handleRgbaInputChange("r", e.target.value)}
-                    className="w-full h-7 rounded-md border border-input bg-background/50 py-[calc(--spacing(1)-1px)] text-center font-mono text-xs shadow-2xs outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 disabled:opacity-64"
-                  />
-                  <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                    R
-                  </span>
-                </div>
-                <div className="flex-1 flex flex-col items-center gap-1">
-                  <input
-                    type="text"
-                    aria-label="Green"
-                    disabled={disabled}
-                    value={rgbaInputs.g}
-                    onChange={(e) => handleRgbaInputChange("g", e.target.value)}
-                    className="w-full h-7 rounded-md border border-input bg-background/50 py-[calc(--spacing(1)-1px)] text-center font-mono text-xs shadow-2xs outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 disabled:opacity-64"
-                  />
-                  <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                    G
-                  </span>
-                </div>
-                <div className="flex-1 flex flex-col items-center gap-1">
-                  <input
-                    type="text"
-                    aria-label="Blue"
-                    disabled={disabled}
-                    value={rgbaInputs.b}
-                    onChange={(e) => handleRgbaInputChange("b", e.target.value)}
-                    className="w-full h-7 rounded-md border border-input bg-background/50 py-[calc(--spacing(1)-1px)] text-center font-mono text-xs shadow-2xs outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 disabled:opacity-64"
-                  />
-                  <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                    B
-                  </span>
-                </div>
-                <div className="flex-1 flex flex-col items-center gap-1">
-                  <input
-                    type="text"
-                    aria-label="Alpha"
-                    disabled={disabled}
-                    value={rgbaInputs.a}
-                    onChange={(e) => handleRgbaInputChange("a", e.target.value)}
-                    className="w-full h-7 rounded-md border border-input bg-background/50 py-[calc(--spacing(1)-1px)] text-center font-mono text-xs shadow-2xs outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 disabled:opacity-64"
-                  />
-                  <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                    A
-                  </span>
-                </div>
-              </>
-            )}
+              {/* Slider thumb */}
+              <div
+                className="absolute size-3.5 -ml-1.75 bg-card border border-input shadow-xs/5 rounded-full pointer-events-none top-1/2 -translate-y-1/2"
+                style={{ left: `${currentValue.alpha}%` }}
+              />
 
-            {colorMode === "HSLA" && (
-              <>
-                <div className="flex-1 flex flex-col items-center gap-1">
-                  <input
-                    type="text"
-                    aria-label="Hue"
-                    disabled={disabled}
-                    value={hslaInputs.h}
-                    onChange={(e) => handleHslaInputChange("h", e.target.value)}
-                    className="w-full h-7 rounded-md border border-input bg-background/50 py-[calc(--spacing(1)-1px)] text-center font-mono text-xs shadow-2xs outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 disabled:opacity-64"
-                  />
-                  <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                    H
-                  </span>
-                </div>
-                <div className="flex-1 flex flex-col items-center gap-1">
-                  <input
-                    type="text"
-                    aria-label="Saturation"
-                    disabled={disabled}
-                    value={hslaInputs.s}
-                    onChange={(e) => handleHslaInputChange("s", e.target.value)}
-                    className="w-full h-7 rounded-md border border-input bg-background/50 py-[calc(--spacing(1)-1px)] text-center font-mono text-xs shadow-2xs outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 disabled:opacity-64"
-                  />
-                  <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                    S
-                  </span>
-                </div>
-                <div className="flex-1 flex flex-col items-center gap-1">
-                  <input
-                    type="text"
-                    aria-label="Lightness"
-                    disabled={disabled}
-                    value={hslaInputs.l}
-                    onChange={(e) => handleHslaInputChange("l", e.target.value)}
-                    className="w-full h-7 rounded-md border border-input bg-background/50 py-[calc(--spacing(1)-1px)] text-center font-mono text-xs shadow-2xs outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 disabled:opacity-64"
-                  />
-                  <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                    L
-                  </span>
-                </div>
-                <div className="flex-1 flex flex-col items-center gap-1">
-                  <input
-                    type="text"
-                    aria-label="Alpha"
-                    disabled={disabled}
-                    value={hslaInputs.a}
-                    onChange={(e) => handleHslaInputChange("a", e.target.value)}
-                    className="w-full h-7 rounded-md border border-input bg-background/50 py-[calc(--spacing(1)-1px)] text-center font-mono text-xs shadow-2xs outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 disabled:opacity-64"
-                  />
-                  <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                    A
-                  </span>
-                </div>
-              </>
-            )}
+              <input
+                type="range"
+                aria-label="Opacity"
+                min={0}
+                max={100}
+                disabled={disabled}
+                value={currentValue.alpha}
+                onChange={(e) => handleAlphaChange(Number(e.target.value))}
+                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full disabled:cursor-not-allowed"
+              />
+            </div>
           </div>
 
-          {/* Switch format button */}
-          <button
-            type="button"
-            disabled={disabled}
-            onClick={toggleMode}
-            aria-label="Switch color format"
-            className="relative flex items-center justify-center h-7 px-[calc(--spacing(2)-1px)] rounded-md border border-input bg-background/30 hover:bg-muted/70 active:bg-muted/90 cursor-pointer text-muted-foreground transition-colors disabled:opacity-64 disabled:cursor-not-allowed shadow-2xs focus:outline-none focus-visible:ring-1 focus-visible:ring-primary/40 pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11"
-          >
-            <ChevronDown className="size-3.5" />
-          </button>
+          {/* Formats and inputs row */}
+          <div className="flex gap-2 items-start">
+            <div className="flex-1 flex gap-1.5 min-w-0">
+              {colorMode === "HEX" && (
+                <div className="flex-1 flex flex-col items-center gap-1">
+                  <input
+                    type="text"
+                    aria-label="Hex color"
+                    disabled={disabled}
+                    value={hexInput}
+                    onChange={(e) => handleHexInputChange(e.target.value)}
+                    className="w-full h-7 rounded-md border border-input bg-background/50 px-[calc(--spacing(2)-1px)] py-[calc(--spacing(1)-1px)] text-center font-mono text-xs uppercase shadow-2xs outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 disabled:opacity-64"
+                  />
+                  <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                    Hex
+                  </span>
+                </div>
+              )}
+
+              {colorMode === "RGBA" && (
+                <>
+                  <div className="flex-1 flex flex-col items-center gap-1">
+                    <input
+                      type="text"
+                      aria-label="Red"
+                      disabled={disabled}
+                      value={rgbaInputs.r}
+                      onChange={(e) =>
+                        handleRgbaInputChange("r", e.target.value)
+                      }
+                      className="w-full h-7 rounded-md border border-input bg-background/50 py-[calc(--spacing(1)-1px)] text-center font-mono text-xs shadow-2xs outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 disabled:opacity-64"
+                    />
+                    <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                      R
+                    </span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center gap-1">
+                    <input
+                      type="text"
+                      aria-label="Green"
+                      disabled={disabled}
+                      value={rgbaInputs.g}
+                      onChange={(e) =>
+                        handleRgbaInputChange("g", e.target.value)
+                      }
+                      className="w-full h-7 rounded-md border border-input bg-background/50 py-[calc(--spacing(1)-1px)] text-center font-mono text-xs shadow-2xs outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 disabled:opacity-64"
+                    />
+                    <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                      G
+                    </span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center gap-1">
+                    <input
+                      type="text"
+                      aria-label="Blue"
+                      disabled={disabled}
+                      value={rgbaInputs.b}
+                      onChange={(e) =>
+                        handleRgbaInputChange("b", e.target.value)
+                      }
+                      className="w-full h-7 rounded-md border border-input bg-background/50 py-[calc(--spacing(1)-1px)] text-center font-mono text-xs shadow-2xs outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 disabled:opacity-64"
+                    />
+                    <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                      B
+                    </span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center gap-1">
+                    <input
+                      type="text"
+                      aria-label="Alpha"
+                      disabled={disabled}
+                      value={rgbaInputs.a}
+                      onChange={(e) =>
+                        handleRgbaInputChange("a", e.target.value)
+                      }
+                      className="w-full h-7 rounded-md border border-input bg-background/50 py-[calc(--spacing(1)-1px)] text-center font-mono text-xs shadow-2xs outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 disabled:opacity-64"
+                    />
+                    <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                      A
+                    </span>
+                  </div>
+                </>
+              )}
+
+              {colorMode === "HSLA" && (
+                <>
+                  <div className="flex-1 flex flex-col items-center gap-1">
+                    <input
+                      type="text"
+                      aria-label="Hue"
+                      disabled={disabled}
+                      value={hslaInputs.h}
+                      onChange={(e) =>
+                        handleHslaInputChange("h", e.target.value)
+                      }
+                      className="w-full h-7 rounded-md border border-input bg-background/50 py-[calc(--spacing(1)-1px)] text-center font-mono text-xs shadow-2xs outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 disabled:opacity-64"
+                    />
+                    <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                      H
+                    </span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center gap-1">
+                    <input
+                      type="text"
+                      aria-label="Saturation"
+                      disabled={disabled}
+                      value={hslaInputs.s}
+                      onChange={(e) =>
+                        handleHslaInputChange("s", e.target.value)
+                      }
+                      className="w-full h-7 rounded-md border border-input bg-background/50 py-[calc(--spacing(1)-1px)] text-center font-mono text-xs shadow-2xs outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 disabled:opacity-64"
+                    />
+                    <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                      S
+                    </span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center gap-1">
+                    <input
+                      type="text"
+                      aria-label="Lightness"
+                      disabled={disabled}
+                      value={hslaInputs.l}
+                      onChange={(e) =>
+                        handleHslaInputChange("l", e.target.value)
+                      }
+                      className="w-full h-7 rounded-md border border-input bg-background/50 py-[calc(--spacing(1)-1px)] text-center font-mono text-xs shadow-2xs outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 disabled:opacity-64"
+                    />
+                    <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                      L
+                    </span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center gap-1">
+                    <input
+                      type="text"
+                      aria-label="Alpha"
+                      disabled={disabled}
+                      value={hslaInputs.a}
+                      onChange={(e) =>
+                        handleHslaInputChange("a", e.target.value)
+                      }
+                      className="w-full h-7 rounded-md border border-input bg-background/50 py-[calc(--spacing(1)-1px)] text-center font-mono text-xs shadow-2xs outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 disabled:opacity-64"
+                    />
+                    <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                      A
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Switch format button */}
+            <button
+              type="button"
+              disabled={disabled}
+              onClick={toggleMode}
+              aria-label="Switch color format"
+              className="relative flex items-center justify-center h-7 px-[calc(--spacing(2)-1px)] rounded-md border border-input bg-background/30 hover:bg-muted/70 active:bg-muted/90 cursor-pointer text-muted-foreground transition-colors disabled:opacity-64 disabled:cursor-not-allowed shadow-2xs focus:outline-none focus-visible:ring-1 focus-visible:ring-primary/40 pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11"
+            >
+              <ChevronDown className="size-3.5" />
+            </button>
+          </div>
         </div>
-      </div>
-    </div>
-  );
+      </>
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }

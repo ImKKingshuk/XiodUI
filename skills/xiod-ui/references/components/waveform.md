@@ -6,9 +6,14 @@ import { useWaveform, Waveform, WaveformHandle, WaveformScrubber, WaveformVisual
 
 ## useWaveform
 
-This hook accepts no arguments.
+```tsx
+useWaveform()
+```
 
 ## Waveform
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -42,6 +47,9 @@ No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
 ## WaveformScrubber
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.

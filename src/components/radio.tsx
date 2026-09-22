@@ -105,11 +105,4 @@ function RadioItem({
   );
 }
 
-export {
-  Radio,
-  Radio as RadioGroup,
-  RadioItem,
-  RadioItem as RadioGroupItem,
-  radioIndicatorVariants,
-  radioItemVariants,
-};
+export { Radio, radioIndicatorVariants, RadioItem, radioItemVariants };

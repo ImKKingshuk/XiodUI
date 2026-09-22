@@ -7,7 +7,7 @@ import * as React from "react";
 
 // --- Types ---
 
-export interface WaveformProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface WaveformProps extends useRender.ComponentProps<"div"> {
   value?: number; // Current progress fraction (0 to 1) or playback seconds
   defaultValue?: number;
   onValueChange?: (value: number) => void;
@@ -114,6 +114,7 @@ export function Waveform({
   updateRate = 30,
   seed = 42,
   data,
+  render,
   ...props
 }: WaveformProps): React.JSX.Element {
   const [internalValue, setInternalValue] = React.useState(defaultValue ?? 0);
@@ -431,19 +432,25 @@ export function Waveform({
     ],
   );
 
+  const defaultProps = {
+    ref: containerRef,
+    "data-slot": "waveform",
+    className: cn(
+      "relative w-full select-none flex items-center justify-center min-h-[64px]",
+      className,
+    ),
+    children: children || <WaveformVisual />,
+  };
+
+  const element = useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
+
   return (
     <WaveformContext.Provider value={contextValue}>
-      <div
-        ref={containerRef}
-        data-slot="waveform"
-        className={cn(
-          "relative w-full select-none flex items-center justify-center min-h-[64px]",
-          className,
-        )}
-        {...props}
-      >
-        {children || <WaveformVisual />}
-      </div>
+      {element}
     </WaveformContext.Provider>
   );
 }
@@ -685,10 +692,11 @@ export function WaveformVisual({
 
 // --- Component: WaveformScrubber (Interactive dragging area) ---
 
-export interface WaveformScrubberProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface WaveformScrubberProps extends useRender.ComponentProps<"div"> {}
 
 export function WaveformScrubber({
   className,
+  render,
   ...props
 }: WaveformScrubberProps): React.JSX.Element {
   const {
@@ -755,28 +763,31 @@ export function WaveformScrubber({
     triggerRedraw();
   };
 
-  return (
-    <div
-      role="slider"
-      aria-label="Audio waveform scrubber"
-      aria-valuemin={0}
-      aria-valuemax={duration}
-      aria-valuenow={value}
-      tabIndex={0}
-      data-slot="waveform-scrubber"
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerUp}
-      onKeyDown={handleKeyDown}
-      className={cn(
-        "absolute inset-0 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md select-none",
-        "pointer-coarse:after:absolute pointer-coarse:after:inset-y-[-12px] pointer-coarse:after:inset-x-0 pointer-coarse:after:min-h-[44px]",
-        className,
-      )}
-      {...props}
-    />
-  );
+  const defaultProps = {
+    role: "slider",
+    "aria-label": "Audio waveform scrubber",
+    "aria-valuemin": 0,
+    "aria-valuemax": duration,
+    "aria-valuenow": value,
+    tabIndex: 0,
+    "data-slot": "waveform-scrubber",
+    onPointerDown: handlePointerDown,
+    onPointerMove: handlePointerMove,
+    onPointerUp: handlePointerUp,
+    onPointerCancel: handlePointerUp,
+    onKeyDown: handleKeyDown,
+    className: cn(
+      "absolute inset-0 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md select-none",
+      "pointer-coarse:after:absolute pointer-coarse:after:inset-y-[-12px] pointer-coarse:after:inset-x-0 pointer-coarse:after:min-h-[44px]",
+      className,
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 // --- Component: WaveformHandle (Seek track indicator) ---

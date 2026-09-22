@@ -103,13 +103,4 @@ function ArrowSvg(props: React.ComponentProps<"svg">) {
   );
 }
 
-export {
-  PreviewCard,
-  PreviewCard as HoverCard,
-  PreviewCardArrow,
-  PreviewCardArrow as HoverCardArrow,
-  PreviewCardPopup,
-  PreviewCardPopup as HoverCardContent,
-  PreviewCardTrigger,
-  PreviewCardTrigger as HoverCardTrigger,
-};
+export { PreviewCard, PreviewCardArrow, PreviewCardPopup, PreviewCardTrigger };

@@ -346,6 +346,10 @@ remain available through the exported TypeScript type.
 
 ## useComboboxFilter
 
-This hook accepts no arguments.
+```tsx
+useComboboxFilter(options?)
+```
+
+- `options` — `UseComboboxFilterOptions \| undefined`
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

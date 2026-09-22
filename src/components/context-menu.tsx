@@ -1,6 +1,8 @@
 "use client";
 
 import { ContextMenu as ContextMenuPrimitive } from "@base-ui/react/context-menu";
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cn } from "cn";
 import type * as React from "react";
 import { ChevronRight as ChevronRightIcon } from "xiod-icons/icons/ChevronRight";
@@ -233,18 +235,22 @@ function ContextMenuSeparator({
 
 function ContextMenuShortcut({
   className,
+  render,
   ...props
-}: React.ComponentProps<"kbd">): React.JSX.Element {
-  return (
-    <kbd
-      className={cn(
-        "ms-auto font-medium font-sans text-muted-foreground/72 text-xs tracking-widest",
-        className,
-      )}
-      data-slot="context-menu-shortcut"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"kbd">): React.ReactElement {
+  const defaultProps = {
+    className: cn(
+      "ms-auto font-medium font-sans text-muted-foreground/72 text-xs tracking-widest",
+      className,
+    ),
+    "data-slot": "context-menu-shortcut",
+  };
+
+  return useRender({
+    defaultTagName: "kbd",
+    props: mergeProps<"kbd">(defaultProps, props),
+    render,
+  });
 }
 
 function ContextMenuSub(
@@ -311,14 +317,14 @@ export {
   ContextMenuGroup,
   ContextMenuItem,
   ContextMenuLabel,
-  ContextMenuPopup as ContextMenuContent,
+  ContextMenuPopup,
   ContextMenuPortal,
   ContextMenuRadioGroup,
   ContextMenuRadioItem,
   ContextMenuSeparator,
   ContextMenuShortcut,
   ContextMenuSub,
-  ContextMenuSubPopup as ContextMenuSubContent,
+  ContextMenuSubPopup,
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 };

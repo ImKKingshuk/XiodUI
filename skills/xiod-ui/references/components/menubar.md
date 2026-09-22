@@ -1,7 +1,7 @@
 # menubar
 
 ```tsx
-import { Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPopup, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubPopup, MenubarSubTrigger, MenubarTrigger } from "xiod-ui/menubar";
+import { Menubar, MenubarCheckboxItem, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPopup, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubPopup, MenubarSubTrigger, MenubarTrigger } from "xiod-ui/menubar";
 ```
 
 ## Menubar
@@ -53,30 +53,6 @@ remain available through the exported TypeScript type.
 - `nativeButton` — Whether the component renders a native `<button>` element when replacing it via the `render` prop. Set to `true` if the rendered element is a native button.
 - `onCheckedChange` — Event handler called when the checkbox item is ticked or unticked.
 - `onClick` — The click handler for the menu item.
-- `style` — Style applied to the element, or a function that returns a style object based on the component's state.
-
-## MenubarContent
-
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| align | `Align \| undefined` | `"start"` |
-| alignOffset | `number \| OffsetFunction \| undefined` | — |
-| anchor | `Element \| VirtualElement \| RefObject<Element \| null> \| (() => Element \| VirtualElement \| null) \| null \| undefined` | — |
-| children | `ReactNode` | — |
-| className | `string \| ((state: MenuPopupState) => string \| undefined) \| undefined` | — |
-| finalFocus | `boolean \| RefObject<HTMLElement \| null> \| ((closeType: InteractionType) => boolean \| void \| HTMLElement \| null) \| undefined` | — |
-| hideArrow | `boolean \| undefined` | `false` |
-| id | `string \| undefined` | — |
-| side | `Side \| undefined` | — |
-| sideOffset | `number \| OffsetFunction \| undefined` | `10` |
-| style | `CSSProperties \| ((state: MenuPopupState) => CSSProperties \| undefined) \| undefined` | — |
-
-- `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `finalFocus` — Determines the element to focus when the menu is closed. - `false`: Do not move focus. - `true`: Move focus based on the default behavior (trigger or previously focused element). - `RefObject`: Move focus to the ref element. - `function`: Called with the interaction type (`mouse`, `touch`, `pen`, or `keyboard`). Return an element to focus, `true` to use the default behavior, or `false`/`undefined` to do nothing.
-- `hideArrow` — Whether to hide the arrow indicator.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## MenubarGroup
@@ -307,23 +283,6 @@ TypeScript type for inherited element or primitive props.
 - `onOpenChangeComplete` — Event handler called after any animations complete when the menu is opened or closed.
 - `open` — Whether the menu is currently open.
 - `orientation` — The visual orientation of the menu. Controls whether roving focus uses up/down or left/right arrow keys.
-
-## MenubarSubContent
-
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| children | `ReactNode` | — |
-| className | `string \| ((state: MenuPopupState) => string \| undefined) \| undefined` | — |
-| finalFocus | `boolean \| RefObject<HTMLElement \| null> \| ((closeType: InteractionType) => boolean \| void \| HTMLElement \| null) \| undefined` | — |
-| id | `string \| undefined` | — |
-| style | `CSSProperties \| ((state: MenuPopupState) => CSSProperties \| undefined) \| undefined` | — |
-
-- `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `finalFocus` — Determines the element to focus when the menu is closed. - `false`: Do not move focus. - `true`: Move focus based on the default behavior (trigger or previously focused element). - `RefObject`: Move focus to the ref element. - `function`: Called with the interaction type (`mouse`, `touch`, `pen`, or `keyboard`). Return an element to focus, `true` to use the default behavior, or `false`/`undefined` to do nothing.
-- `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## MenubarSubPopup
 

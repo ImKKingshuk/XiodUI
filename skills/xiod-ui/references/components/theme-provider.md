@@ -27,6 +27,8 @@ import { ThemeProvider, useTheme } from "xiod-ui/theme-provider";
 
 ## useTheme
 
-This hook accepts no arguments.
+```tsx
+useTheme()
+```
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

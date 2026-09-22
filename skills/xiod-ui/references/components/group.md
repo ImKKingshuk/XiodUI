@@ -6,6 +6,9 @@ import { Group, GroupSeparator, GroupText } from "xiod-ui/group";
 
 ## Group
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | orientation | `"horizontal" \| "vertical" \| null \| undefined` | `"horizontal"` |

@@ -91,7 +91,6 @@ export {
   TooltipArrow,
   TooltipCreateHandle,
   TooltipPopup,
-  TooltipPopup as TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 };

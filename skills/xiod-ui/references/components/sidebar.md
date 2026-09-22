@@ -19,10 +19,16 @@ TypeScript type for inherited element or primitive props.
 
 ## SidebarFooter
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
 ## SidebarGroup
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
@@ -37,6 +43,9 @@ TypeScript type for inherited element or primitive props.
 
 ## SidebarGroupContent
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
@@ -49,6 +58,9 @@ No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
 ## SidebarHeader
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
@@ -75,10 +87,16 @@ remain available through the exported TypeScript type.
 
 ## SidebarInset
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
 ## SidebarMenu
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
@@ -93,6 +111,9 @@ remain available through the exported TypeScript type.
 | showOnHover | `boolean \| undefined` | `false` |
 
 ## SidebarMenuBadge
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
@@ -111,16 +132,25 @@ remain available through the exported TypeScript type.
 
 ## SidebarMenuItem
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
 ## SidebarMenuSkeleton
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | showIcon | `boolean \| undefined` | `false` |
 
 ## SidebarMenuSub
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
@@ -137,6 +167,9 @@ remain available through the exported TypeScript type.
 
 ## SidebarMenuSubItem
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
@@ -149,6 +182,9 @@ TypeScript type for inherited element or primitive props.
 | open | `boolean \| undefined` | — |
 
 ## SidebarRail
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
@@ -180,6 +216,8 @@ remain available through the exported TypeScript type.
 
 ## useSidebar
 
-This hook accepts no arguments.
+```tsx
+useSidebar()
+```
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

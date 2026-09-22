@@ -1,5 +1,7 @@
 "use client";
 
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";
 import * as React from "react";
@@ -71,7 +73,7 @@ export const majorTickVariants = cva(
 export interface RulerPickerProps
   extends
     Omit<
-      React.ComponentPropsWithRef<"div">,
+      useRender.ComponentProps<"div">,
       "onChange" | "value" | "defaultValue"
     >,
     VariantProps<typeof rulerPickerVariants> {
@@ -95,6 +97,7 @@ function RulerPicker({
   subDivisions = 4,
   size = "md",
   ref,
+  render,
   ...props
 }: RulerPickerProps): React.JSX.Element {
   const rootRef = React.useRef<HTMLDivElement>(null);
@@ -308,134 +311,140 @@ function RulerPicker({
 
   const range = max - min;
 
-  return (
-    <div
-      ref={rootRef}
-      className={cn(rulerPickerVariants({ size }), className)}
-      onMouseDown={onMouseDown}
-      onKeyDown={onKeyDown}
-      tabIndex={0}
-      aria-label="Ruler Picker"
-      aria-valuemin={min}
-      aria-valuemax={max}
-      aria-valuenow={activeValue}
-      role="slider"
-      data-slot="ruler-picker"
-      {...props}
-    >
-      {/* Center needle indicator */}
-      <div
-        className="pointer-events-none absolute inset-y-0 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center"
-        data-slot="ruler-picker-indicator"
-      >
+  const defaultProps = {
+    ref: rootRef,
+    className: cn(rulerPickerVariants({ size }), className),
+    onMouseDown,
+    onKeyDown,
+    tabIndex: 0,
+    "aria-label": "Ruler Picker",
+    "aria-valuemin": min,
+    "aria-valuemax": max,
+    "aria-valuenow": activeValue,
+    role: "slider",
+    "data-slot": "ruler-picker",
+    children: (
+      <>
+        {/* Center needle indicator */}
         <div
-          className={cn(
-            "bg-primary shadow-xs/5 rounded-b-xs",
-            size === "sm"
-              ? "h-2 w-3.5"
-              : size === "lg"
-                ? "h-3.5 w-6"
-                : "h-2.5 w-4.5",
-          )}
-          style={{ clipPath: "polygon(0 0, 100% 0, 70% 100%, 30% 100%)" }}
-        />
+          className="pointer-events-none absolute inset-y-0 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center"
+          data-slot="ruler-picker-indicator"
+        >
+          <div
+            className={cn(
+              "bg-primary shadow-xs/5 rounded-b-xs",
+              size === "sm"
+                ? "h-2 w-3.5"
+                : size === "lg"
+                  ? "h-3.5 w-6"
+                  : "h-2.5 w-4.5",
+            )}
+            style={{ clipPath: "polygon(0 0, 100% 0, 70% 100%, 30% 100%)" }}
+          />
+          <div
+            className={cn(
+              "w-[1.5px] grow bg-primary",
+              size === "sm" && "w-px",
+              size === "lg" && "w-[2px]",
+            )}
+          />
+        </div>
+
+        {/* Horizontal scroll timeline */}
         <div
+          ref={scrollContainerRef}
+          onScroll={onScroll}
           className={cn(
-            "w-[1.5px] grow bg-primary",
-            size === "sm" && "w-px",
-            size === "lg" && "w-[2px]",
+            "h-full w-full overflow-x-auto flex items-end snap-x snap-mandatory scroll-smooth scrollbar-none cursor-grab active:cursor-grabbing",
+            size === "lg" ? "pb-2" : "pb-1.5",
           )}
-        />
-      </div>
-
-      {/* Horizontal scroll timeline */}
-      <div
-        ref={scrollContainerRef}
-        onScroll={onScroll}
-        className={cn(
-          "h-full w-full overflow-x-auto flex items-end snap-x snap-mandatory scroll-smooth scrollbar-none cursor-grab active:cursor-grabbing",
-          size === "lg" ? "pb-2" : "pb-1.5",
-        )}
-        style={{
-          paddingLeft: `calc(50% - ${itemWidth / 2}px)`,
-          paddingRight: `calc(50% - ${itemWidth / 2}px)`,
-        }}
-        data-slot="ruler-picker-track"
-      >
-        {Array.from({ length: range + 1 }, (_, index) => {
-          const val = min + index;
-          return (
-            <div
-              key={val}
-              className="flex flex-col justify-end items-center h-full shrink-0 relative"
-              style={{ width: itemWidth }}
-              data-slot="ruler-picker-item"
-              data-value={val}
-            >
-              <span
-                className={labelVariants({ size })}
-                data-slot="ruler-picker-label"
-              >
-                {val}
-              </span>
-
+          style={{
+            paddingLeft: `calc(50% - ${itemWidth / 2}px)`,
+            paddingRight: `calc(50% - ${itemWidth / 2}px)`,
+          }}
+          data-slot="ruler-picker-track"
+        >
+          {Array.from({ length: range + 1 }, (_, index) => {
+            const val = min + index;
+            return (
               <div
-                className={tickContainerVariants({ size })}
-                data-slot="ruler-picker-ticks"
+                key={val}
+                className="flex flex-col justify-end items-center h-full shrink-0 relative"
+                style={{ width: itemWidth }}
+                data-slot="ruler-picker-item"
+                data-value={val}
               >
-                {/* Major Tick Mark */}
-                <div className={majorTickVariants({ size })} />
+                <span
+                  className={labelVariants({ size })}
+                  data-slot="ruler-picker-label"
+                >
+                  {val}
+                </span>
 
-                {/* Minor Sub-Divisions */}
-                {val !== max &&
-                  Array.from({ length: subDivisions }).map(
-                    (_subdivision, idx) => {
-                      const stepPercent =
-                        ((idx + 1) / (subDivisions + 1)) * 100;
-                      const isMedium = subDivisions === 9 && idx === 4;
-                      return (
-                        <div
-                          key={idx}
-                          className={cn(
-                            "absolute bottom-0 -translate-x-1/2 w-[1.2px] rounded-t-full bg-muted-foreground/30",
-                            size === "sm"
-                              ? isMedium
-                                ? "h-2 bg-muted-foreground/45"
-                                : "h-1.5"
-                              : size === "lg"
+                <div
+                  className={tickContainerVariants({ size })}
+                  data-slot="ruler-picker-ticks"
+                >
+                  {/* Major Tick Mark */}
+                  <div className={majorTickVariants({ size })} />
+
+                  {/* Minor Sub-Divisions */}
+                  {val !== max &&
+                    Array.from({ length: subDivisions }).map(
+                      (_subdivision, idx) => {
+                        const stepPercent =
+                          ((idx + 1) / (subDivisions + 1)) * 100;
+                        const isMedium = subDivisions === 9 && idx === 4;
+                        return (
+                          <div
+                            key={idx}
+                            className={cn(
+                              "absolute bottom-0 -translate-x-1/2 w-[1.2px] rounded-t-full bg-muted-foreground/30",
+                              size === "sm"
                                 ? isMedium
-                                  ? "h-4 bg-muted-foreground/45"
-                                  : "h-3"
-                                : isMedium
-                                  ? "h-3 bg-muted-foreground/45"
-                                  : "h-2",
-                          )}
-                          style={{ left: `calc(50% + ${stepPercent}%)` }}
-                        />
-                      );
-                    },
-                  )}
+                                  ? "h-2 bg-muted-foreground/45"
+                                  : "h-1.5"
+                                : size === "lg"
+                                  ? isMedium
+                                    ? "h-4 bg-muted-foreground/45"
+                                    : "h-3"
+                                  : isMedium
+                                    ? "h-3 bg-muted-foreground/45"
+                                    : "h-2",
+                            )}
+                            style={{ left: `calc(50% + ${stepPercent}%)` }}
+                          />
+                        );
+                      },
+                    )}
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
 
-      {/* Fading side overlays */}
-      <div
-        className={cn(
-          "from-background via-background/50 pointer-events-none absolute inset-y-0 left-0 z-30 bg-linear-to-r to-transparent",
-          size === "sm" ? "w-12" : size === "lg" ? "w-20" : "w-16",
-        )}
-      />
-      <div
-        className={cn(
-          "from-background via-background/50 pointer-events-none absolute inset-y-0 right-0 z-30 bg-linear-to-l to-transparent",
-          size === "sm" ? "w-12" : size === "lg" ? "w-20" : "w-16",
-        )}
-      />
-    </div>
-  );
+        {/* Fading side overlays */}
+        <div
+          className={cn(
+            "from-background via-background/50 pointer-events-none absolute inset-y-0 left-0 z-30 bg-linear-to-r to-transparent",
+            size === "sm" ? "w-12" : size === "lg" ? "w-20" : "w-16",
+          )}
+        />
+        <div
+          className={cn(
+            "from-background via-background/50 pointer-events-none absolute inset-y-0 right-0 z-30 bg-linear-to-l to-transparent",
+            size === "sm" ? "w-12" : size === "lg" ? "w-20" : "w-16",
+          )}
+        />
+      </>
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 export { RulerPicker };

@@ -6,6 +6,9 @@ import { InputPhone, InputPhoneCountrySelect, InputPhoneFlag, InputPhoneInput, P
 
 ## InputPhone
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | countries | `CountryData[] \| undefined` | `COUNTRIES` |
@@ -54,6 +57,9 @@ remain available through the exported TypeScript type.
 - `onValueChange` — Callback fired when the `value` changes. Use when controlled.
 
 ## PhoneInput
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -104,10 +110,14 @@ remain available through the exported TypeScript type.
 
 ## useInputPhone
 
-This hook accepts no arguments.
+```tsx
+useInputPhone()
+```
 
 ## usePhoneInput
 
-This hook accepts no arguments.
+```tsx
+usePhoneInput()
+```
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

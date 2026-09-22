@@ -1,7 +1,7 @@
 # popover
 
 ```tsx
-import { Popover, PopoverArrow, PopoverClose, PopoverContent, PopoverCreateHandle, PopoverDescription, PopoverPopup, PopoverTitle, PopoverTrigger } from "xiod-ui/popover";
+import { Popover, PopoverArrow, PopoverClose, PopoverCreateHandle, PopoverDescription, PopoverPopup, PopoverTitle, PopoverTrigger } from "xiod-ui/popover";
 ```
 
 ## Popover
@@ -56,31 +56,6 @@ remain available through the exported TypeScript type.
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `nativeButton` — Whether the component renders a native `<button>` element when replacing it via the `render` prop. Set to `false` if the rendered element is not a button (for example, `<div>`).
-- `style` — Style applied to the element, or a function that returns a style object based on the component's state.
-
-## PopoverContent
-
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| align | `Align \| undefined` | `"center"` |
-| alignOffset | `number \| OffsetFunction \| undefined` | `0` |
-| anchor | `Element \| VirtualElement \| RefObject<Element \| null> \| (() => Element \| VirtualElement \| null) \| null \| undefined` | — |
-| className | `string \| ((state: PopoverPopupState) => string \| undefined) \| undefined` | — |
-| collisionAvoidance | `CollisionAvoidance \| undefined` | — |
-| finalFocus | `boolean \| RefObject<HTMLElement \| null> \| ((closeType: InteractionType) => boolean \| void \| HTMLElement \| null) \| undefined` | — |
-| hideArrow | `boolean \| undefined` | `false` |
-| initialFocus | `boolean \| RefObject<HTMLElement \| null> \| ((openType: InteractionType) => boolean \| void \| HTMLElement \| null) \| undefined` | — |
-| side | `Side \| undefined` | `"bottom"` |
-| sideOffset | `number \| OffsetFunction \| undefined` | `8` |
-| style | `CSSProperties \| ((state: PopoverPopupState) => CSSProperties \| undefined) \| undefined` | — |
-| tooltipStyle | `boolean \| undefined` | `false` |
-
-- `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `finalFocus` — Determines the element to focus when the popover is closed. - `false`: Do not move focus. - `true`: Move focus based on the default behavior (trigger or previously focused element). - `RefObject`: Move focus to the ref element. - `function`: Called with the interaction type (`mouse`, `touch`, `pen`, or `keyboard`). Return an element to focus, `true` to use the default behavior, `null` to fall back to the default behavior, or `false`/`undefined` to do nothing.
-- `initialFocus` — Determines the element to focus when the popover is opened. By default, focus moves to the first tabbable element inside the popup, except when the popover is opened by touch — then the popup itself is focused to avoid opening the virtual keyboard. - `false`: Do not move focus. - `true`: Move focus based on the default behavior (first tabbable element or popup). - `RefObject`: Move focus to the ref element. - `function`: Called with the interaction type (`mouse`, `touch`, `pen`, or `keyboard`). Return an element to focus, `true` to use the default behavior, `null` to fall back to the default behavior, or `false`/`undefined` to do nothing.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## PopoverCreateHandle

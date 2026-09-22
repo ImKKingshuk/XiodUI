@@ -164,7 +164,6 @@ export {
   MenubarLabel,
   MenubarMenu,
   MenubarPopup,
-  MenubarPopup as MenubarContent,
   MenubarPortal,
   MenubarRadioGroup,
   MenubarRadioItem,
@@ -172,7 +171,6 @@ export {
   MenubarShortcut,
   MenubarSub,
   MenubarSubPopup,
-  MenubarSubPopup as MenubarSubContent,
   MenubarSubTrigger,
   MenubarTrigger,
 };

@@ -1,7 +1,7 @@
 # tooltip
 
 ```tsx
-import { Tooltip, TooltipArrow, TooltipContent, TooltipCreateHandle, TooltipPopup, TooltipProvider, TooltipTrigger } from "xiod-ui/tooltip";
+import { Tooltip, TooltipArrow, TooltipCreateHandle, TooltipPopup, TooltipProvider, TooltipTrigger } from "xiod-ui/tooltip";
 ```
 
 ## Tooltip
@@ -43,24 +43,6 @@ remain available through the exported TypeScript type.
 | :--- | :--- | :--- |
 | className | `string \| ((state: TooltipArrowState) => string \| undefined) \| undefined` | — |
 | style | `CSSProperties \| ((state: TooltipArrowState) => CSSProperties \| undefined) \| undefined` | — |
-
-- `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `style` — Style applied to the element, or a function that returns a style object based on the component's state.
-
-## TooltipContent
-
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| align | `Align \| undefined` | `"center"` |
-| anchor | `Element \| VirtualElement \| RefObject<Element \| null> \| (() => Element \| VirtualElement \| null) \| null \| undefined` | — |
-| className | `string \| ((state: TooltipPopupState) => string \| undefined) \| undefined` | — |
-| hideArrow | `boolean \| undefined` | `false` |
-| side | `Side \| undefined` | `"top"` |
-| sideOffset | `number \| OffsetFunction \| undefined` | `10` |
-| style | `CSSProperties \| ((state: TooltipPopupState) => CSSProperties \| undefined) \| undefined` | — |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.

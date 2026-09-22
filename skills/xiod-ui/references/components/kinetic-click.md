@@ -6,16 +6,19 @@ import { KineticClick } from "xiod-ui/kinetic-click";
 
 ## KineticClick
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | children | `ReactNode` | — |
-| color | `string \| undefined` | — |
-| colorFrom | `"text" \| "auto" \| "background" \| "border" \| undefined` | — |
+| color | `string \| undefined` | `"currentColor"` |
+| colorFrom | `"text" \| "auto" \| "background" \| "border" \| undefined` | `"auto"` |
 | count | `number \| undefined` | — |
 | duration | `number \| undefined` | — |
 | size | `number \| undefined` | — |
-| trigger | `KineticClickTrigger \| undefined` | — |
-| variant | `KineticClickVariant \| undefined` | — |
+| trigger | `KineticClickTrigger \| undefined` | `"mousedown"` |
+| variant | `KineticClickVariant \| undefined` | `"spark"` |
 
 - `color` — The particle/effect color. Accepts standard hex, rgb, or "currentColor" to automatically inherit computed style colors of the clicked target.
 - `colorFrom` — The style property to inherit color from when color is "currentColor". - "text": Inherits from computed text color. - "background": Inherits from computed background color. - "border": Inherits from computed border color. - "auto": Intelligently fallback from text -> background -> border (useful if text is neutral like white/black).

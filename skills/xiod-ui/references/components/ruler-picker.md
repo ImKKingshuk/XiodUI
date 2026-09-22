@@ -6,6 +6,9 @@ import { RulerPicker } from "xiod-ui/ruler-picker";
 
 ## RulerPicker
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | defaultValue | `number \| undefined` | — |

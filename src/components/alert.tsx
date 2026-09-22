@@ -1,3 +1,7 @@
+"use client";
+
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";
 import type * as React from "react";
@@ -22,65 +26,84 @@ export const alertVariants = cva(
   },
 );
 
+interface AlertProps
+  extends useRender.ComponentProps<"div">, VariantProps<typeof alertVariants> {}
+
 function Alert({
   className,
   variant,
+  render,
   ...props
-}: React.ComponentProps<"div"> &
-  VariantProps<typeof alertVariants>): React.JSX.Element {
-  return (
-    <div
-      className={cn(alertVariants({ variant }), className)}
-      data-slot="alert"
-      role="alert"
-      {...props}
-    />
-  );
+}: AlertProps): React.ReactElement {
+  const defaultProps = {
+    className: cn(alertVariants({ variant }), className),
+    "data-slot": "alert",
+    role: "alert",
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 function AlertTitle({
   className,
+  render,
   ...props
-}: React.ComponentProps<"div">): React.JSX.Element {
-  return (
-    <div
-      className={cn("font-medium [svg~&]:col-start-2", className)}
-      data-slot="alert-title"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"div">): React.ReactElement {
+  const defaultProps = {
+    className: cn("font-medium [svg~&]:col-start-2", className),
+    "data-slot": "alert-title",
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 function AlertDescription({
   className,
+  render,
   ...props
-}: React.ComponentProps<"div">): React.JSX.Element {
-  return (
-    <div
-      className={cn(
-        "flex flex-col gap-2.5 text-muted-foreground [svg~&]:col-start-2",
-        className,
-      )}
-      data-slot="alert-description"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"div">): React.ReactElement {
+  const defaultProps = {
+    className: cn(
+      "flex flex-col gap-2.5 text-muted-foreground [svg~&]:col-start-2",
+      className,
+    ),
+    "data-slot": "alert-description",
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 function AlertAction({
   className,
+  render,
   ...props
-}: React.ComponentProps<"div">): React.JSX.Element {
-  return (
-    <div
-      className={cn(
-        "flex gap-1 max-sm:col-start-2 max-sm:mt-2 sm:row-start-1 sm:row-end-3 sm:self-center sm:[[data-slot=alert-description]~&]:col-start-2 sm:[[data-slot=alert-title]~&]:col-start-2 sm:[svg~&]:col-start-2 sm:[svg~[data-slot=alert-description]~&]:col-start-3 sm:[svg~[data-slot=alert-title]~&]:col-start-3",
-        className,
-      )}
-      data-slot="alert-action"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"div">): React.ReactElement {
+  const defaultProps = {
+    className: cn(
+      "flex gap-1 max-sm:col-start-2 max-sm:mt-2 sm:row-start-1 sm:row-end-3 sm:self-center sm:[[data-slot=alert-description]~&]:col-start-2 sm:[[data-slot=alert-title]~&]:col-start-2 sm:[svg~&]:col-start-2 sm:[svg~[data-slot=alert-description]~&]:col-start-3 sm:[svg~[data-slot=alert-title]~&]:col-start-3",
+      className,
+    ),
+    "data-slot": "alert-action",
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
+export type { AlertProps };
 export { Alert, AlertAction, AlertDescription, AlertTitle };

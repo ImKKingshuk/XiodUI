@@ -169,6 +169,9 @@ remain available through the exported TypeScript type.
 
 ## CommandFooter
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
@@ -261,6 +264,9 @@ remain available through the exported TypeScript type.
 
 ## CommandPanel
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.
 
@@ -280,6 +286,9 @@ remain available through the exported TypeScript type.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## CommandShortcut
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 No XiodUI-specific props were detected. Refer to the exported
 TypeScript type for inherited element or primitive props.

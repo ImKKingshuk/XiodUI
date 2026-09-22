@@ -1,5 +1,7 @@
 "use client";
 
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cn } from "cn";
 // SVG guards present via Button (uses [&_svg:not([class*='size-'])] / [&_svg])
 import * as React from "react";
@@ -9,7 +11,7 @@ import { ChevronRight } from "xiod-icons/icons/ChevronRight";
 import { Button } from "./button";
 
 // ============================================================================
-// Native useEmblaCarousel Hook Mock (API Compatible with Embla Carousel)
+// Carousel viewport engine — scrolling, snapping and drag, implemented here
 // ============================================================================
 
 export type CarouselApi = {
@@ -41,15 +43,15 @@ export type CarouselPlugin = {
   destroy?: () => void;
 };
 
-export type UseEmblaCarouselType = [
+export type UseCarouselViewport = [
   (node: HTMLElement | null) => void,
   CarouselApi | undefined,
 ];
 
-export function useEmblaCarousel(
+export function useCarouselViewport(
   options: CarouselOptions = {},
   plugins: CarouselPlugin[] = [],
-): UseEmblaCarouselType {
+): UseCarouselViewport {
   const [viewportNode, setViewportNode] = React.useState<HTMLElement | null>(
     null,
   );
@@ -522,14 +524,15 @@ export function Carousel({
   loop = true,
   className,
   children,
+  render,
   ...props
-}: React.ComponentProps<"div"> &
+}: useRender.ComponentProps<"div"> &
   CarouselProps & {
     opts?: CarouselOptions;
     plugins?: CarouselPlugin[];
   }): React.JSX.Element {
   // Translate options and merge
-  const emblaOptions = React.useMemo(
+  const viewportOptions = React.useMemo(
     () => ({
       axis: orientation === "horizontal" ? ("x" as const) : ("y" as const),
       loop,
@@ -538,7 +541,7 @@ export function Carousel({
     [orientation, loop, opts],
   );
 
-  const [carouselRef, api] = useEmblaCarousel(emblaOptions, plugins);
+  const [carouselRef, api] = useCarouselViewport(viewportOptions, plugins);
 
   const [canScrollPrev, setCanScrollPrev] = React.useState(false);
   const [canScrollNext, setCanScrollNext] = React.useState(false);
@@ -549,11 +552,11 @@ export function Carousel({
   const isHoveredRef = React.useRef(false);
   const isFocusedRef = React.useRef(false);
 
-  const onSelect = React.useCallback((emblaApi: CarouselApi) => {
-    if (!emblaApi) return;
-    setCanScrollPrev(emblaApi.canScrollPrev());
-    setCanScrollNext(emblaApi.canScrollNext());
-    setActiveIndex(emblaApi.selectedScrollSnap());
+  const onSelect = React.useCallback((carouselApi: CarouselApi) => {
+    if (!carouselApi) return;
+    setCanScrollPrev(carouselApi.canScrollPrev());
+    setCanScrollNext(carouselApi.canScrollNext());
+    setActiveIndex(carouselApi.selectedScrollSnap());
   }, []);
 
   const scrollPrev = React.useCallback(() => {
@@ -648,43 +651,67 @@ export function Carousel({
     ],
   );
 
+  const defaultProps = {
+    onKeyDownCapture: handleKeyDown,
+    onMouseEnter: () => {
+      isHoveredRef.current = true;
+      stopAutoplay();
+    },
+    onMouseLeave: () => {
+      isHoveredRef.current = false;
+      startAutoplay();
+    },
+    onFocus: () => {
+      isFocusedRef.current = true;
+      stopAutoplay();
+    },
+    onBlur: () => {
+      isFocusedRef.current = false;
+      startAutoplay();
+    },
+    className: cn("relative outline-none", className),
+    role: "region",
+    "aria-roledescription": "carousel",
+    "data-slot": "carousel",
+    children,
+  };
+
+  const element = useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
+
   return (
     <CarouselContext.Provider value={contextValue}>
-      <div
-        onKeyDownCapture={handleKeyDown}
-        onMouseEnter={() => {
-          isHoveredRef.current = true;
-          stopAutoplay();
-        }}
-        onMouseLeave={() => {
-          isHoveredRef.current = false;
-          startAutoplay();
-        }}
-        onFocus={() => {
-          isFocusedRef.current = true;
-          stopAutoplay();
-        }}
-        onBlur={() => {
-          isFocusedRef.current = false;
-          startAutoplay();
-        }}
-        className={cn("relative outline-none", className)}
-        role="region"
-        aria-roledescription="carousel"
-        data-slot="carousel"
-        {...props}
-      >
-        {children}
-      </div>
+      {element}
     </CarouselContext.Provider>
   );
 }
 
 export function CarouselContent({
   className,
+  render,
+  children,
   ...props
-}: React.ComponentProps<"div">): React.JSX.Element {
+}: useRender.ComponentProps<"div">): React.JSX.Element {
   const { carouselRef, orientation } = useCarousel();
+
+  const defaultProps = {
+    className: cn(
+      "flex h-full w-full touch-pan-y pointer-events-auto will-change-transform",
+      orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col",
+      className,
+    ),
+    "data-slot": "carousel-content",
+    children,
+  };
+
+  const innerElement = useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 
   return (
     <div
@@ -692,39 +719,34 @@ export function CarouselContent({
       className="overflow-hidden w-full h-full relative"
       data-slot="carousel-viewport"
     >
-      <div
-        className={cn(
-          "flex h-full w-full touch-pan-y pointer-events-auto will-change-transform",
-          orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col",
-          className,
-        )}
-        style={props.style}
-        data-slot="carousel-content"
-        {...props}
-      />
+      {innerElement}
     </div>
   );
 }
 
 export function CarouselItem({
   className,
+  render,
   ...props
-}: React.ComponentProps<"div">): React.JSX.Element {
+}: useRender.ComponentProps<"div">): React.JSX.Element {
   const { orientation } = useCarousel();
 
-  return (
-    <div
-      role="group"
-      aria-roledescription="slide"
-      className={cn(
-        "min-w-0 shrink-0 grow-0 basis-full select-none",
-        orientation === "horizontal" ? "pl-4" : "pt-4",
-        className,
-      )}
-      data-slot="carousel-item"
-      {...props}
-    />
-  );
+  const defaultProps = {
+    role: "group",
+    "aria-roledescription": "slide",
+    className: cn(
+      "min-w-0 shrink-0 grow-0 basis-full select-none",
+      orientation === "horizontal" ? "pl-4" : "pt-4",
+      className,
+    ),
+    "data-slot": "carousel-item",
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 export function CarouselPrevious({
@@ -789,22 +811,21 @@ export function CarouselNext({
 
 export function CarouselDots({
   className,
+  render,
+  children,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>): React.JSX.Element | null {
+}: useRender.ComponentProps<"div">): React.JSX.Element | null {
   const { api, activeIndex } = useCarousel();
   const snaps = api ? api.scrollSnapList() : [];
 
-  if (snaps.length <= 1) return null;
-
-  return (
-    <div
-      className={cn("flex justify-center items-center gap-1.5", className)}
-      role="tablist"
-      aria-label="Carousel pagination"
-      data-slot="carousel-dots"
-      {...props}
-    >
-      {snaps.map((_, i) => (
+  const defaultProps = {
+    className: cn("flex justify-center items-center gap-1.5", className),
+    role: "tablist",
+    "aria-label": "Carousel pagination",
+    "data-slot": "carousel-dots",
+    children:
+      children ??
+      snaps.map((_, i) => (
         <button
           key={i}
           type="button"
@@ -819,13 +840,16 @@ export function CarouselDots({
           )}
           onClick={() => api?.scrollTo(i)}
         />
-      ))}
-    </div>
-  );
-}
+      )),
+  };
 
-// Re-declare namespace details to mirror UseEmblaCarouselType exactly
-export type {
-  CarouselApi as EmblaCarouselType,
-  CarouselOptions as EmblaOptionsType,
-};
+  const element = useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
+
+  if (snaps.length <= 1) return null;
+
+  return element;
+}

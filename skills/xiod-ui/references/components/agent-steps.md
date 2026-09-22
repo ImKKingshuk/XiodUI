@@ -6,11 +6,17 @@ import { AgentStep, AgentStepIcon, AgentStepIndicator, AgentStepLabel, AgentStep
 
 ## AgentStep
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | status | `"completed" \| "waiting" \| "running" \| "failed" \| undefined` | `"running"` |
 
 ## AgentStepIcon
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -18,6 +24,9 @@ import { AgentStep, AgentStepIcon, AgentStepIndicator, AgentStepLabel, AgentStep
 | showSpinner | `boolean \| undefined` | `false` |
 
 ## AgentStepIndicator
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -42,11 +51,17 @@ import { AgentStep, AgentStepIcon, AgentStepIndicator, AgentStepLabel, AgentStep
 
 ## AgentStepLabel
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | shimmer | `boolean \| undefined` | `true` |
 
 ## AgentSteps
+
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |

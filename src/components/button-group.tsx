@@ -27,23 +27,27 @@ const buttonGroupVariants = cva(
 
 export interface ButtonGroupProps
   extends
-    React.ComponentProps<"div">,
+    useRender.ComponentProps<"div">,
     VariantProps<typeof buttonGroupVariants> {}
 
 function ButtonGroup({
   className,
   orientation,
+  render,
   ...props
-}: ButtonGroupProps): React.JSX.Element {
-  return (
-    <div
-      role="group"
-      data-slot="button-group"
-      data-orientation={orientation}
-      className={cn(buttonGroupVariants({ orientation }), className)}
-      {...props}
-    />
-  );
+}: ButtonGroupProps): React.ReactElement {
+  const defaultProps = {
+    role: "group",
+    "data-slot": "button-group",
+    "data-orientation": orientation,
+    className: cn(buttonGroupVariants({ orientation }), className),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 function ButtonGroupText({

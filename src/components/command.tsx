@@ -1,6 +1,8 @@
 "use client";
 
 import { Dialog as CommandDialogPrimitive } from "@base-ui/react/dialog";
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cn } from "cn";
 // SVG guards present via AutocompleteInput (uses [&_svg:not([class*='size-'])] / [&_svg])
 import type * as React from "react";
@@ -156,17 +158,22 @@ function CommandEmpty({
 
 function CommandPanel({
   className,
+  render,
   ...props
-}: React.ComponentProps<"div">): React.JSX.Element {
-  return (
-    <div
-      className={cn(
-        "-mx-px not-has-[+[data-slot=command-footer]]:-mb-px relative min-h-0 rounded-t-xl not-has-[+[data-slot=command-footer]]:rounded-b-2xl border border-b-0 bg-popover bg-clip-padding shadow-xs/5 [clip-path:inset(0_1px)] not-has-[+[data-slot=command-footer]]:[clip-path:inset(0_1px_1px_1px_round_0_0_calc(var(--radius-2xl)-1px)_calc(var(--radius-2xl)-1px))] before:pointer-events-none before:absolute before:inset-0 before:rounded-t-[calc(var(--radius-xl)-1px)] **:data-[slot=scroll-area-scrollbar]:mt-2",
-        className,
-      )}
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"div">): React.ReactElement {
+  const defaultProps = {
+    className: cn(
+      "-mx-px not-has-[+[data-slot=command-footer]]:-mb-px relative min-h-0 rounded-t-xl not-has-[+[data-slot=command-footer]]:rounded-b-2xl border border-b-0 bg-popover bg-clip-padding shadow-xs/5 [clip-path:inset(0_1px)] not-has-[+[data-slot=command-footer]]:[clip-path:inset(0_1px_1px_1px_round_0_0_calc(var(--radius-2xl)-1px)_calc(var(--radius-2xl)-1px))] before:pointer-events-none before:absolute before:inset-0 before:rounded-t-[calc(var(--radius-xl)-1px)] **:data-[slot=scroll-area-scrollbar]:mt-2",
+      className,
+    ),
+    "data-slot": "command-panel",
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 function CommandGroup({
@@ -229,34 +236,42 @@ function CommandSeparator({
 
 function CommandShortcut({
   className,
+  render,
   ...props
-}: React.ComponentProps<"kbd">): React.JSX.Element {
-  return (
-    <kbd
-      className={cn(
-        "ms-auto font-medium font-sans text-muted-foreground/72 text-xs tracking-widest",
-        className,
-      )}
-      data-slot="command-shortcut"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"kbd">): React.ReactElement {
+  const defaultProps = {
+    className: cn(
+      "ms-auto font-medium font-sans text-muted-foreground/72 text-xs tracking-widest",
+      className,
+    ),
+    "data-slot": "command-shortcut",
+  };
+
+  return useRender({
+    defaultTagName: "kbd",
+    props: mergeProps<"kbd">(defaultProps, props),
+    render,
+  });
 }
 
 function CommandFooter({
   className,
+  render,
   ...props
-}: React.ComponentProps<"div">): React.JSX.Element {
-  return (
-    <div
-      className={cn(
-        "flex items-center justify-between gap-2 rounded-b-[calc(var(--radius-2xl)-1px)] border-t px-5 pt-[calc(--spacing(3)-1px)] pb-3 text-muted-foreground text-xs",
-        className,
-      )}
-      data-slot="command-footer"
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"div">): React.ReactElement {
+  const defaultProps = {
+    className: cn(
+      "flex items-center justify-between gap-2 rounded-b-[calc(var(--radius-2xl)-1px)] border-t px-5 pt-[calc(--spacing(3)-1px)] pb-3 text-muted-foreground text-xs",
+      className,
+    ),
+    "data-slot": "command-footer",
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 export {

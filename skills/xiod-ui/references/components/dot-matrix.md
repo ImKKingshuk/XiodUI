@@ -6,6 +6,9 @@ import { DotMatrix } from "xiod-ui/dot-matrix";
 
 ## DotMatrix
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | ariaLabel | `string \| undefined` | `"Dot matrix loader"` |

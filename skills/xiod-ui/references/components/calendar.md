@@ -6,6 +6,9 @@ import { Calendar } from "xiod-ui/calendar";
 
 ## Calendar
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | classNames | `CalendarClassNames \| undefined` | — |

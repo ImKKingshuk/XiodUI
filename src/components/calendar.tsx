@@ -1,5 +1,7 @@
 "use client";
 
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cn } from "cn";
 import * as React from "react";
 import { ChevronLeft as ChevronLeftIcon } from "xiod-icons/icons/ChevronLeft";
@@ -46,7 +48,7 @@ export interface CalendarClassNames {
 }
 
 export interface CalendarProps extends Omit<
-  React.HTMLAttributes<HTMLDivElement>,
+  useRender.ComponentProps<"div">,
   "onSelect" | "disabled"
 > {
   mode?: CalendarMode;
@@ -214,6 +216,7 @@ function Calendar({
   localeMonths,
   localeMonthsShort,
   classNames,
+  render,
   ...props
 }: CalendarProps): React.JSX.Element {
   const today = React.useMemo(() => new Date(), []);
@@ -525,350 +528,354 @@ function Calendar({
     ];
   }, [weekdaysList, weekStartsOn]);
 
-  return (
-    <div
-      data-slot="calendar"
-      style={
-        {
-          "--number-of-months": numberOfMonths,
-        } as React.CSSProperties
-      }
-      className={cn(
-        "relative flex flex-col rounded-2xl border bg-card p-4 shadow-xs/5 select-none text-foreground before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-2xl)-1px)] not-data-disabled:not-focus-visible:not-aria-invalid:not-data-pressed:before:shadow-[0_1px_--theme(--color-black/4%)] dark:not-data-disabled:not-focus-visible:not-aria-invalid:not-data-pressed:before:shadow-[0_-1px_--theme(--color-white/6%)] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 [&_svg:not([class*='opacity-'])]:opacity-80",
-        numberOfMonths === 1
-          ? "w-72"
-          : "w-full md:w-[calc(16rem*var(--number-of-months)+2rem)]",
-        classNames?.root,
-        className,
-      )}
-      {...props}
-    >
-      {/* Calendar Header Navigation */}
-      <div
-        className={cn(
-          "flex items-center justify-between mb-4",
-          classNames?.nav,
-        )}
-      >
-        {/* Previous Button */}
-        <button
-          type="button"
-          onClick={handlePrev}
-          disabled={isPrevNavigationDisabled}
+  const defaultProps = {
+    "data-slot": "calendar",
+    style: {
+      "--number-of-months": numberOfMonths,
+    } as React.CSSProperties,
+    className: cn(
+      "relative flex flex-col rounded-2xl border bg-card p-4 shadow-xs/5 select-none text-foreground before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-2xl)-1px)] not-data-disabled:not-focus-visible:not-aria-invalid:not-data-pressed:before:shadow-[0_1px_--theme(--color-black/4%)] dark:not-data-disabled:not-focus-visible:not-aria-invalid:not-data-pressed:before:shadow-[0_-1px_--theme(--color-white/6%)] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 [&_svg:not([class*='opacity-'])]:opacity-80",
+      numberOfMonths === 1
+        ? "w-72"
+        : "w-full md:w-[calc(16rem*var(--number-of-months)+2rem)]",
+      classNames?.root,
+      className,
+    ),
+    children: (
+      <>
+        {/* Calendar Header Navigation */}
+        <div
           className={cn(
-            "relative inline-flex size-8 items-center justify-center rounded-lg border border-input bg-background/20 transition-colors hover:bg-accent hover:text-accent-foreground outline-none focus-visible:ring-1 focus-visible:ring-ring pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 disabled:pointer-events-none disabled:opacity-64",
-            classNames?.button_previous,
-          )}
-          aria-label="Previous Page"
-        >
-          <ChevronLeftIcon className="size-4 shrink-0 pointer-events-none" />
-        </button>
-
-        {/* Dynamic Zoom Title */}
-        <button
-          type="button"
-          onClick={handleHeaderClick}
-          disabled={viewMode === "years"}
-          className={cn(
-            "rounded-md px-2.5 py-1 text-sm font-semibold tracking-tight transition-colors outline-none focus-visible:ring-1 focus-visible:ring-ring",
-            viewMode !== "years" &&
-              "hover:bg-accent hover:text-accent-foreground",
-            classNames?.caption_label,
+            "flex items-center justify-between mb-4",
+            classNames?.nav,
           )}
         >
-          {renderHeaderLabel()}
-        </button>
-
-        {/* Next Button */}
-        <button
-          type="button"
-          onClick={handleNext}
-          disabled={isNextNavigationDisabled}
-          className={cn(
-            "relative inline-flex size-8 items-center justify-center rounded-lg border border-input bg-background/20 transition-colors hover:bg-accent hover:text-accent-foreground outline-none focus-visible:ring-1 focus-visible:ring-ring pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 disabled:pointer-events-none disabled:opacity-64",
-            classNames?.button_next,
-          )}
-          aria-label="Next Page"
-        >
-          <ChevronRightIcon className="size-4 shrink-0 pointer-events-none" />
-        </button>
-      </div>
-
-      {/* Grid Container */}
-      <div
-        ref={gridRef}
-        onKeyDown={handleKeyDown}
-        className={cn(
-          "relative overflow-hidden rounded-xl bg-muted/20 border border-border/30 p-2 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]",
-          viewMode === "days" ? "h-fit" : "h-60",
-          classNames?.grid,
-        )}
-      >
-        {/* View Mode: Days */}
-        {viewMode === "days" && (
-          <div
+          {/* Previous Button */}
+          <button
+            type="button"
+            onClick={handlePrev}
+            disabled={isPrevNavigationDisabled}
             className={cn(
-              "flex flex-col gap-6 md:flex-row",
-              numberOfMonths > 1 && "divide-x divide-border/20 md:gap-0",
+              "relative inline-flex size-8 items-center justify-center rounded-lg border border-input bg-background/20 transition-colors hover:bg-accent hover:text-accent-foreground outline-none focus-visible:ring-1 focus-visible:ring-ring pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 disabled:pointer-events-none disabled:opacity-64",
+              classNames?.button_previous,
+            )}
+            aria-label="Previous Page"
+          >
+            <ChevronLeftIcon className="size-4 shrink-0 pointer-events-none" />
+          </button>
+
+          {/* Dynamic Zoom Title */}
+          <button
+            type="button"
+            onClick={handleHeaderClick}
+            disabled={viewMode === "years"}
+            className={cn(
+              "rounded-md px-2.5 py-1 text-sm font-semibold tracking-tight transition-colors outline-none focus-visible:ring-1 focus-visible:ring-ring",
+              viewMode !== "years" &&
+                "hover:bg-accent hover:text-accent-foreground",
+              classNames?.caption_label,
             )}
           >
-            {Array.from({ length: numberOfMonths }).map((_, monthIdx) => {
-              const currentMonthCursor = new Date(
-                cursor.getFullYear(),
-                cursor.getMonth() + monthIdx,
-                1,
-              );
+            {renderHeaderLabel()}
+          </button>
 
-              return (
-                <div
-                  key={currentMonthCursor.toISOString()}
-                  className={cn(
-                    "flex flex-col w-full md:w-64",
-                    numberOfMonths > 1 && "px-4 first:ps-0 last:pe-0",
-                  )}
-                >
-                  {numberOfMonths > 1 && (
-                    <div className="text-center text-xs font-semibold mb-3 tracking-tight text-muted-foreground">
-                      {monthsList[currentMonthCursor.getMonth()]}{" "}
-                      {currentMonthCursor.getFullYear()}
-                    </div>
-                  )}
+          {/* Next Button */}
+          <button
+            type="button"
+            onClick={handleNext}
+            disabled={isNextNavigationDisabled}
+            className={cn(
+              "relative inline-flex size-8 items-center justify-center rounded-lg border border-input bg-background/20 transition-colors hover:bg-accent hover:text-accent-foreground outline-none focus-visible:ring-1 focus-visible:ring-ring pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 disabled:pointer-events-none disabled:opacity-64",
+              classNames?.button_next,
+            )}
+            aria-label="Next Page"
+          >
+            <ChevronRightIcon className="size-4 shrink-0 pointer-events-none" />
+          </button>
+        </div>
 
-                  {/* Weekday Row */}
-                  <div className="grid grid-cols-7 mb-1 text-center w-full">
-                    {rotatedWeekdays.map((d) => (
-                      <span
-                        key={d}
-                        className={cn(
-                          "text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 h-6 flex items-center justify-center",
-                          classNames?.weekday,
-                        )}
-                      >
-                        {d}
-                      </span>
-                    ))}
-                  </div>
+        {/* Grid Container */}
+        <div
+          ref={gridRef}
+          onKeyDown={handleKeyDown}
+          className={cn(
+            "relative overflow-hidden rounded-xl bg-muted/20 border border-border/30 p-2 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]",
+            viewMode === "days" ? "h-fit" : "h-60",
+            classNames?.grid,
+          )}
+        >
+          {/* View Mode: Days */}
+          {viewMode === "days" && (
+            <div
+              className={cn(
+                "flex flex-col gap-6 md:flex-row",
+                numberOfMonths > 1 && "divide-x divide-border/20 md:gap-0",
+              )}
+            >
+              {Array.from({ length: numberOfMonths }).map((_, monthIdx) => {
+                const currentMonthCursor = new Date(
+                  cursor.getFullYear(),
+                  cursor.getMonth() + monthIdx,
+                  1,
+                );
 
-                  {/* Day Cells Grid */}
-                  <div className="grid grid-cols-7 grid-rows-6 gap-y-0.5 w-full">
-                    {buildMonth(
-                      currentMonthCursor,
-                      weekStartsOn,
-                      fixedWeeks,
-                    ).map(({ date, inMonth }) => {
-                      const { isSelected, isStart, isEnd, isMiddle } =
-                        getDaySelectionState(date);
-                      const isToday = sameDay(date, today);
-                      const disabledState =
-                        isDateDisabled(date) ||
-                        (disableOutsideDays && !inMonth);
-                      const showCell = inMonth || showOutsideDays;
-                      const customClasses = getModifierClassNames(date);
+                return (
+                  <div
+                    key={currentMonthCursor.toISOString()}
+                    className={cn(
+                      "flex flex-col w-full md:w-64",
+                      numberOfMonths > 1 && "px-4 first:ps-0 last:pe-0",
+                    )}
+                  >
+                    {numberOfMonths > 1 && (
+                      <div className="text-center text-xs font-semibold mb-3 tracking-tight text-muted-foreground">
+                        {monthsList[currentMonthCursor.getMonth()]}{" "}
+                        {currentMonthCursor.getFullYear()}
+                      </div>
+                    )}
 
-                      if (!showCell) {
-                        return (
-                          <div
-                            key={date.toISOString()}
-                            className="h-8 w-8 sm:h-7.5 sm:w-7.5"
-                          />
-                        );
-                      }
-
-                      const isFocused = sameDay(date, focusDate);
-
-                      return (
-                        <button
-                          key={date.toISOString()}
-                          type="button"
-                          tabIndex={isFocused ? 0 : -1}
-                          data-focused={isFocused}
-                          disabled={disabledState}
-                          onClick={() => handleDateClick(date)}
+                    {/* Weekday Row */}
+                    <div className="grid grid-cols-7 mb-1 text-center w-full">
+                      {rotatedWeekdays.map((d) => (
+                        <span
+                          key={d}
                           className={cn(
-                            "relative h-8 w-8 sm:h-7.5 sm:w-7.5 m-auto text-[12.5px] font-medium transition-[background-color,color,border-radius] duration-150 flex items-center justify-center outline-none focus-visible:z-10 focus-visible:ring-1 focus-visible:ring-ring pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11",
-                            // Range middle styles
-                            isMiddle &&
-                              "bg-primary/12 text-primary rounded-none w-full h-8 sm:h-7.5 m-0",
-                            isMiddle && classNames?.day_range_middle,
-                            // Range start styles
-                            isStart &&
-                              "bg-primary text-primary-foreground font-semibold rounded-l-lg rounded-r-none w-full h-8 sm:h-7.5 m-0",
-                            isStart && classNames?.day_range_start,
-                            // Range end styles
-                            isEnd &&
-                              "bg-primary text-primary-foreground font-semibold rounded-r-lg rounded-l-none w-full h-8 sm:h-7.5 m-0",
-                            isEnd && classNames?.day_range_end,
-                            // Normal selected day styles
-                            isSelected &&
-                              !isStart &&
-                              !isEnd &&
-                              "bg-primary text-primary-foreground font-semibold rounded-lg",
-                            isSelected && classNames?.day_selected,
-                            // Hover states when not selected and not middle
-                            !isSelected &&
-                              !isMiddle &&
-                              !disabledState &&
-                              "hover:bg-accent hover:text-accent-foreground rounded-lg",
-                            // Month active vs outside days
-                            !isSelected &&
-                              !isMiddle &&
-                              (inMonth
-                                ? "text-foreground"
-                                : "text-muted-foreground/35"),
-                            !inMonth && classNames?.day_outside,
-                            // Today class override
-                            isToday && classNames?.day_today,
-                            // Disabled state
-                            disabledState &&
-                              "opacity-30 cursor-not-allowed line-through",
-                            // Custom modifier classes
-                            customClasses,
-                            classNames?.day,
+                            "text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 h-6 flex items-center justify-center",
+                            classNames?.weekday,
                           )}
-                          aria-label={`${weekdaysLongList[date.getDay()]}, ${monthsList[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`}
-                          aria-pressed={isSelected}
                         >
-                          <span className="relative z-10">
-                            {date.getDate()}
-                          </span>
-                          {/* Today indicator dot */}
-                          {isToday && (
-                            <span
-                              className={cn(
-                                "absolute bottom-1 size-1 rounded-full",
-                                isSelected || isStart || isEnd
-                                  ? "bg-primary-foreground"
-                                  : "bg-primary",
-                              )}
+                          {d}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Day Cells Grid */}
+                    <div className="grid grid-cols-7 grid-rows-6 gap-y-0.5 w-full">
+                      {buildMonth(
+                        currentMonthCursor,
+                        weekStartsOn,
+                        fixedWeeks,
+                      ).map(({ date, inMonth }) => {
+                        const { isSelected, isStart, isEnd, isMiddle } =
+                          getDaySelectionState(date);
+                        const isToday = sameDay(date, today);
+                        const disabledState =
+                          isDateDisabled(date) ||
+                          (disableOutsideDays && !inMonth);
+                        const showCell = inMonth || showOutsideDays;
+                        const customClasses = getModifierClassNames(date);
+
+                        if (!showCell) {
+                          return (
+                            <div
+                              key={date.toISOString()}
+                              className="h-8 w-8 sm:h-7.5 sm:w-7.5"
                             />
-                          )}
-                        </button>
-                      );
-                    })}
+                          );
+                        }
+
+                        const isFocused = sameDay(date, focusDate);
+
+                        return (
+                          <button
+                            key={date.toISOString()}
+                            type="button"
+                            tabIndex={isFocused ? 0 : -1}
+                            data-focused={isFocused}
+                            disabled={disabledState}
+                            onClick={() => handleDateClick(date)}
+                            className={cn(
+                              "relative h-8 w-8 sm:h-7.5 sm:w-7.5 m-auto text-[12.5px] font-medium transition-[background-color,color,border-radius] duration-150 flex items-center justify-center outline-none focus-visible:z-10 focus-visible:ring-1 focus-visible:ring-ring pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11",
+                              // Range middle styles
+                              isMiddle &&
+                                "bg-primary/12 text-primary rounded-none w-full h-8 sm:h-7.5 m-0",
+                              isMiddle && classNames?.day_range_middle,
+                              // Range start styles
+                              isStart &&
+                                "bg-primary text-primary-foreground font-semibold rounded-l-lg rounded-r-none w-full h-8 sm:h-7.5 m-0",
+                              isStart && classNames?.day_range_start,
+                              // Range end styles
+                              isEnd &&
+                                "bg-primary text-primary-foreground font-semibold rounded-r-lg rounded-l-none w-full h-8 sm:h-7.5 m-0",
+                              isEnd && classNames?.day_range_end,
+                              // Normal selected day styles
+                              isSelected &&
+                                !isStart &&
+                                !isEnd &&
+                                "bg-primary text-primary-foreground font-semibold rounded-lg",
+                              isSelected && classNames?.day_selected,
+                              // Hover states when not selected and not middle
+                              !isSelected &&
+                                !isMiddle &&
+                                !disabledState &&
+                                "hover:bg-accent hover:text-accent-foreground rounded-lg",
+                              // Month active vs outside days
+                              !isSelected &&
+                                !isMiddle &&
+                                (inMonth
+                                  ? "text-foreground"
+                                  : "text-muted-foreground/35"),
+                              !inMonth && classNames?.day_outside,
+                              // Today class override
+                              isToday && classNames?.day_today,
+                              // Disabled state
+                              disabledState &&
+                                "opacity-30 cursor-not-allowed line-through",
+                              // Custom modifier classes
+                              customClasses,
+                              classNames?.day,
+                            )}
+                            aria-label={`${weekdaysLongList[date.getDay()]}, ${monthsList[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`}
+                            aria-pressed={isSelected}
+                          >
+                            <span className="relative z-10">
+                              {date.getDate()}
+                            </span>
+                            {/* Today indicator dot */}
+                            {isToday && (
+                              <span
+                                className={cn(
+                                  "absolute bottom-1 size-1 rounded-full",
+                                  isSelected || isStart || isEnd
+                                    ? "bg-primary-foreground"
+                                    : "bg-primary",
+                                )}
+                              />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+                );
+              })}
+            </div>
+          )}
 
-        {/* View Mode: Months */}
-        {viewMode === "months" && (
-          <div
-            className={cn(
-              "grid h-full grid-cols-3 grid-rows-4 gap-1.5 p-1 w-full max-w-64 mx-auto",
-              classNames?.month_view_grid,
-            )}
-          >
-            {monthsShortList.map((mName, mIdx) => {
-              const isSelectedMonth =
-                selected instanceof Date &&
-                selected.getMonth() === mIdx &&
-                selected.getFullYear() === cursor.getFullYear();
+          {/* View Mode: Months */}
+          {viewMode === "months" && (
+            <div
+              className={cn(
+                "grid h-full grid-cols-3 grid-rows-4 gap-1.5 p-1 w-full max-w-64 mx-auto",
+                classNames?.month_view_grid,
+              )}
+            >
+              {monthsShortList.map((mName, mIdx) => {
+                const isSelectedMonth =
+                  selected instanceof Date &&
+                  selected.getMonth() === mIdx &&
+                  selected.getFullYear() === cursor.getFullYear();
 
-              return (
-                <button
-                  key={mName}
-                  type="button"
-                  onClick={() => {
-                    setCursor(new Date(cursor.getFullYear(), mIdx, 1));
-                    setViewMode("days");
-                  }}
-                  className={cn(
-                    "rounded-lg text-xs font-semibold transition-colors hover:bg-accent hover:text-accent-foreground outline-none focus-visible:ring-1 focus-visible:ring-ring pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11",
-                    isSelectedMonth
-                      ? "bg-primary text-primary-foreground"
-                      : "text-foreground",
-                  )}
-                >
-                  {mName}
-                </button>
-              );
-            })}
-          </div>
-        )}
+                return (
+                  <button
+                    key={mName}
+                    type="button"
+                    onClick={() => {
+                      setCursor(new Date(cursor.getFullYear(), mIdx, 1));
+                      setViewMode("days");
+                    }}
+                    className={cn(
+                      "rounded-lg text-xs font-semibold transition-colors hover:bg-accent hover:text-accent-foreground outline-none focus-visible:ring-1 focus-visible:ring-ring pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11",
+                      isSelectedMonth
+                        ? "bg-primary text-primary-foreground"
+                        : "text-foreground",
+                    )}
+                  >
+                    {mName}
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
-        {/* View Mode: Years */}
-        {viewMode === "years" && (
-          <div
-            className={cn(
-              "grid h-full grid-cols-3 grid-rows-4 gap-1.5 p-1 w-full max-w-64 mx-auto",
-              classNames?.year_view_grid,
-            )}
-          >
-            {Array.from(
-              { length: 12 },
-              (_, i) => getYearRangeStart(cursor) + i,
-            ).map((yr) => {
-              const isSelectedYear =
-                selected instanceof Date && selected.getFullYear() === yr;
+          {/* View Mode: Years */}
+          {viewMode === "years" && (
+            <div
+              className={cn(
+                "grid h-full grid-cols-3 grid-rows-4 gap-1.5 p-1 w-full max-w-64 mx-auto",
+                classNames?.year_view_grid,
+              )}
+            >
+              {Array.from(
+                { length: 12 },
+                (_, i) => getYearRangeStart(cursor) + i,
+              ).map((yr) => {
+                const isSelectedYear =
+                  selected instanceof Date && selected.getFullYear() === yr;
 
-              return (
-                <button
-                  key={yr}
-                  type="button"
-                  onClick={() => {
-                    setCursor(new Date(yr, cursor.getMonth(), 1));
-                    setViewMode("months");
-                  }}
-                  className={cn(
-                    "rounded-lg text-xs font-semibold transition-colors hover:bg-accent hover:text-accent-foreground outline-none focus-visible:ring-1 focus-visible:ring-ring pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11",
-                    isSelectedYear
-                      ? "bg-primary text-primary-foreground"
-                      : "text-foreground",
-                  )}
-                >
-                  {yr}
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </div>
+                return (
+                  <button
+                    key={yr}
+                    type="button"
+                    onClick={() => {
+                      setCursor(new Date(yr, cursor.getMonth(), 1));
+                      setViewMode("months");
+                    }}
+                    className={cn(
+                      "rounded-lg text-xs font-semibold transition-colors hover:bg-accent hover:text-accent-foreground outline-none focus-visible:ring-1 focus-visible:ring-ring pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11",
+                      isSelectedYear
+                        ? "bg-primary text-primary-foreground"
+                        : "text-foreground",
+                    )}
+                  >
+                    {yr}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
 
-      {/* Footer / Today Quick link */}
-      <div
-        className={cn(
-          "flex items-center justify-between mt-3 px-1 pt-1 border-t border-border/20",
-          classNames?.footer,
-        )}
-      >
-        <button
-          type="button"
-          onClick={() => {
-            setCursor(firstOfMonth(today));
-            setFocusDate(today);
-            handleDateClick(today);
-            setViewMode("days");
-          }}
+        {/* Footer / Today Quick link */}
+        <div
           className={cn(
-            "text-xs font-semibold text-primary transition-colors hover:text-primary/80 outline-none focus-visible:ring-1 focus-visible:ring-ring pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11",
-            classNames?.today_button,
+            "flex items-center justify-between mt-3 px-1 pt-1 border-t border-border/20",
+            classNames?.footer,
           )}
         >
-          Today
-        </button>
+          <button
+            type="button"
+            onClick={() => {
+              setCursor(firstOfMonth(today));
+              setFocusDate(today);
+              handleDateClick(today);
+              setViewMode("days");
+            }}
+            className={cn(
+              "text-xs font-semibold text-primary transition-colors hover:text-primary/80 outline-none focus-visible:ring-1 focus-visible:ring-ring pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11",
+              classNames?.today_button,
+            )}
+          >
+            Today
+          </button>
 
-        {selected instanceof Date && (
-          <span className="text-2xs tabular-nums text-muted-foreground/80 font-medium">
-            {`${monthsShortList[selected.getMonth()]} ${selected.getDate()}, ${selected.getFullYear()}`}
-          </span>
-        )}
-
-        {selected &&
-          typeof selected === "object" &&
-          "from" in selected &&
-          selected.from && (
+          {selected instanceof Date && (
             <span className="text-2xs tabular-nums text-muted-foreground/80 font-medium">
-              {`${monthsShortList[selected.from.getMonth()]} ${selected.from.getDate()}`}
-              {selected.to
-                ? ` - ${monthsShortList[selected.to.getMonth()]} ${selected.to.getDate()}`
-                : " - ..."}
+              {`${monthsShortList[selected.getMonth()]} ${selected.getDate()}, ${selected.getFullYear()}`}
             </span>
           )}
-      </div>
-    </div>
-  );
+
+          {selected &&
+            typeof selected === "object" &&
+            "from" in selected &&
+            selected.from && (
+              <span className="text-2xs tabular-nums text-muted-foreground/80 font-medium">
+                {`${monthsShortList[selected.from.getMonth()]} ${selected.from.getDate()}`}
+                {selected.to
+                  ? ` - ${monthsShortList[selected.to.getMonth()]} ${selected.to.getDate()}`
+                  : " - ..."}
+              </span>
+            )}
+        </div>
+      </>
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 Calendar.displayName = "Calendar";

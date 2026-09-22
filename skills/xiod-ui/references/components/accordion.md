@@ -1,7 +1,7 @@
 # accordion
 
 ```tsx
-import { Accordion, AccordionContent, AccordionItem, AccordionPanel, AccordionTrigger } from "xiod-ui/accordion";
+import { Accordion, AccordionItem, AccordionPanel, AccordionTrigger } from "xiod-ui/accordion";
 ```
 
 ## Accordion
@@ -34,23 +34,6 @@ remain available through the exported TypeScript type.
 - `orientation` — Deprecated following the [APG guidance update](https://github.com/w3c/aria-practices/pull/3434) to remove roving focus. This prop no longer affects keyboard focus behavior.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 - `value` — The controlled value of the item(s) that should be expanded. To render an uncontrolled accordion, use the `defaultValue` prop instead.
-
-## AccordionContent
-
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: AccordionPanelState) => string \| undefined) \| undefined` | — |
-| hiddenUntilFound | `boolean \| undefined` | — |
-| keepMounted | `boolean \| undefined` | — |
-| style | `CSSProperties \| ((state: AccordionPanelState) => CSSProperties \| undefined) \| undefined` | — |
-
-- `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `hiddenUntilFound` — Allows the browser's built-in page search to find and expand the panel contents. Overrides the `keepMounted` prop and uses `hidden="until-found"` to hide the element without removing it from the DOM.
-- `keepMounted` — Whether to keep the element in the DOM while the panel is closed. This prop is ignored when `hiddenUntilFound` is used.
-- `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## AccordionItem
 

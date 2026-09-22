@@ -1,5 +1,7 @@
 "use client";
 
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cn } from "cn";
 import type * as React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -67,7 +69,7 @@ export type DotMatrixColorPreset =
   | "fire"
   | "prism";
 
-export interface DotMatrixProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface DotMatrixProps extends useRender.ComponentProps<"div"> {
   rows?: number;
   cols?: number;
   mode?: "animation" | "static" | "vu";
@@ -231,6 +233,7 @@ export function DotMatrix({
   ariaLabel = "Dot matrix loader",
   className,
   onFrame,
+  render,
   ...props
 }: DotMatrixProps): React.JSX.Element {
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -830,18 +833,14 @@ export function DotMatrix({
   const gradientColors =
     colorPreset !== "solid" ? colorPresetGradients[colorPreset] : null;
 
-  return (
-    <div
-      className={cn("relative inline-block select-none", className)}
-      data-slot="dot-matrix"
-      style={
-        {
-          "--dmx-color": color,
-          "--dmx-color-off": colorOff,
-        } as React.CSSProperties
-      }
-      {...props}
-    >
+  const defaultProps = {
+    className: cn("relative inline-block select-none", className),
+    "data-slot": "dot-matrix",
+    style: {
+      "--dmx-color": color,
+      "--dmx-color-off": colorOff,
+    } as React.CSSProperties,
+    children: (
       <svg
         ref={svgRef}
         width={viewBoxWidth}
@@ -928,8 +927,26 @@ export function DotMatrix({
             .dmx-dot-animate-pulse {
               animation: dmx-pulse-anim ${1.5 / speed}s infinite ease-in-out;
             }
-            .dmx-dot-animate-trail {
-              animation: dmx-trail-anim ${1.5 / speed}s infinite linear;
+            .dmx-dot-animate-wave {
+              animation: dmx-wave-anim ${1.5 / speed}s infinite ease-in-out;
+            }
+            .dmx-dot-animate-ripple {
+              animation: dmx-ripple-anim ${2 / speed}s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .dmx-dot-animate-spiral {
+              animation: dmx-spiral-anim ${2.5 / speed}s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .dmx-dot-animate-snake {
+              animation: dmx-snake-anim ${3 / speed}s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .dmx-dot-animate-diagonal {
+              animation: dmx-diagonal-anim ${2 / speed}s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .dmx-dot-animate-rotor {
+              animation: dmx-rotor-anim ${2.5 / speed}s infinite linear;
+            }
+            .dmx-dot-animate-columns-flux {
+              animation: dmx-flux-anim ${1.8 / speed}s infinite ease-in-out;
             }
             .dmx-dot:hover {
               transform: scale(1.3);
@@ -937,22 +954,63 @@ export function DotMatrix({
               ${bloom ? "filter: url(#dmx-hover-filter);" : ""}
             }
             @keyframes dmx-pulse-anim {
-              0%, 100% { opacity: 0.12; }
-              50% { opacity: 1; }
+              0%, 100% { transform: scale(1); opacity: 1; }
+              50% { transform: scale(0.4); opacity: 0.2; }
             }
-            @keyframes dmx-trail-anim {
-              0% { opacity: 1; }
-              35%, 100% { opacity: 0.12; }
+            @keyframes dmx-wave-anim {
+              0%, 100% { transform: translateY(0); opacity: 1; }
+              50% { transform: translateY(-30%); opacity: 0.35; }
+            }
+            @keyframes dmx-ripple-anim {
+              0% { transform: scale(1.3); opacity: 1; }
+              50% { transform: scale(0.3); opacity: 0.15; }
+              100% { transform: scale(1.3); opacity: 1; }
+            }
+            @keyframes dmx-spiral-anim {
+              0% { transform: scale(1.25); opacity: 1; }
+              50% { transform: scale(0.3); opacity: 0.15; }
+              100% { transform: scale(1.25); opacity: 1; }
+            }
+            @keyframes dmx-snake-anim {
+              0% { transform: scale(1.25); opacity: 1; }
+              50% { transform: scale(0.3); opacity: 0.15; }
+              100% { transform: scale(1.25); opacity: 1; }
+            }
+            @keyframes dmx-diagonal-anim {
+              0% { transform: scale(1.3); opacity: 1; }
+              50% { transform: scale(0.3); opacity: 0.15; }
+              100% { transform: scale(1.3); opacity: 1; }
+            }
+            @keyframes dmx-rotor-anim {
+              0% { transform: scale(1.3); opacity: 1; }
+              50% { transform: scale(0.3); opacity: 0.15; }
+              100% { transform: scale(1.3); opacity: 1; }
+            }
+            @keyframes dmx-flux-anim {
+              0%, 100% { transform: scaleY(1); opacity: 1; }
+              50% { transform: scaleY(0.3); opacity: 0.2; }
             }
           `}
         </style>
 
+        {halo && (
+          <ellipse
+            cx={(cols * (dotSize + gap) - gap) / 2}
+            cy={(rows * (dotSize + gap) - gap) / 2}
+            rx={viewBoxWidth / 2}
+            ry={viewBoxHeight / 2}
+            fill="var(--dmx-color, currentColor)"
+            opacity={0.06}
+            filter="url(#dmx-bloom-filter)"
+          />
+        )}
+
         {currentFrame.map((rowArr, rowIdx) =>
           rowArr.map((cellVal, colIdx) => {
-            const cx = colIdx * (dotSize + gap) + dotSize / 2;
-            const cy = rowIdx * (dotSize + gap) + dotSize / 2;
             const x = colIdx * (dotSize + gap);
             const y = rowIdx * (dotSize + gap);
+            const cx = x + dotSize / 2;
+            const cy = y + dotSize / 2;
 
             const isCellOn = cellVal > 0.01;
             const cellOpacity = isCellOn ? cellVal : 0.12;
@@ -969,22 +1027,44 @@ export function DotMatrix({
               !isDirectAnim;
 
             const animationClass = useCSSAnimation
-              ? [
-                  "spiral",
-                  "snake",
-                  "diagonal",
-                  "diagonal-reverse",
-                  "rotor",
-                  "columns-flux",
-                ].includes(preset)
-                ? "dmx-dot-animate-trail"
-                : "dmx-dot-animate-pulse"
+              ? (() => {
+                  switch (preset) {
+                    case "pulse":
+                      return "dmx-dot-animate-pulse";
+                    case "wave":
+                    case "wave-vertical":
+                      return "dmx-dot-animate-wave";
+                    case "ripple":
+                      return "dmx-dot-animate-ripple";
+                    case "spiral":
+                      return "dmx-dot-animate-spiral";
+                    case "snake":
+                      return "dmx-dot-animate-snake";
+                    case "diagonal":
+                    case "diagonal-reverse":
+                      return "dmx-dot-animate-diagonal";
+                    case "rotor":
+                      return "dmx-dot-animate-rotor";
+                    case "columns-flux":
+                      return "dmx-dot-animate-columns-flux";
+                    default:
+                      return "";
+                  }
+                })()
               : "";
 
             const animationDelay = useCSSAnimation
               ? (() => {
-                  const cycleTime = 1.5;
-                  const scaledCycle = cycleTime / speed;
+                  const scaledCycle =
+                    preset === "pulse"
+                      ? 1.5 / speed
+                      : preset === "columns-flux"
+                        ? 1.8 / speed
+                        : preset === "rotor" || preset === "spiral"
+                          ? 2.5 / speed
+                          : preset === "snake"
+                            ? 3 / speed
+                            : 2 / speed;
 
                   if (preset === "ripple") {
                     const rowCenter = (rows - 1) / 2;
@@ -1105,6 +1185,12 @@ export function DotMatrix({
           }),
         )}
       </svg>
-    </div>
-  );
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }

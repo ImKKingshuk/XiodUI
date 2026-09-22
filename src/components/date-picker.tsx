@@ -1,5 +1,7 @@
 "use client";
 
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cn } from "cn";
 import * as React from "react";
 import { Calendar as CalendarIcon } from "xiod-icons/icons/Calendar";
@@ -12,7 +14,7 @@ import { Popover, PopoverPopup, PopoverTrigger } from "./popover";
 /* ---------------------------- Type Definitions ---------------------------- */
 
 export interface DatePickerProps extends Omit<
-  React.HTMLAttributes<HTMLDivElement>,
+  useRender.ComponentProps<"div">,
   "onSelect" | "defaultValue"
 > {
   mode?: "single" | "range";
@@ -135,6 +137,7 @@ function DatePicker({
   triggerClassName,
   triggerVariant = "outline",
   triggerSize = "default",
+  render,
   ...props
 }: DatePickerProps): React.JSX.Element {
   const [open, setOpen] = React.useState(false);
@@ -305,12 +308,10 @@ function DatePicker({
     return placeholder || "Pick a date range";
   };
 
-  return (
-    <div
-      data-slot="date-picker"
-      className={cn("relative w-full max-w-sm", className)}
-      {...props}
-    >
+  const defaultProps = {
+    "data-slot": "date-picker",
+    className: cn("relative w-full max-w-sm", className),
+    children: (
       <Popover open={open} onOpenChange={setOpen}>
         {triggerType === "button" ? (
           /* Dropdown Button Trigger Mode */
@@ -343,10 +344,10 @@ function DatePicker({
                 onBlur={handleInputBlurFrom}
                 onClick={(e) => e.stopPropagation()}
                 data-slot="date-picker-input"
-                className="font-medium tabular-nums *:[input]:[&::-webkit-calendar-picker-indicator]:hidden *:[input]:[&::-webkit-calendar-picker-indicator]:appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                className="[&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
               />
             ) : (
-              <div className="flex items-center gap-1.5 flex-1 px-3 py-1">
+              <div className="flex items-center gap-1.5 w-full">
                 <input
                   type="date"
                   placeholder="Start (YYYY-MM-DD)"
@@ -413,8 +414,14 @@ function DatePicker({
           />
         </PopoverPopup>
       </Popover>
-    </div>
-  );
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "div",
+    props: mergeProps<"div">(defaultProps, props),
+    render,
+  });
 }
 
 DatePicker.displayName = "DatePicker";

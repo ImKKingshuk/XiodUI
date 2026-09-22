@@ -6,6 +6,9 @@ import { ButtonGroup, ButtonGroupSeparator, ButtonGroupText } from "xiod-ui/butt
 
 ## ButtonGroup
 
+Supports `render={<Element />}` for composition. Inherited DOM props
+remain available through the exported TypeScript type.
+
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | orientation | `"horizontal" \| "vertical" \| null \| undefined` | `"horizontal"` |
