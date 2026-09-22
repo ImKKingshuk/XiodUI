@@ -57,6 +57,7 @@ report.*.json
 
 # Local editor configs
 AGENTS.md
+CLAUDE.md
 .idea/
 .vscode/
 .claude/

@@ -10,17 +10,21 @@ Everything ships as a single versioned npm package. Import one component at a ti
 
 ## Contents
 
-- [Features](#features)
-- [Comparison](#comparison)
-- [Installation](#installation)
-- [Quick start](#quick-start)
-- [Imports](#imports)
-- [Components](#components)
-- [Theming](#theming)
-  - [Palettes](#palettes)
-  - [Dark mode](#dark-mode)
-- [Support](#support)
-- [License](#license)
+- [XiodUI](#xiodui)
+  - [Contents](#contents)
+  - [Features](#features)
+  - [Comparison](#comparison)
+  - [Installation](#installation)
+  - [Quick start](#quick-start)
+  - [Imports](#imports)
+  - [Components](#components)
+  - [Theming](#theming)
+    - [Palettes](#palettes)
+    - [Dark mode](#dark-mode)
+  - [AI Agents](#ai-agents)
+    - [Install Agent Skill](#install-agent-skill)
+  - [Support](#support)
+  - [License](#license)
 
 ## Features
 
@@ -237,6 +241,32 @@ export function Providers({ children }: { children: ReactNode }) {
 ```
 
 The provider follows your system's theme preference and remembers your selection. Within the provider, `useTheme()` returns `theme`, `resolvedTheme`, and `setTheme`. Call `setTheme` with `"light"`, `"dark"`, or `"system"` to change the theme.
+
+## AI Agents
+
+The XiodUI repository includes an [Agent Skill](https://agentskills.io) that
+teaches coding agents how to use the library: the install steps, the subpath import rule, the
+`render` composition API, theming, and a generated prop reference for every one
+of the 89 components. It is distributed from this repository rather than in the
+npm package. Without it, agents tend to guess — reaching for the root barrel,
+`asChild`, or a `npx shadcn add` flow that does not exist here.
+
+The skill lives at `skills/xiod-ui/` in this repository.
+
+### Install Agent Skill
+
+The [`skills`](https://skills.sh) CLI installs into Claude Code, Codex, Cursor,
+GitHub Copilot, Antigravity, Devin and dozens of other agents.
+
+```bash
+npx skills add ImKKingshuk/XiodUI
+```
+
+Run it inside a project to install it there, or add `-g` to install it once for
+every project. The CLI writes the skill into whichever directory your agent
+already reads — `.claude/skills/` for Claude Code, `.agents/skills/` for Codex
+and the other tools that share that path — so there is nothing to configure
+afterwards.
 
 ## Support
 

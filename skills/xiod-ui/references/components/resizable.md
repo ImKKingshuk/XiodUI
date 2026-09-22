@@ -1,0 +1,45 @@
+# resizable
+
+```tsx
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "xiod-ui/resizable";
+```
+
+## ResizableHandle
+
+| Prop | Type | Default |
+| :--- | :--- | :--- |
+| disabled | `boolean \| undefined` | `false` |
+| disableDoubleClick | `boolean \| undefined` | `false` |
+| withHandle | `boolean \| undefined` | `false` |
+
+## ResizablePanel
+
+| Prop | Type | Default |
+| :--- | :--- | :--- |
+| collapsedSize | `string \| number \| undefined` | `"0%"` |
+| collapsible | `boolean \| undefined` | `false` |
+| defaultSize | `string \| number \| undefined` | — |
+| disabled | `boolean \| undefined` | `false` |
+| groupResizeBehavior | `"preserve-relative-size" \| "preserve-pixel-size" \| undefined` | `"preserve-relative-size"` |
+| id | `string \| undefined` | — |
+| maxSize | `string \| number \| undefined` | `"100%"` |
+| minSize | `string \| number \| undefined` | `"0%"` |
+| onCollapse | `(() => void) \| undefined` | — |
+| onExpand | `(() => void) \| undefined` | — |
+| onResize | `((size: { asPercentage: number; inPixels: number; }) => void) \| undefined` | — |
+| panelRef | `RefObject<ImperativePanelHandle \| null> \| undefined` | — |
+
+## ResizablePanelGroup
+
+| Prop | Type | Default |
+| :--- | :--- | :--- |
+| defaultLayout | `(string \| number)[] \| undefined` | — |
+| direction | `"horizontal" \| "vertical" \| undefined` | `"horizontal"` |
+| disabled | `boolean \| undefined` | `false` |
+| groupRef | `RefObject<ImperativeGroupHandle \| null> \| undefined` | — |
+| onLayoutChange | `((layout: number[]) => void) \| undefined` | — |
+| onLayoutChanged | `((layout: number[]) => void) \| undefined` | — |
+| storage | `{ getItem: (key: string) => string \| null; setItem: (key: string, value: string) => void; } \| undefined` | — |
+| storageKey | `string \| undefined` | — |
+
+Required props are bold. Full docs: https://ui.xiod.dev/docs
