@@ -1,28 +1,31 @@
-# preview-card
+# PreviewCard
 
 ```tsx
-import { PreviewCard, PreviewCardArrow, PreviewCardPopup, PreviewCardTrigger } from "xiod-ui/preview-card";
+import { PreviewCard, PreviewCardArrow, PreviewCardCreateHandle, PreviewCardPopup, PreviewCardTrigger } from "xiod-ui/preview-card";
 ```
 
 ## PreviewCard
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| actionsRef | `RefObject<PreviewCardRootActions \| null> \| undefined` | — |
-| children | `ReactNode \| PayloadChildRenderFunction<Payload>` | — |
-| defaultOpen | `boolean \| undefined` | — |
-| defaultTriggerId | `string \| null \| undefined` | — |
-| handle | `PreviewCardHandle<Payload> \| undefined` | — |
-| onOpenChange | `((open: boolean, eventDetails: PreviewCardRootChangeEventDetails) => void) \| undefined` | — |
-| onOpenChangeComplete | `((open: boolean) => void) \| undefined` | — |
-| open | `boolean \| undefined` | — |
-| triggerId | `string \| null \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| actionsRef | `RefObject<PreviewCardRootActions \| null> \| undefined` |
+| children | `ReactNode \| PayloadChildRenderFunction<Payload>` |
+| defaultOpen | `boolean \| undefined` |
+| defaultTriggerId | `string \| null \| undefined` |
+| handle | `PreviewCardHandle<Payload> \| undefined` |
+| onOpenChange | `((open: boolean, eventDetails: PreviewCardRootChangeEventDetails) => void) \| undefined` |
+| onOpenChangeComplete | `((open: boolean) => void) \| undefined` |
+| open | `boolean \| undefined` |
+| triggerId | `string \| null \| undefined` |
 
-- `actionsRef` — A ref to imperative actions. - `unmount`: Unmounts the preview card popup. - `close`: Closes the preview card imperatively when called.
+- `actionsRef` — A ref to imperative actions.
+  - `unmount`: Unmounts the preview card popup.
+  - `close`: Closes the preview card imperatively when called.
 - `children` — The content of the preview card. This can be a regular React node or a render function that receives the `payload` of the active trigger.
-- `defaultOpen` — Whether the preview card is initially open. To render a controlled preview card, use the `open` prop instead.
+- `defaultOpen` — Whether the preview card is initially open.
+  To render a controlled preview card, use the `open` prop instead.
 - `defaultTriggerId` — ID of the trigger that the preview card is associated with. This is useful in conjunction with the `defaultOpen` prop to create an initially open preview card.
-- `handle` — A handle to associate the preview card with a trigger. If specified, allows external triggers to control the card's open state. Can be created with the PreviewCard.createHandle() method.
+- `handle` — A handle to associate the preview card with a trigger. If specified, allows external triggers to control the card's open state. Can be created with the PreviewCardCreateHandle() method.
 - `onOpenChange` — Event handler called when the preview card is opened or closed.
 - `onOpenChangeComplete` — Event handler called after any animations complete when the preview card is opened or closed.
 - `open` — Whether the preview card is currently open.
@@ -30,21 +33,33 @@ import { PreviewCard, PreviewCardArrow, PreviewCardPopup, PreviewCardTrigger } f
 
 ## PreviewCardArrow
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: PreviewCardArrowState) => string \| undefined) \| undefined` | — |
-| style | `CSSProperties \| ((state: PreviewCardArrowState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: PreviewCardArrowState) => string \| undefined) \| undefined` |
+| style | `CSSProperties \| ((state: PreviewCardArrowState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
+## PreviewCardCreateHandle
+
+A function, not a component. It creates a handle that connects triggers
+to a `PreviewCard` they are not nested in:
+
+```tsx
+const handle = PreviewCardCreateHandle();
+
+<PreviewCard handle={handle}>…</PreviewCard>
+<PreviewCardTrigger handle={handle}>Open</PreviewCardTrigger>
+```
+
+Create it outside render, once per instance.
+
 ## PreviewCardPopup
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -62,17 +77,16 @@ remain available through the exported TypeScript type.
 
 ## PreviewCardTrigger
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: PreviewCardTriggerState) => string \| undefined) \| undefined` | — |
-| closeDelay | `number \| undefined` | — |
-| delay | `number \| undefined` | — |
-| handle | `PreviewCardHandle<unknown> \| undefined` | — |
-| payload | `unknown` | — |
-| style | `CSSProperties \| ((state: PreviewCardTriggerState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: PreviewCardTriggerState) => string \| undefined) \| undefined` |
+| closeDelay | `number \| undefined` |
+| delay | `number \| undefined` |
+| handle | `PreviewCardHandle<unknown> \| undefined` |
+| payload | `unknown` |
+| style | `CSSProperties \| ((state: PreviewCardTriggerState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `closeDelay` — How long to wait before closing the preview card. Specified in milliseconds.

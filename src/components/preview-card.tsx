@@ -5,6 +5,7 @@ import { cn } from "cn";
 import type * as React from "react";
 
 const PreviewCard = PreviewCardPrimitive.Root;
+const PreviewCardCreateHandle = PreviewCardPrimitive.createHandle;
 
 function PreviewCardTrigger({
   className,
@@ -103,4 +104,10 @@ function ArrowSvg(props: React.ComponentProps<"svg">) {
   );
 }
 
-export { PreviewCard, PreviewCardArrow, PreviewCardPopup, PreviewCardTrigger };
+export {
+  PreviewCard,
+  PreviewCardArrow,
+  PreviewCardCreateHandle,
+  PreviewCardPopup,
+  PreviewCardTrigger,
+};
