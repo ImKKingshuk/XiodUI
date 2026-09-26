@@ -331,6 +331,8 @@ export function Providers({ children }: { children: ReactNode }) {
 
 The provider follows your system's theme preference and remembers your selection. Within the provider, `useTheme()` returns `theme`, `resolvedTheme`, and `setTheme`. Call `setTheme` with `"light"`, `"dark"`, or `"system"` to change the theme.
 
+The saved theme is applied before the page first paints, so server-rendered pages don't flash light mode and you don't need a script of your own. Add `suppressHydrationWarning` to `<html>`, since the class is set before React hydrates. If your Content Security Policy requires a nonce for inline scripts, pass it as `nonce`.
+
 ## AI Agents
 
 The XiodUI repository includes an [Agent Skill](https://agentskills.io) that

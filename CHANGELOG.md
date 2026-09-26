@@ -5,6 +5,17 @@ All notable changes to `xiod-ui` are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **No light flash on load in dark mode.** `ThemeProvider` now applies the saved
+  theme and palette before the first paint, on server-rendered pages as well as
+  client-only apps. Before, a server-rendered page painted in light mode until
+  React hydrated, and apps needed their own `<head>` script to avoid it. Remove
+  that script when you upgrade. With a Content Security Policy that requires a
+  nonce for inline scripts, pass it with the new `nonce` prop.
+
 ## [1.1.0] — 2026-09-26
 
 The components XiodUI builds itself, rather than on a Base UI primitive, now

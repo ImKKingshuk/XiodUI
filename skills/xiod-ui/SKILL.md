@@ -327,8 +327,15 @@ const { theme, resolvedTheme, setTheme } = useTheme();
 Provider props and their defaults: `defaultTheme` (`"system"`),
 `enableSystemTheme` (`true`), `attribute` (`"class"`), `storageKey`
 (`"theme"`), `defaultPalette` (unset), `paletteAttribute` (`"data-palette"`),
-`paletteStorageKey` (`"palette"`). `attribute` and `paletteAttribute` must
-differ, or the two axes overwrite each other on the same element.
+`paletteStorageKey` (`"palette"`), `nonce` (unset). `attribute` and
+`paletteAttribute` must differ, or the two axes overwrite each other on the
+same element.
+
+The provider applies the saved theme and palette before the first paint, with
+an inline script in server-rendered HTML. Do not add a theme script to `<head>`,
+and remove one when migrating.
+Put `suppressHydrationWarning` on `<html>`, render the provider inside
+`<body>`, and pass `nonce` when a CSP requires one for inline scripts.
 
 ### Palettes
 

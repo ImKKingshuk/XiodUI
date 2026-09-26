@@ -50,6 +50,12 @@ export interface ThemeProviderProps {
   paletteAttribute?: string;
   /** localStorage key used to remember the palette. */
   paletteStorageKey?: string;
+  /**
+   * Nonce for the inline script that applies the stored theme before the page
+   * paints. Only needed when a Content Security Policy blocks inline scripts
+   * without one.
+   */
+  nonce?: string;
 }
 
 const ThemeContext = React.createContext<ThemeContextValue | undefined>(
@@ -61,6 +67,81 @@ const useIsomorphicLayoutEffect =
 
 function isThemeMode(theme: string | null): theme is ThemeMode {
   return theme === "light" || theme === "dark" || theme === "system";
+}
+
+function readStorage(key: string): string | null {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    // Private mode / disabled storage: behave as if nothing was saved.
+    return null;
+  }
+}
+
+/**
+ * Applies the saved theme and palette to `<html>` before the first paint.
+ * Rendered as an inline script, so it must be self-contained: no imports,
+ * no helpers from this module, nothing a bundler would rewrite.
+ */
+function initTheme(
+  attribute: string,
+  storageKey: string,
+  defaultTheme: string,
+  enableSystemTheme: boolean,
+  paletteAttribute: string,
+  paletteStorageKey: string,
+  defaultPalette: string | null,
+): void {
+  const root = document.documentElement;
+  // Inside on purpose: the script is serialised on its own and can't reach
+  // anything outside this function.
+  // oxlint-disable-next-line unicorn/consistent-function-scoping
+  const read = (key: string): string | null => {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  };
+
+  let theme = read(storageKey);
+  if (theme !== "light" && theme !== "dark" && theme !== "system") {
+    theme = defaultTheme;
+  }
+  const resolved =
+    theme === "system"
+      ? enableSystemTheme &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light"
+      : theme;
+
+  if (attribute === "class") {
+    root.classList.remove("light", "dark");
+    root.classList.add(resolved);
+  } else {
+    root.setAttribute(attribute, resolved);
+  }
+  root.style.colorScheme = resolved;
+
+  const palette = read(paletteStorageKey) || defaultPalette;
+  if (palette) root.setAttribute(paletteAttribute, palette);
+}
+
+function subscribeNever(): () => void {
+  return () => {};
+}
+
+/**
+ * `true` while rendering on the server and while hydrating what the server
+ * sent, `false` for a render that starts in the browser.
+ */
+function useIsServerRender(): boolean {
+  return React.useSyncExternalStore(
+    subscribeNever,
+    () => false,
+    () => true,
+  );
 }
 
 function getResolvedTheme(
@@ -154,7 +235,9 @@ function ThemeProvider({
   defaultPalette,
   paletteAttribute = "data-palette",
   paletteStorageKey = "palette",
+  nonce,
 }: ThemeProviderProps): React.ReactElement {
+  const isServerRender = useIsServerRender();
   const [theme, setThemeState] = React.useState<ThemeMode>(defaultTheme);
   const [resolvedTheme, setResolvedTheme] =
     React.useState<ResolvedTheme>("light");
@@ -204,17 +287,17 @@ function ThemeProvider({
     [paletteAttribute, paletteStorageKey],
   );
 
-  React.useEffect(() => {
-    setMounted(true);
-    try {
-      const savedTheme = localStorage.getItem(storageKey);
-      if (isThemeMode(savedTheme)) setThemeState(savedTheme);
+  // A layout effect, so a render that starts in the browser applies the saved
+  // theme before the first paint too. Server-rendered pages already have it
+  // from the inline script; applying it again below changes nothing.
+  useIsomorphicLayoutEffect(() => {
+    const savedTheme = readStorage(storageKey);
+    if (isThemeMode(savedTheme)) setThemeState(savedTheme);
 
-      const savedPalette = localStorage.getItem(paletteStorageKey);
-      if (savedPalette) setPaletteState(savedPalette);
-    } catch {
-      // See above.
-    }
+    const savedPalette = readStorage(paletteStorageKey);
+    if (savedPalette) setPaletteState(savedPalette);
+
+    setMounted(true);
   }, [storageKey, paletteStorageKey]);
 
   useIsomorphicLayoutEffect(() => {
@@ -252,8 +335,28 @@ function ThemeProvider({
     [theme, resolvedTheme, setTheme, palette, setPalette],
   );
 
+  const scriptArgs = JSON.stringify([
+    attribute,
+    storageKey,
+    defaultTheme,
+    enableSystemTheme,
+    paletteAttribute,
+    paletteStorageKey,
+    defaultPalette ?? null,
+  ]).slice(1, -1);
+
   return (
-    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>
+      {/* Only server HTML needs it: the browser runs it while parsing, before
+          the first paint. React never runs scripts it creates itself, so a
+          render that starts in the browser leaves it out. */}
+      {isServerRender ? (
+        <script nonce={nonce} suppressHydrationWarning>
+          {`(${initTheme.toString()})(${scriptArgs})`}
+        </script>
+      ) : null}
+      {children}
+    </ThemeContext.Provider>
   );
 }
 

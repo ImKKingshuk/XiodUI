@@ -13,6 +13,7 @@ import { ThemeProvider, useTheme } from "xiod-ui/theme-provider";
 | defaultPalette | `string \| undefined` | — |
 | defaultTheme | `ThemeMode \| undefined` | `"system"` |
 | enableSystemTheme | `boolean \| undefined` | `true` |
+| nonce | `string \| undefined` | — |
 | paletteAttribute | `string \| undefined` | `"data-palette"` |
 | paletteStorageKey | `string \| undefined` | `"palette"` |
 | storageKey | `string \| undefined` | `"theme"` |
@@ -21,6 +22,7 @@ import { ThemeProvider, useTheme } from "xiod-ui/theme-provider";
 - `defaultPalette` — Palette to apply before anything is read from storage. Leave unset to ship a single palette the CSS way — `@import "xiod-ui/themes/<name>"` overrides the base tokens directly and needs no attribute on `<html>` at all. This prop is for apps that let their own users switch palettes at runtime, which requires the scoped stylesheets (`xiod-ui/themes/<name>/scoped`).
 - `defaultTheme` — Mode to use before anything is read from storage.
 - `enableSystemTheme` — Follow `prefers-color-scheme` when the mode is `"system"`.
+- `nonce` — Nonce for the inline script that applies the stored theme before the page paints. Only needed when a Content Security Policy blocks inline scripts without one.
 - `paletteAttribute` — Attribute used to write the palette. Must differ from `attribute`, or the two axes overwrite each other on the same element.
 - `paletteStorageKey` — localStorage key used to remember the palette.
 - `storageKey` — localStorage key used to remember the choice.
