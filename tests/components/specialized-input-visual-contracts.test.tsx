@@ -443,6 +443,52 @@ describe("canvas and animated feedback contracts", () => {
       });
     });
     expect(await screen.findByRole("status")).toHaveTextContent("report saved");
+    act(() => morphicToast.clear());
+  });
+
+  it("announces through one live region and pauses while focused", async () => {
+    vi.useFakeTimers();
+    try {
+      const { container } = render(<MorphicToaster />);
+      const announcer = container.querySelector(
+        "[data-slot=morphic-toaster-announcer]",
+      );
+      // Mounted before any toast, so the first one is announced.
+      expect(announcer).toHaveAttribute("aria-live", "polite");
+
+      act(() => {
+        morphicToast.info({
+          title: "Update ready",
+          description: "Restart to apply",
+          duration: 1000,
+          button: { title: "Restart", onClick: () => {} },
+        });
+      });
+      expect(announcer).toHaveTextContent("Update ready. Restart to apply");
+      // The toast itself doesn't announce a second time.
+      expect(screen.getByRole("status")).toHaveAttribute("aria-live", "off");
+
+      const toast = screen.getByRole("status");
+      act(() => screen.getByRole("button", { name: "Restart" }).focus());
+      await act(async () => vi.advanceTimersByTimeAsync(3000));
+      expect(toast).not.toHaveAttribute("data-exiting", "true");
+
+      // An interrupted swipe snaps back instead of staying offset.
+      fireEvent.pointerDown(toast, { button: 0, clientY: 0, pointerId: 1 });
+      toast.dispatchEvent(
+        Object.assign(new Event("pointermove"), { clientY: 10 }),
+      );
+      expect(toast.style.transform).toBe("translateY(10px)");
+      toast.dispatchEvent(new Event("pointercancel"));
+      expect(toast.style.transform).toBe("");
+
+      act(() => screen.getByRole("button", { name: "Restart" }).blur());
+      await act(async () => vi.advanceTimersByTimeAsync(1100));
+      expect(toast).toHaveAttribute("data-exiting", "true");
+    } finally {
+      act(() => morphicToast.clear());
+      vi.useRealTimers();
+    }
   });
 });
 

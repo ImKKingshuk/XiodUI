@@ -709,6 +709,18 @@ const MorphicToast = memo(function MorphicToast({
     [onMouseLeave],
   );
 
+  // Keyboard users reach the action button by Tab: open the toast for them
+  // as hover does, and close it once focus leaves the toast.
+  const handleFocus = useCallback(() => {
+    if (hasDesc) setIsExpanded(true);
+  }, [hasDesc]);
+
+  const handleBlur = useCallback((e: React.FocusEvent<HTMLDivElement>) => {
+    const to = e.relatedTarget;
+    if (to instanceof Node && e.currentTarget.contains(to)) return;
+    setIsExpanded(false);
+  }, []);
+
   const handleTransitionEnd: React.TransitionEventHandler<HTMLDivElement> =
     useCallback(
       (e) => {
@@ -739,6 +751,7 @@ const MorphicToast = memo(function MorphicToast({
   const swipeHandlersRef = useRef<{
     onMove: (e: PointerEvent) => void;
     onUp: (e: PointerEvent) => void;
+    onCancel: () => void;
   } | null>(null);
 
   if (!swipeHandlersRef.current) {
@@ -755,13 +768,20 @@ const MorphicToast = memo(function MorphicToast({
         const el = containerRef.current;
         if (pointerStartRef.current === null || !el) return;
         const dy = e.clientY - pointerStartRef.current;
-        pointerStartRef.current = null;
-        el.style.transform = "";
-        el.removeEventListener("pointermove", handlers.onMove);
-        el.removeEventListener("pointerup", handlers.onUp);
+        handlers.onCancel();
         if (Math.abs(dy) > SWIPE_DISMISS) {
           onDismissRef.current?.();
         }
+      },
+      // Also the end of an interrupted swipe (pointercancel): snap back.
+      onCancel: () => {
+        pointerStartRef.current = null;
+        const el = containerRef.current;
+        if (!el) return;
+        el.style.transform = "";
+        el.removeEventListener("pointermove", handlers.onMove);
+        el.removeEventListener("pointerup", handlers.onUp);
+        el.removeEventListener("pointercancel", handlers.onCancel);
       },
     };
     swipeHandlersRef.current = handlers;
@@ -776,9 +796,11 @@ const MorphicToast = memo(function MorphicToast({
     [view.button],
   );
 
+  useEffect(() => () => swipeHandlersRef.current?.onCancel(), []);
+
   const handlePointerDown = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
-      if (exiting || !onDismiss) return;
+      if (exiting || !onDismiss || e.button !== 0) return;
       const target = e.target as HTMLElement;
       if (target.closest("[data-morphic-button]")) return;
       pointerStartRef.current = e.clientY;
@@ -788,6 +810,7 @@ const MorphicToast = memo(function MorphicToast({
       if (el && h) {
         el.addEventListener("pointermove", h.onMove, { passive: true });
         el.addEventListener("pointerup", h.onUp, { passive: true });
+        el.addEventListener("pointercancel", h.onCancel, { passive: true });
       }
     },
     [exiting, onDismiss],
@@ -798,6 +821,7 @@ const MorphicToast = memo(function MorphicToast({
     <div
       ref={containerRef}
       role="status"
+      aria-live="off"
       data-morphic-toast
       data-slot="morphic-toast"
       {...props}
@@ -821,6 +845,8 @@ const MorphicToast = memo(function MorphicToast({
       }}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
       onTransitionEnd={handleTransitionEnd}
       onPointerDown={handlePointerDown}
     >
@@ -1029,7 +1055,9 @@ export function MorphicToaster({
   const [toasts, setToasts] = useState<MorphicToastItem[]>(store.toasts);
   const [activeId, setActiveId] = useState<string>();
 
-  const hoverRef = useRef(false);
+  // Timers pause while any of these hold: pointer over a toast, focus inside
+  // one, or the page hidden in a background tab.
+  const pauseRef = useRef(new Set<"hover" | "focus" | "hidden">());
   const timersRef = useRef(new Map<string, number>());
   const listRef = useRef(toasts);
   const latestRef = useRef<string | undefined>(undefined);
@@ -1055,7 +1083,7 @@ export function MorphicToaster({
   }, []);
 
   const schedule = useCallback((items: MorphicToastItem[]) => {
-    if (hoverRef.current) return;
+    if (pauseRef.current.size > 0) return;
 
     for (const item of items) {
       if (item.exiting) continue;
@@ -1100,24 +1128,55 @@ export function MorphicToaster({
     schedule(toasts);
   }, [toasts, schedule]);
 
+  const pause = useCallback(
+    (reason: "hover" | "focus" | "hidden") => {
+      if (pauseRef.current.has(reason)) return;
+      pauseRef.current.add(reason);
+      clearAllTimers();
+    },
+    [clearAllTimers],
+  );
+
+  const resume = useCallback(
+    (reason: "hover" | "focus" | "hidden") => {
+      if (!pauseRef.current.delete(reason)) return;
+      schedule(listRef.current);
+    },
+    [schedule],
+  );
+
+  useEffect(() => {
+    const onVisibility = () => {
+      if (document.hidden) pause("hidden");
+      else resume("hidden");
+    };
+    onVisibility();
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, [pause, resume]);
+
+  const handleViewportFocus = useCallback(() => pause("focus"), [pause]);
+  const handleViewportBlur = useCallback(
+    (e: React.FocusEvent<HTMLElement>) => {
+      const next = e.relatedTarget;
+      if (next instanceof Node && e.currentTarget.contains(next)) return;
+      resume("focus");
+    },
+    [resume],
+  );
+
   const handleMouseEnterRef = useRef<MouseEventHandler<HTMLDivElement>>(null);
   const handleMouseLeaveRef = useRef<MouseEventHandler<HTMLDivElement>>(null);
 
-  handleMouseEnterRef.current = useCallback<
-    MouseEventHandler<HTMLDivElement>
-  >(() => {
-    if (hoverRef.current) return;
-    hoverRef.current = true;
-    clearAllTimers();
-  }, [clearAllTimers]);
+  handleMouseEnterRef.current = useCallback<MouseEventHandler<HTMLDivElement>>(
+    () => pause("hover"),
+    [pause],
+  );
 
-  handleMouseLeaveRef.current = useCallback<
-    MouseEventHandler<HTMLDivElement>
-  >(() => {
-    if (!hoverRef.current) return;
-    hoverRef.current = false;
-    schedule(listRef.current);
-  }, [schedule]);
+  handleMouseLeaveRef.current = useCallback<MouseEventHandler<HTMLDivElement>>(
+    () => resume("hover"),
+    [resume],
+  );
 
   const latest = useMemo(() => {
     for (let i = toasts.length - 1; i >= 0; i--) {
@@ -1130,6 +1189,8 @@ export function MorphicToaster({
     latestRef.current = latest;
     setActiveId(latest);
   }, [latest]);
+
+  const latestItem = toasts.find((t) => t.id === latest);
 
   const getHandlers = useCallback((toastId: string) => {
     let cached = handlersCache.current.get(toastId);
@@ -1269,6 +1330,14 @@ export function MorphicToaster({
               background-color: color-mix(in oklch, var(--_c) 85%, #000000) !important;
             }
 
+            @media (prefers-reduced-motion: reduce) {
+              [data-morphic-toast],
+              [data-morphic-toast] * {
+                transition-duration: 1ms !important;
+                animation-duration: 1ms !important;
+              }
+            }
+
             [data-morphic-viewport][data-position^="top"] [data-morphic-toast]:not([data-ready="true"]) {
               margin-bottom: calc(-1 * (${HEIGHT}px + 0.75rem));
               transform: translateY(-6px) scale(0.95);
@@ -1296,7 +1365,9 @@ export function MorphicToaster({
             data-morphic-viewport
             data-slot="morphic-toaster-viewport"
             data-position={pos}
-            aria-live="polite"
+            aria-label="Notifications"
+            onFocus={handleViewportFocus}
+            onBlur={handleViewportBlur}
             className={cn(
               "fixed z-50 flex flex-col gap-3 p-3 pointer-events-none max-w-[calc(100vw-1.5rem)]",
               pos.startsWith("top")
@@ -1344,6 +1415,22 @@ export function MorphicToaster({
           </section>
         );
       })}
+      {/* Always mounted, unlike the viewports, so the first toast is
+          announced too; it reads the newest toast, including state changes
+          such as a promise settling. */}
+      <div
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+        data-slot="morphic-toaster-announcer"
+      >
+        {latestItem && (
+          <>
+            {latestItem.title}
+            {latestItem.description ? <>. {latestItem.description}</> : null}
+          </>
+        )}
+      </div>
     </>
   );
 }
