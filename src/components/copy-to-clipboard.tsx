@@ -84,11 +84,11 @@ export function CopyToClipboard({
 
   const valueToCopy = textToCopy ?? text;
 
-  const handleCopy = React.useCallback(() => {
-    copyToClipboard(valueToCopy);
+  const handleCopy = React.useCallback(async () => {
+    const copied = await copyToClipboard(valueToCopy);
 
-    // Trigger anchored toast
-    if (buttonRef.current) {
+    // Confirm only a copy that happened.
+    if (copied && buttonRef.current) {
       anchoredToastManager.add({
         description: copiedText,
         positionerProps: {
@@ -106,7 +106,7 @@ export function CopyToClipboard({
     <>
       <span
         className={cn(
-          "absolute inset-0 flex items-center justify-center transition-[transform,opacity] duration-200",
+          "absolute inset-0 flex items-center justify-center transition-[transform,opacity] duration-200 motion-reduce:transition-none",
           isCopied
             ? "translate-y-0 opacity-100"
             : "translate-y-full opacity-0 pointer-events-none",
@@ -122,7 +122,7 @@ export function CopyToClipboard({
       </span>
       <span
         className={cn(
-          "absolute inset-0 flex items-center justify-center transition-[transform,opacity] duration-200",
+          "absolute inset-0 flex items-center justify-center transition-[transform,opacity] duration-200 motion-reduce:transition-none",
           isCopied
             ? "-translate-y-full opacity-0 pointer-events-none"
             : "translate-y-0 opacity-100",
@@ -143,7 +143,7 @@ export function CopyToClipboard({
     <button
       ref={buttonRef}
       type="button"
-      onClick={handleCopy}
+      onClick={() => void handleCopy()}
       aria-label={tooltipText}
       className={cn(
         "group/btn relative isolate flex aspect-square h-full items-center justify-center overflow-hidden rounded-r-[calc(var(--radius-lg)-1px)] border-l border-border text-muted-foreground transition-[color,background-color,box-shadow] hover:bg-accent hover:text-accent-foreground focus-visible:-outline-offset-1 focus-visible:outline-ring pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
