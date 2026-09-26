@@ -5,6 +5,8 @@ import { useRender } from "@base-ui/react/use-render";
 import { cn } from "cn";
 import * as React from "react";
 
+import { useMediaQuery } from "../hooks/use-media-query";
+
 // --- Types ---
 
 export interface WaveformProps extends useRender.ComponentProps<"div"> {
@@ -55,6 +57,9 @@ interface WaveformContextValue {
   seekTo: (clientX: number) => void;
   liveDataRef: React.MutableRefObject<number[]>;
   needsRedrawRef: React.MutableRefObject<boolean>;
+  // Set by WaveformCanvas: schedules one frame. The canvas only loops while
+  // `active` or `processing`; otherwise it paints on request and stops.
+  requestDrawRef: React.MutableRefObject<(() => void) | null>;
   triggerRedraw: () => void;
 }
 
@@ -126,6 +131,8 @@ export function Waveform({
   const containerRef = React.useRef<HTMLDivElement>(null);
   const liveDataRef = React.useRef<number[]>([]);
   const needsRedrawRef = React.useRef(true);
+  const requestDrawRef = React.useRef<(() => void) | null>(null);
+  const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 
   // Audio Context references for microphone mode
   const audioContextRef = React.useRef<AudioContext | null>(null);
@@ -134,6 +141,7 @@ export function Waveform({
 
   const triggerRedraw = React.useCallback(() => {
     needsRedrawRef.current = true;
+    requestDrawRef.current?.();
   }, []);
 
   const seekTo = React.useCallback(
@@ -176,6 +184,11 @@ export function Waveform({
       return;
     }
 
+    // getUserMedia can resolve after this effect was cleaned up (unmount,
+    // `active` turned off, a new deviceId). Stop that stream at once rather
+    // than leave the microphone on.
+    let cancelled = false;
+
     const setupMicrophone = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -192,6 +205,12 @@ export function Waveform({
                 autoGainControl: true,
               },
         });
+        if (cancelled) {
+          stream.getTracks().forEach((track) => {
+            track.stop();
+          });
+          return;
+        }
         streamRef.current = stream;
 
         const AudioContextConstructor =
@@ -218,10 +237,12 @@ export function Waveform({
     void setupMicrophone();
 
     return () => {
+      cancelled = true;
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((track) => {
           track.stop();
         });
+        streamRef.current = null;
       }
       if (
         audioContextRef.current &&
@@ -229,6 +250,8 @@ export function Waveform({
       ) {
         void audioContextRef.current.close();
       }
+      audioContextRef.current = null;
+      analyserRef.current = null;
     };
   }, [active, microphone, deviceId]);
 
@@ -341,13 +364,22 @@ export function Waveform({
         liveDataRef.current = bars;
       }
 
-      needsRedrawRef.current = true;
-      rafId = requestAnimationFrame(generateWave);
+      triggerRedraw();
+      // With reduced motion, one still frame of the wave stands in for it.
+      if (!reducedMotion) rafId = requestAnimationFrame(generateWave);
     };
 
     rafId = requestAnimationFrame(generateWave);
     return () => cancelAnimationFrame(rafId);
-  }, [processing, active, mode, barWidth, barGap]);
+  }, [
+    processing,
+    active,
+    mode,
+    barWidth,
+    barGap,
+    reducedMotion,
+    triggerRedraw,
+  ]);
 
   // Handle resizing, parameter change triggers, theme switches, and mount timing delays
   React.useEffect(() => {
@@ -406,6 +438,7 @@ export function Waveform({
       seekTo,
       liveDataRef,
       needsRedrawRef,
+      requestDrawRef,
       triggerRedraw,
     }),
     [
@@ -482,9 +515,10 @@ export function WaveformVisual({
     duration,
     liveDataRef,
     needsRedrawRef,
+    requestDrawRef,
   } = useWaveform();
 
-  const animationRef = React.useRef<number>(0);
+  const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
   const gradientCacheRef = React.useRef<CanvasGradient | null>(null);
   const lastWidthRef = React.useRef(0);
 
@@ -511,11 +545,12 @@ export function WaveformVisual({
       gradientCacheRef.current = null;
       lastWidthRef.current = rect.width;
       needsRedrawRef.current = true;
+      requestDrawRef.current?.();
     });
 
     resizeObserver.observe(container);
     return () => resizeObserver.disconnect();
-  }, [canvasRef, containerRef, needsRedrawRef]);
+  }, [canvasRef, containerRef, needsRedrawRef, requestDrawRef]);
 
   // Main rendering logic inside Animation Loop
   React.useEffect(() => {
@@ -525,17 +560,27 @@ export function WaveformVisual({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const draw = () => {
-      if (!needsRedrawRef.current) {
-        animationRef.current = requestAnimationFrame(draw);
-        return;
-      }
+    // Loop only while the bars move on their own; a static waveform paints
+    // once per request (value, size or theme change) and then goes idle. With
+    // reduced motion a processing wave is a still frame, so it doesn't loop.
+    const loop = active || (processing && !reducedMotion);
+    let frame = 0;
 
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(draw);
+    };
+
+    function draw() {
+      frame = 0;
+      if (needsRedrawRef.current) paint();
+      if (loop) schedule();
+    }
+
+    function paint() {
+      if (!canvas || !ctx) return;
       const rect = canvas.getBoundingClientRect();
-      if (rect.width === 0 || rect.height === 0) {
-        animationRef.current = requestAnimationFrame(draw);
-        return;
-      }
+      // Hidden or not laid out yet: the ResizeObserver asks again once it is.
+      if (rect.width === 0 || rect.height === 0) return;
 
       // Clear the canvas
       ctx.clearRect(0, 0, rect.width, rect.height);
@@ -649,13 +694,17 @@ export function WaveformVisual({
       // Reset transparency
       ctx.globalAlpha = 1.0;
 
-      // Throttle redraw checks if static
-      needsRedrawRef.current = active || processing;
-      animationRef.current = requestAnimationFrame(draw);
-    };
+      needsRedrawRef.current = loop;
+    }
 
-    animationRef.current = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(animationRef.current);
+    requestDrawRef.current = schedule;
+    // Something this effect depends on changed (value, colours, data…).
+    needsRedrawRef.current = true;
+    schedule();
+    return () => {
+      cancelAnimationFrame(frame);
+      if (requestDrawRef.current === schedule) requestDrawRef.current = null;
+    };
   }, [
     canvasRef,
     barWidth,
@@ -674,6 +723,8 @@ export function WaveformVisual({
     seed,
     liveDataRef,
     needsRedrawRef,
+    requestDrawRef,
+    reducedMotion,
   ]);
 
   return (
@@ -688,6 +739,13 @@ export function WaveformVisual({
       {...props}
     />
   );
+}
+
+function formatTime(seconds: number): string {
+  const total = Math.max(0, Math.round(seconds));
+  const m = Math.floor(total / 60);
+  const s = total % 60;
+  return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
 // --- Component: WaveformScrubber (Interactive dragging area) ---
@@ -709,6 +767,7 @@ export function WaveformScrubber({
   } = useWaveform();
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return;
     e.currentTarget.setPointerCapture(e.pointerId);
     setIsDragging(true);
     seekTo(e.clientX);
@@ -721,7 +780,9 @@ export function WaveformScrubber({
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    e.currentTarget.releasePointerCapture(e.pointerId);
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
     setIsDragging(false);
   };
 
@@ -769,6 +830,11 @@ export function WaveformScrubber({
     "aria-valuemin": 0,
     "aria-valuemax": duration,
     "aria-valuenow": value,
+    // Seconds read as a clock; a 0–1 fraction (duration 1) as a percentage.
+    "aria-valuetext":
+      duration === 1
+        ? `${Math.round(value * 100)}%`
+        : `${formatTime(value)} of ${formatTime(duration)}`,
     tabIndex: 0,
     "data-slot": "waveform-scrubber",
     onPointerDown: handlePointerDown,
@@ -777,7 +843,7 @@ export function WaveformScrubber({
     onPointerCancel: handlePointerUp,
     onKeyDown: handleKeyDown,
     className: cn(
-      "absolute inset-0 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md select-none",
+      "absolute inset-0 cursor-pointer touch-none outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md select-none",
       "pointer-coarse:after:absolute pointer-coarse:after:inset-y-[-12px] pointer-coarse:after:inset-x-0 pointer-coarse:after:min-h-[44px]",
       className,
     ),
