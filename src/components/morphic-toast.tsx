@@ -1028,7 +1028,7 @@ const MorphicToast = memo(function MorphicToast({
                 data-morphic-button
                 data-state={view.state}
                 className={cn(
-                  "relative inline-flex items-center justify-center h-7 px-3 mt-3 rounded-full text-xs font-medium cursor-pointer transition-colors duration-150 border-0 outline-none select-none text-zinc-900 bg-zinc-900/10 hover:bg-zinc-900/20 dark:text-white dark:bg-white/10 dark:hover:bg-white/20 pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11",
+                  "relative inline-flex items-center justify-center h-7 px-3 mt-3 rounded-full text-xs font-medium cursor-pointer transition-colors duration-150 border-0 outline-none focus-visible:ring-2 focus-visible:ring-current/40 select-none text-zinc-900 bg-zinc-900/10 hover:bg-zinc-900/20 dark:text-white dark:bg-white/10 dark:hover:bg-white/20 pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11",
                   view.styles?.button,
                 )}
                 onClick={handleButtonClick}
