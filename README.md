@@ -37,25 +37,21 @@ Everything ships as a single versioned npm package. Import one component at a ti
 
 ## Comparison
 
-| Feature                                                                       | XiodUI | shadcn/ui | HeroUI | MUI | Ant Design | Mantine | Chakra UI |
-| :---------------------------------------------------------------------------- | :----: | :-------: | :----: | :-: | :--------: | :-----: | :-------: |
-| Animations in plain CSS — no tw-animate-css, Motion or react-transition-group |   ✅   |    ❌     |   ❌   | ❌  |     ❌     |   ✅    |    ✅     |
-| Checkbox, radio, switch & slider thumb all animate their state                |   ✅   |    ❌     |   ✅   | ❌  |     ✅     |   ✅    |    ❌     |
-| Checkmark draws itself in, stroke by stroke                                   |   ✅   |    ❌     |   ✅   | ❌  |     ❌     |   ❌    |    ❌     |
-| Control styles beyond colour & size (diamond checkbox, fader slider, …)       |   ✅   |    ❌     |   ❌   | ❌  |     ❌     |   ❌    |    ❌     |
-| Nothing to install beyond React — no peer dependencies                        |   ✅   |    ❌     |   ❌   | ❌  |     ✅     |   ❌    |    ❌     |
-| Tailwind CSS v4 native                                                        |   ✅   |    ✅     |   ✅   | ❌  |     ❌     |   ❌    |    ❌     |
-| Versioned npm package (no copy-paste drift)                                   |   ✅   |    ❌     |   ✅   | ✅  |     ✅     |   ✅    |    ✅     |
-| One version number for the whole library                                      |   ✅   |    ❌     |   ✅   | ❌  |     ✅     |   ✅    |    ✅     |
-| 20 ready-made palettes imported by name, not pasted in                        |   ✅   |    ❌     |   ❌   | ❌  |     ❌     |   ❌    |    ❌     |
-| 44px touch targets on coarse pointers (WCAG 2.5.5)                            |   ✅   |    ❌     |   ❌   | ❌  |     ❌     |   ❌    |    ❌     |
-| Command & Carousel built in — no cmdk / embla                                 |   ✅   |    ❌     |   ❌   | ❌  |     ❌     |   ❌    |    ❌     |
-| Phone number & payment card inputs                                            |   ✅   |    ❌     |   ❌   | ❌  |     ❌     |   ❌    |    ❌     |
-| File upload with drag and drop                                                |   ✅   |    ❌     |   ❌   | ❌  |     ✅     |   ✅    |    ✅     |
-| Drag-to-reorder lists & dashboard grids                                       |   ✅   |    ❌     |   ❌   | ❌  |     ❌     |   ❌    |    ❌     |
-| Wheel & ruler pickers                                                         |   ✅   |    ❌     |   ❌   | ❌  |     ❌     |   ❌    |    ❌     |
+| Feature                                                  | XiodUI | shadcn/ui | HeroUI | MUI | Ant Design | Mantine | Chakra UI |
+| :------------------------------------------------------- | :----: | :-------: | :----: | :-: | :--------: | :-----: | :-------: |
+| Animations in plain CSS — no animation library           |   ✅   |    ❌     |   ❌   | ❌  |     ❌     |   ✅    |    ✅     |
+| Checkbox, radio, switch & slider all animate their state |   ✅   |    ❌     |   ✅   | ❌  |     ✅     |   ✅    |    ❌     |
+| Control styles beyond colour & size                      |   ✅   |    ❌     |   ❌   | ❌  |     ❌     |   ❌    |    ❌     |
+| Nothing to install beyond React                          |   ✅   |    ❌     |   ❌   | ❌  |     ✅     |   ❌    |    ❌     |
+| Tailwind CSS v4 native                                   |   ✅   |    ✅     |   ✅   | ❌  |     ❌     |   ❌    |    ❌     |
+| One versioned npm package — no copy-paste drift          |   ✅   |    ❌     |   ✅   | ❌  |     ✅     |   ✅    |    ✅     |
+| 20 ready-made palettes                                   |   ✅   |    ❌     |   ❌   | ❌  |     ❌     |   ❌    |    ❌     |
+| 44px touch targets on touch screens                      |   ✅   |    ❌     |   ❌   | ❌  |     ❌     |   ❌    |    ❌     |
+| Specialised components none of the others ship¹          |   ✅   |    ❌     |   ❌   | ❌  |     ❌     |   ❌    |    ❌     |
 
-Compared against shadcn/ui, HeroUI 3.2, MUI 9.4, Ant Design 6.6, Mantine 9.6 and Chakra UI 3.37 (September 2026), including each project's own add-on packages such as Mantine Dropzone.
+¹ Phone and payment card inputs, drag-to-reorder lists and dashboard grids, wheel and ruler pickers, and a command palette and carousel with no extra dependency.
+
+Compared against shadcn/ui, HeroUI 3.2, MUI 9.4, Ant Design 6.6, Mantine 9.6 and Chakra UI 3.37 (September 2026), including each project's own add-on packages.
 
 "Nothing to install beyond React" means beyond `react` and `react-dom`: XiodUI's own dependencies (Base UI, class-variance-authority, cn, and XiodIcons) are installed with the package. Your project still needs Tailwind CSS 4 configured.
 
