@@ -41,6 +41,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Autocomplete and Command items put an 8px gap (`gap-2`) between an icon and
+  the label, as Menu items do. The icon used to sit flush against the text.
+
 - Structural SVG no longer collapses to icon size. 40 components carry
   `[&_svg:not([class*='size-'])]:size-4` to normalize icons; it compiles to a
   descendant selector at specificity (0,2,1), which beats a plain `.h-full` or
