@@ -419,6 +419,17 @@ describe("resizing and picker contracts", () => {
     fireEvent.scroll(track!);
     expect(onChange).toHaveBeenLastCalledWith(2);
     expect(ruler).toHaveAttribute("aria-valuenow", "2");
+
+    // Home/End jump to the ends; PageUp steps ten, clamped to max.
+    await user.keyboard("{Home}");
+    fireEvent.scroll(track!);
+    expect(ruler).toHaveAttribute("aria-valuenow", "0");
+    await user.keyboard("{PageUp}");
+    fireEvent.scroll(track!);
+    expect(ruler).toHaveAttribute("aria-valuenow", "3");
+    await user.keyboard("{ArrowDown}");
+    fireEvent.scroll(track!);
+    expect(onChange).toHaveBeenLastCalledWith(2);
   });
 
   it("announces wheel values, marks disabled options, and roves focus in groups", async () => {

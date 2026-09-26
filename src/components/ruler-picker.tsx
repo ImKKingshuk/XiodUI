@@ -70,6 +70,17 @@ export const majorTickVariants = cva(
   },
 );
 
+function prefersReducedMotion(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+}
+
+function scrollBehavior(): ScrollBehavior {
+  return prefersReducedMotion() ? "instant" : "smooth";
+}
+
 export interface RulerPickerProps
   extends
     Omit<
@@ -118,6 +129,14 @@ function RulerPicker({
 
   // Synchronize external ref with local rootRef
   React.useImperativeHandle(ref, () => rootRef.current as HTMLDivElement);
+
+  const activeValueRef = React.useRef(activeValue);
+  React.useEffect(() => {
+    activeValueRef.current = activeValue;
+  }, [activeValue]);
+  // Ends a mouse drag in progress; also run on unmount.
+  const dragCleanupRef = React.useRef<(() => void) | null>(null);
+  React.useEffect(() => () => dragCleanupRef.current?.(), []);
 
   // Helper to calculate and apply inline styles to elements inside the scroll container
   const updateStyles = React.useCallback(
@@ -184,30 +203,28 @@ function RulerPicker({
     if (currentSnapped !== value) {
       container.scrollTo({
         left: targetScrollLeft,
-        behavior: isMountedRef.current ? "smooth" : "instant",
+        behavior:
+          isMountedRef.current && !prefersReducedMotion()
+            ? "smooth"
+            : "instant",
       });
       updateStyles(container);
     }
   }, [value, min, itemWidth, updateStyles]);
 
   // Initial positioning on mount
+  // Place the track on the current value at mount and when the scale
+  // changes. Not on value changes: the effect above scrolls to those
+  // smoothly, and jumping here would cut that animation off.
   React.useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    const initialVal =
-      value !== undefined
-        ? value
-        : defaultValue !== undefined
-          ? defaultValue
-          : min;
-    const targetScrollLeft = (initialVal - min) * itemWidth;
-
-    container.scrollLeft = targetScrollLeft;
+    container.scrollLeft = (activeValueRef.current - min) * itemWidth;
     updateStyles(container);
 
     isMountedRef.current = true;
-  }, [min, itemWidth, value, defaultValue, updateStyles]);
+  }, [min, itemWidth, updateStyles]);
 
   // Translate vertical wheel scroll to horizontal container scroll and snap to the nearest tick upon completion
   React.useEffect(() => {
@@ -237,7 +254,7 @@ function RulerPicker({
           );
           container.scrollTo({
             left: closestIndex * itemWidthRef.current,
-            behavior: "smooth",
+            behavior: scrollBehavior(),
           });
         }, 150);
       }
@@ -255,9 +272,13 @@ function RulerPicker({
   // Support drag-to-scroll with mouse on desktop
   const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     const container = scrollContainerRef.current;
-    if (!container) return;
+    if (!container || e.button !== 0) return;
 
+    // preventDefault (no text selection while dragging) also stops the
+    // click from focusing the slider, so focus it here.
     e.preventDefault();
+    rootRef.current?.focus({ preventScroll: true });
+    dragCleanupRef.current?.();
     // Disable snapping and smooth scrolling temporarily while dragging
     container.classList.remove("scroll-smooth", "snap-x", "snap-mandatory");
     const startX = e.pageX - container.offsetLeft;
@@ -273,40 +294,67 @@ function RulerPicker({
       container.scrollLeft = startScrollLeft - walk;
     };
 
-    const onMouseUp = () => {
+    const cleanup = () => {
       document.body.style.cursor = "";
       container.classList.add("scroll-smooth", "snap-x", "snap-mandatory");
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+      dragCleanupRef.current = null;
+    };
 
+    const onMouseUp = () => {
+      cleanup();
       if (isMoving) {
         const scrollLeft = container.scrollLeft;
         const closestValue = Math.round(scrollLeft / itemWidth) * itemWidth;
-        container.scrollTo({ left: closestValue, behavior: "smooth" });
+        container.scrollTo({ left: closestValue, behavior: scrollBehavior() });
       }
-
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
     };
 
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mouseup", onMouseUp);
+    dragCleanupRef.current = cleanup;
   };
 
   // Keyboard navigation support
+  // Slider keys: arrows step by one, PageUp/PageDown by ten, Home/End to
+  // the ends.
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    if (e.key === "ArrowRight") {
-      e.preventDefault();
-      const currentSnapped = Math.round(container.scrollLeft / itemWidth);
-      const nextSnapped = Math.min(max - min, currentSnapped + 1);
-      container.scrollTo({ left: nextSnapped * itemWidth, behavior: "smooth" });
-    } else if (e.key === "ArrowLeft") {
-      e.preventDefault();
-      const currentSnapped = Math.round(container.scrollLeft / itemWidth);
-      const prevSnapped = Math.max(0, currentSnapped - 1);
-      container.scrollTo({ left: prevSnapped * itemWidth, behavior: "smooth" });
+    const current = Math.round(container.scrollLeft / itemWidth);
+    let target: number;
+    switch (e.key) {
+      case "ArrowRight":
+      case "ArrowUp":
+        target = current + 1;
+        break;
+      case "ArrowLeft":
+      case "ArrowDown":
+        target = current - 1;
+        break;
+      case "PageUp":
+        target = current + 10;
+        break;
+      case "PageDown":
+        target = current - 10;
+        break;
+      case "Home":
+        target = 0;
+        break;
+      case "End":
+        target = max - min;
+        break;
+      default:
+        return;
     }
+    e.preventDefault();
+    target = Math.max(0, Math.min(max - min, target));
+    container.scrollTo({
+      left: target * itemWidth,
+      behavior: scrollBehavior(),
+    });
   };
 
   const range = max - min;
@@ -321,6 +369,7 @@ function RulerPicker({
     "aria-valuemin": min,
     "aria-valuemax": max,
     "aria-valuenow": activeValue,
+    "aria-orientation": "horizontal" as const,
     role: "slider",
     "data-slot": "ruler-picker",
     children: (
