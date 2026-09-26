@@ -587,8 +587,15 @@ export function WheelPicker<T extends WheelPickerValue = WheelPickerValue>({
       duration: number,
       onComplete?: () => void,
     ) => {
-      if (startScroll === endScroll || duration === 0) {
-        scrollTo(startScroll);
+      if (
+        startScroll === endScroll ||
+        duration === 0 ||
+        // Reduced motion: land on the value without the spin.
+        (typeof window !== "undefined" &&
+          window.matchMedia?.("(prefers-reduced-motion: reduce)").matches)
+      ) {
+        cancelAnimation();
+        scrollRef.current = scrollTo(endScroll);
         onComplete?.();
         return;
       }
@@ -609,7 +616,8 @@ export function WheelPicker<T extends WheelPickerValue = WheelPickerValue>({
         }
       };
 
-      requestAnimationFrame(tick);
+      cancelAnimation();
+      moveId.current = requestAnimationFrame(tick);
     },
     [scrollTo, cancelAnimation],
   );
@@ -1197,8 +1205,9 @@ export function WheelPicker<T extends WheelPickerValue = WheelPickerValue>({
       if (wheelSnapTimeoutRef.current) {
         clearTimeout(wheelSnapTimeoutRef.current);
       }
+      cancelAnimation();
     };
-  }, [handleDragStartEvent, handleWheelEvent]);
+  }, [handleDragStartEvent, handleWheelEvent, cancelAnimation]);
 
   useEffect(() => {
     selectByValue(value);
