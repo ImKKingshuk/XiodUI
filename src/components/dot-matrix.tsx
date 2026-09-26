@@ -4,7 +4,7 @@ import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
 import { cn } from "cn";
 import type * as React from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 
 export type DotMatrixShape = "circle" | "square" | "diamond" | "heart";
 export type DotMatrixPreset =
@@ -242,6 +242,11 @@ export function DotMatrix({
   const lastTimeRef = useRef<number>(0);
   const accumulatorRef = useRef<number>(0);
   const svgRef = useRef<SVGSVGElement>(null);
+  // Per-instance SVG ids: fixed ids collide when several matrices share a page.
+  const idPrefix = `dmx${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
+  const gradientId = `${idPrefix}-gradient`;
+  const bloomFilterId = `${idPrefix}-bloom`;
+  const hoverFilterId = `${idPrefix}-hover`;
 
   useEffect(() => {
     if (!autoplay || !isPlaying || prefersReducedMotion) return;
@@ -839,6 +844,13 @@ export function DotMatrix({
     style: {
       "--dmx-color": color,
       "--dmx-color-off": colorOff,
+      // The stylesheet below is shared by every instance, so what differs
+      // per instance reaches it through these variables.
+      "--dmx-speed": speed,
+      "--dmx-fill": gradientColors
+        ? `url(#${gradientId})`
+        : "var(--dmx-color, currentColor)",
+      "--dmx-hover-filter": bloom ? `url(#${hoverFilterId})` : "none",
     } as React.CSSProperties,
     children: (
       <svg
@@ -854,7 +866,7 @@ export function DotMatrix({
         <defs>
           {gradientColors && (
             <linearGradient
-              id="dmx-gradient-preset"
+              id={gradientId}
               x1="0%"
               y1="0%"
               x2="100%"
@@ -873,7 +885,7 @@ export function DotMatrix({
 
           {(bloom || halo) && (
             <filter
-              id="dmx-bloom-filter"
+              id={bloomFilterId}
               x="-50%"
               y="-50%"
               width="200%"
@@ -892,7 +904,7 @@ export function DotMatrix({
           )}
 
           <filter
-            id="dmx-hover-filter"
+            id={hoverFilterId}
             x="-50%"
             y="-50%"
             width="200%"
@@ -918,40 +930,40 @@ export function DotMatrix({
               transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 300ms ease;
             }
             .dmx-dot-on {
-              fill: ${gradientColors ? "url(#dmx-gradient-preset)" : "var(--dmx-color, currentColor)"};
+              fill: var(--dmx-fill, var(--dmx-color, currentColor));
             }
             .dmx-dot-off {
               fill: var(--dmx-color-off, currentColor);
               opacity: 0.12;
             }
             .dmx-dot-animate-pulse {
-              animation: dmx-pulse-anim ${1.5 / speed}s infinite ease-in-out;
+              animation: dmx-pulse-anim calc(1.5s / var(--dmx-speed, 1)) infinite ease-in-out;
             }
             .dmx-dot-animate-wave {
-              animation: dmx-wave-anim ${1.5 / speed}s infinite ease-in-out;
+              animation: dmx-wave-anim calc(1.5s / var(--dmx-speed, 1)) infinite ease-in-out;
             }
             .dmx-dot-animate-ripple {
-              animation: dmx-ripple-anim ${2 / speed}s infinite cubic-bezier(0.4, 0, 0.2, 1);
+              animation: dmx-ripple-anim calc(2s / var(--dmx-speed, 1)) infinite cubic-bezier(0.4, 0, 0.2, 1);
             }
             .dmx-dot-animate-spiral {
-              animation: dmx-spiral-anim ${2.5 / speed}s infinite cubic-bezier(0.4, 0, 0.2, 1);
+              animation: dmx-spiral-anim calc(2.5s / var(--dmx-speed, 1)) infinite cubic-bezier(0.4, 0, 0.2, 1);
             }
             .dmx-dot-animate-snake {
-              animation: dmx-snake-anim ${3 / speed}s infinite cubic-bezier(0.4, 0, 0.2, 1);
+              animation: dmx-snake-anim calc(3s / var(--dmx-speed, 1)) infinite cubic-bezier(0.4, 0, 0.2, 1);
             }
             .dmx-dot-animate-diagonal {
-              animation: dmx-diagonal-anim ${2 / speed}s infinite cubic-bezier(0.4, 0, 0.2, 1);
+              animation: dmx-diagonal-anim calc(2s / var(--dmx-speed, 1)) infinite cubic-bezier(0.4, 0, 0.2, 1);
             }
             .dmx-dot-animate-rotor {
-              animation: dmx-rotor-anim ${2.5 / speed}s infinite linear;
+              animation: dmx-rotor-anim calc(2.5s / var(--dmx-speed, 1)) infinite linear;
             }
             .dmx-dot-animate-columns-flux {
-              animation: dmx-flux-anim ${1.8 / speed}s infinite ease-in-out;
+              animation: dmx-flux-anim calc(1.8s / var(--dmx-speed, 1)) infinite ease-in-out;
             }
             .dmx-dot:hover {
               transform: scale(1.3);
               opacity: 1 !important;
-              ${bloom ? "filter: url(#dmx-hover-filter);" : ""}
+              filter: var(--dmx-hover-filter, none);
             }
             @keyframes dmx-pulse-anim {
               0%, 100% { transform: scale(1); opacity: 1; }
@@ -1001,7 +1013,7 @@ export function DotMatrix({
             ry={viewBoxHeight / 2}
             fill="var(--dmx-color, currentColor)"
             opacity={0.06}
-            filter="url(#dmx-bloom-filter)"
+            filter={`url(#${bloomFilterId})`}
           />
         )}
 
@@ -1124,7 +1136,7 @@ export function DotMatrix({
               isCellOn &&
               !useCSSAnimation &&
               !isDirectAnim
-                ? { filter: "url(#dmx-bloom-filter)" }
+                ? { filter: `url(#${bloomFilterId})` }
                 : {}),
               ...(!useCSSAnimation ? { opacity: cellOpacity } : {}),
             } as React.CSSProperties;

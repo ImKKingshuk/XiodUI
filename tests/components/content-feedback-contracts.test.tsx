@@ -383,4 +383,41 @@ describe("tabs contracts", () => {
     await user.keyboard("{ArrowLeft}");
     expect(overview).toHaveFocus();
   });
+
+  it("keeps each dot matrix's gradient, filters and speed to itself", () => {
+    const { container } = render(
+      <>
+        <DotMatrix aria-label="First" bloom colorPreset="ocean" speed={2} />
+        <DotMatrix
+          aria-label="Second"
+          bloom={false}
+          colorPreset="fire"
+          speed={0.5}
+        />
+      </>,
+    );
+    const [first, second] = Array.from(
+      container.querySelectorAll<HTMLElement>("[data-slot=dot-matrix]"),
+    );
+    const gradients = container.querySelectorAll("linearGradient");
+    expect(gradients).toHaveLength(2);
+    expect(gradients[0].id).not.toBe(gradients[1].id);
+    expect(first.style.getPropertyValue("--dmx-fill")).toBe(
+      `url(#${gradients[0].id})`,
+    );
+    expect(second.style.getPropertyValue("--dmx-fill")).toBe(
+      `url(#${gradients[1].id})`,
+    );
+    expect(first.style.getPropertyValue("--dmx-speed")).toBe("2");
+    expect(second.style.getPropertyValue("--dmx-speed")).toBe("0.5");
+    expect(second.style.getPropertyValue("--dmx-hover-filter")).toBe("none");
+    // The shared stylesheet holds nothing instance-specific.
+    const css =
+      document.querySelector(
+        "style[href=xiod-ui-dot-matrix], style[data-href=xiod-ui-dot-matrix]",
+      )?.textContent ??
+      container.querySelector("style")?.textContent ??
+      "";
+    expect(css).not.toMatch(/url\(#/);
+  });
 });
