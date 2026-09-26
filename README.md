@@ -40,6 +40,9 @@ Everything ships as a single versioned npm package. Import one component at a ti
 | Feature                                                                       | XiodUI | shadcn/ui | HeroUI | MUI | Ant Design | Mantine | Chakra UI |
 | :---------------------------------------------------------------------------- | :----: | :-------: | :----: | :-: | :--------: | :-----: | :-------: |
 | Animations in plain CSS — no tw-animate-css, Motion or react-transition-group |   ✅   |    ❌     |   ❌   | ❌  |     ❌     |   ✅    |    ✅     |
+| Checkbox, radio, switch & slider thumb all animate their state                |   ✅   |    ❌     |   ✅   | ❌  |     ✅     |   ✅    |    ❌     |
+| Checkmark draws itself in, stroke by stroke                                   |   ✅   |    ❌     |   ✅   | ❌  |     ❌     |   ❌    |    ❌     |
+| Control styles beyond colour & size (diamond checkbox, fader slider, …)       |   ✅   |    ❌     |   ❌   | ❌  |     ❌     |   ❌    |    ❌     |
 | Nothing to install beyond React — no peer dependencies                        |   ✅   |    ❌     |   ❌   | ❌  |     ✅     |   ❌    |    ❌     |
 | Tailwind CSS v4 native                                                        |   ✅   |    ✅     |   ✅   | ❌  |     ❌     |   ❌    |    ❌     |
 | Versioned npm package (no copy-paste drift)                                   |   ✅   |    ❌     |   ✅   | ✅  |     ✅     |   ✅    |    ✅     |
