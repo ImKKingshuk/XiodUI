@@ -5,6 +5,64 @@ All notable changes to `xiod-ui` are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+The components XiodUI builds itself, rather than on a Base UI primitive, now
+match Base UI's keyboard, screen reader, touch and reduced-motion behaviour.
+
+### Added
+
+- Form support: `name` on ListBox and InputPhone (InputPhone submits the E.164
+  number), and `defaultValue` on ListBox. FileUpload's input now carries
+  dropped files too, so a plain form submit sends them.
+- `onFilesRejected` on FileUpload, for files over `maxFiles`.
+- `DraggableHandle`, to move a Draggable panel from a part you choose.
+- `onError` on `useCopyToClipboard`.
+
+### Changed
+
+- ListBox is a single tab stop: arrow keys, Home/End and typing a letter
+  move between options, as in a native list box.
+- `copyToClipboard` from `useCopyToClipboard` now resolves to whether the copy
+  succeeded.
+
+### Fixed
+
+- **Keyboard:**
+  - Calendar supports Home/End, PageUp/PageDown (Shift for a year) and no
+    longer takes focus when it re-renders.
+  - The ColorPicker arcs, DashboardGrid tiles, Draggable panels and Sortable
+    items can be moved and resized from the keyboard. Escape cancels a
+    Sortable move.
+  - RulerPicker supports every slider key.
+  - InputPhone's country list works with the arrow keys and Enter.
+  - Carousel's arrow keys no longer fire from text fields or sliders inside a
+    slide.
+- **Screen readers:**
+  - Moves in DashboardGrid and Sortable are announced, and so are FileUpload
+    changes (including rejected files), AgentSteps progress and MorphicToast
+    messages. MorphicToast now announces its first toast and no longer reads
+    each toast twice.
+  - Step statuses and upload errors are spoken, not only shown.
+- **Pointer:**
+  - Right and middle clicks no longer start drags, and an interrupted touch
+    drag snaps back instead of sticking.
+  - FileUpload's drop zone no longer flickers as the pointer crosses its
+    content.
+  - Backspace over a `(`, `)` or `-` in InputPhone deletes the digit before
+    it instead of doing nothing, and the caret stays in place.
+- **Reduced motion:** Waveform, WheelPicker, RulerPicker, Carousel autoplay,
+  AgentSteps, KineticClick, MorphicToast and CopyToClipboard all respect it.
+- **Focus:** removing a FileUpload file or clearing InputPhone keeps focus
+  where you are.
+- MorphicToast stays open while it has focus or the tab is in the
+  background.
+- CopyToClipboard works on plain `http` pages and shows "Copied!" only after
+  a copy succeeds.
+- KineticClick is sharp on high-density screens and bursts from the element
+  when triggered from the keyboard.
+- Waveform draws only while something changes, instead of every frame.
+
 ## [1.1.0] — 2026-09-26
 
 ### Added
