@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import * as React from "react";
 import { describe, expect, it, vi } from "vitest";
 
 import { Button } from "../../src/components/button";
@@ -250,6 +251,44 @@ describe("movable and sortable layout contracts", () => {
     expect(onReorder).toHaveBeenCalledWith(["beta", "alpha", "gamma"]);
     await user.click(screen.getByRole("button", { name: "Remove beta" }));
     expect(onRemove).toHaveBeenCalledWith("beta");
+  });
+
+  it("announces a keyboard drag and restores the order on Escape", async () => {
+    const user = userEvent.setup();
+    function List(): React.JSX.Element {
+      const [items, setItems] = React.useState(["alpha", "beta", "gamma"]);
+      return (
+        <Sortable items={items} onReorder={setItems}>
+          {items.map((item) => (
+            <SortableItem id={item} key={item}>
+              {item}
+              <SortableItemRemove id={item} />
+            </SortableItem>
+          ))}
+        </Sortable>
+      );
+    }
+    const { container } = render(<List />);
+    const order = () =>
+      screen.getAllByRole("listitem").map((item) => item.dataset.sortableId);
+    const announcer = container.querySelector("[data-slot=sortable-announcer]");
+
+    // Enter on a control inside an item doesn't lift the item.
+    screen.getByRole("button", { name: "Remove alpha" }).focus();
+    await user.keyboard("{Enter}");
+    expect(announcer).toHaveTextContent("");
+
+    screen.getByRole("listitem", { name: "alpha" }).focus();
+    await user.keyboard("{Enter}");
+    expect(announcer).toHaveTextContent(/Picked up alpha, position 1 of 3/);
+    await user.keyboard("{End}");
+    expect(order()).toEqual(["beta", "gamma", "alpha"]);
+    expect(announcer).toHaveTextContent("alpha moved to position 3 of 3.");
+    expect(screen.getByRole("listitem", { name: "alpha" })).toHaveFocus();
+
+    await user.keyboard("{Escape}");
+    expect(order()).toEqual(["alpha", "beta", "gamma"]);
+    expect(announcer).toHaveTextContent(/alpha returned to position 1 of 3/);
   });
 });
 

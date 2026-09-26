@@ -82,6 +82,7 @@ interface SortableContextValue {
   orientation: SortableOrientation;
   onItemPointerDown: (index: number, e: React.PointerEvent) => void;
   onItemKeyDown: (index: number, e: React.KeyboardEvent) => void;
+  onItemBlur: (e: React.FocusEvent) => void;
   onItemRemove?: (id: string) => void;
 }
 
@@ -124,18 +125,41 @@ function Sortable({
   } | null>(null);
 
   // Real-time mutable refs to prevent stale closure bugs in pointer event listeners
+  const [announcement, setAnnouncement] = React.useState("");
+
   const activeIndexRef = React.useRef<number | null>(null);
   const overIndexRef = React.useRef<number | null>(null);
   const itemsRef = React.useRef(items);
   const onReorderRef = React.useRef(onReorder);
+  // The order when a keyboard drag began, restored by Escape.
+  const keyboardOriginRef = React.useRef<string[] | null>(null);
+  // Removes the window listeners of a pointer drag in progress.
+  const pointerCleanupRef = React.useRef<(() => void) | null>(null);
 
   React.useEffect(() => {
     itemsRef.current = items;
     onReorderRef.current = onReorder;
   }, [items, onReorder]);
 
+  // Unmounting mid-drag must not leave window listeners behind.
+  React.useEffect(() => () => pointerCleanupRef.current?.(), []);
+
+  // Reordering moves the lifted item's DOM node, which can drop focus; put
+  // it back so the keyboard drag continues.
+  React.useEffect(() => {
+    if (keyboardActiveIndex === null || keyboardActiveIndex >= items.length) {
+      return;
+    }
+    const el = containerRef.current?.querySelector<HTMLElement>(
+      `[data-sortable-index="${keyboardActiveIndex}"]`,
+    );
+    if (el && document.activeElement !== el) el.focus();
+  }, [keyboardActiveIndex, items]);
+
   const handlePointerDown = React.useCallback(
     (index: number, e: React.PointerEvent) => {
+      if (e.button !== 0) return;
+      pointerCleanupRef.current?.();
       e.preventDefault();
       e.stopPropagation();
 
@@ -169,9 +193,30 @@ function Sortable({
         }
       };
 
-      const onPointerUp = () => {
+      const reset = () => {
+        activeIndexRef.current = null;
+        overIndexRef.current = null;
+        setActiveIndex(null);
+        setOverIndex(null);
+        setDragOverlayPos(null);
+      };
+
+      const cleanup = () => {
         window.removeEventListener("pointermove", onPointerMove);
         window.removeEventListener("pointerup", onPointerUp);
+        window.removeEventListener("pointercancel", onPointerCancel);
+        pointerCleanupRef.current = null;
+      };
+
+      // The browser took the pointer (a scroll gesture, a system dialog):
+      // drop without reordering.
+      const onPointerCancel = () => {
+        cleanup();
+        reset();
+      };
+
+      const onPointerUp = () => {
+        cleanup();
 
         const fromIdx = activeIndexRef.current;
         const toIdx = overIndexRef.current;
@@ -191,49 +236,78 @@ function Sortable({
           onReorderRef.current(reordered);
         }
 
-        activeIndexRef.current = null;
-        overIndexRef.current = null;
-        setActiveIndex(null);
-        setOverIndex(null);
-        setDragOverlayPos(null);
+        reset();
       };
 
       window.addEventListener("pointermove", onPointerMove);
       window.addEventListener("pointerup", onPointerUp);
+      window.addEventListener("pointercancel", onPointerCancel);
+      pointerCleanupRef.current = cleanup;
     },
     [],
   );
 
+  // Keyboard drag: Space/Enter lifts the item, arrows (Home/End) move it,
+  // Space/Enter drops it, Escape puts the list back as it was. Each step is
+  // announced, since the only other feedback is visual.
   const handleKeyDown = React.useCallback(
     (index: number, e: React.KeyboardEvent) => {
+      // Keys typed into a control inside the item belong to that control.
+      if (e.target !== e.currentTarget) return;
+      const total = items.length;
+
       if (keyboardActiveIndex === null) {
         if (e.key === " " || e.key === "Enter") {
           e.preventDefault();
+          keyboardOriginRef.current = items;
           setKeyboardActiveIndex(index);
+          setAnnouncement(
+            `Picked up ${items[index]}, position ${index + 1} of ${total}. Use the arrow keys to move it, Space or Enter to drop it, Escape to cancel.`,
+          );
         }
         return;
       }
 
+      const id = items[keyboardActiveIndex];
+
       if (e.key === "Escape") {
         e.preventDefault();
+        const origin = keyboardOriginRef.current;
+        keyboardOriginRef.current = null;
         setKeyboardActiveIndex(null);
+        if (origin && origin.join("\u0000") !== items.join("\u0000")) {
+          onReorder(origin);
+        }
+        const originIndex = origin ? origin.indexOf(id) : keyboardActiveIndex;
+        setAnnouncement(
+          `Cancelled. ${id} returned to position ${originIndex + 1} of ${total}.`,
+        );
         return;
       }
 
       if (e.key === " " || e.key === "Enter") {
         e.preventDefault();
+        keyboardOriginRef.current = null;
         setKeyboardActiveIndex(null);
+        setAnnouncement(
+          `Dropped ${id} at position ${keyboardActiveIndex + 1} of ${total}.`,
+        );
         return;
       }
 
       let nextIdx = keyboardActiveIndex;
       if (e.key === "ArrowDown" || e.key === "ArrowRight") {
-        e.preventDefault();
-        nextIdx = Math.min(items.length - 1, keyboardActiveIndex + 1);
+        nextIdx = Math.min(total - 1, keyboardActiveIndex + 1);
       } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
-        e.preventDefault();
         nextIdx = Math.max(0, keyboardActiveIndex - 1);
+      } else if (e.key === "Home") {
+        nextIdx = 0;
+      } else if (e.key === "End") {
+        nextIdx = total - 1;
+      } else {
+        return;
       }
+      e.preventDefault();
 
       if (nextIdx !== keyboardActiveIndex) {
         const reordered = [...items];
@@ -241,9 +315,23 @@ function Sortable({
         reordered.splice(nextIdx, 0, removed);
         setKeyboardActiveIndex(nextIdx);
         onReorder(reordered);
+        setAnnouncement(`${id} moved to position ${nextIdx + 1} of ${total}.`);
       }
     },
     [keyboardActiveIndex, items, onReorder],
+  );
+
+  // Tabbing away from a lifted item drops it where it is. (A null
+  // relatedTarget is the node being moved by a reorder, not the user.)
+  const handleItemBlur = React.useCallback(
+    (e: React.FocusEvent) => {
+      if (keyboardActiveIndex === null) return;
+      const next = e.relatedTarget as Node | null;
+      if (!next || containerRef.current?.contains(next)) return;
+      keyboardOriginRef.current = null;
+      setKeyboardActiveIndex(null);
+    },
+    [keyboardActiveIndex],
   );
 
   const contextValue: SortableContextValue = React.useMemo(
@@ -255,6 +343,7 @@ function Sortable({
       orientation,
       onItemPointerDown: handlePointerDown,
       onItemKeyDown: handleKeyDown,
+      onItemBlur: handleItemBlur,
       onItemRemove: onRemove,
     }),
     [
@@ -266,6 +355,7 @@ function Sortable({
       onRemove,
       handlePointerDown,
       handleKeyDown,
+      handleItemBlur,
     ],
   );
 
@@ -279,6 +369,15 @@ function Sortable({
     children: (
       <SortableContext.Provider value={contextValue}>
         {children}
+
+        <div
+          aria-live="assertive"
+          aria-atomic="true"
+          className="sr-only"
+          data-slot="sortable-announcer"
+        >
+          {announcement}
+        </div>
 
         {/* Floating Active Drag Ghost */}
         {activeItemValue && dragOverlayPos && (
@@ -374,6 +473,7 @@ function SortableItem({
     "data-sortable-index": index,
     "aria-roledescription": "sortable item",
     onKeyDown: (e: React.KeyboardEvent) => context?.onItemKeyDown(index, e),
+    onBlur: (e: React.FocusEvent) => context?.onItemBlur(e),
     children,
   };
 
