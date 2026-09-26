@@ -126,7 +126,8 @@ describe("navigation and disclosure contracts", () => {
 
     const single = screen.getByRole("listbox", { name: "Single choice" });
     single.focus();
-    await user.keyboard("{ArrowDown}{Enter}");
+    // Focus highlights the first option; Enter selects it.
+    await user.keyboard("{Enter}");
     expect(onSingleChange).toHaveBeenCalledWith("typescript");
     await user.click(screen.getByRole("option", { name: "Go" }));
     expect(onSingleChange).toHaveBeenLastCalledWith("go");
@@ -141,6 +142,62 @@ describe("navigation and disclosure contracts", () => {
       "aria-selected",
       "true",
     );
+  });
+
+  it("keeps a list box to one tab stop with an active descendant", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <form>
+        <ListBox aria-label="Fruit" name="fruit" defaultValue="banana">
+          <ListBoxItem value="apple">Apple</ListBoxItem>
+          <ListBoxItem value="banana">Banana</ListBoxItem>
+          <ListBoxItem disabled value="cherry">
+            Cherry
+          </ListBoxItem>
+          <ListBoxItem value="date">Date</ListBoxItem>
+          <ListBoxItem value="durian">Durian</ListBoxItem>
+        </ListBox>
+        <button type="button">After</button>
+      </form>,
+    );
+    const list = screen.getByRole("listbox", { name: "Fruit" });
+    const option = (name: string) => screen.getByRole("option", { name });
+    const active = () =>
+      document.getElementById(list.getAttribute("aria-activedescendant")!);
+
+    await user.tab();
+    expect(list).toHaveFocus();
+    // The selected option is highlighted on entry.
+    expect(active()).toBe(option("Banana"));
+
+    // Disabled options are skipped and marked for assistive tech.
+    await user.keyboard("{ArrowDown}");
+    expect(active()).toBe(option("Date"));
+    expect(option("Cherry")).toHaveAttribute("aria-disabled", "true");
+
+    await user.keyboard("{Home}");
+    expect(active()).toBe(option("Apple"));
+    await user.keyboard("{End}");
+    expect(active()).toBe(option("Durian"));
+
+    // Typeahead, and a repeated letter cycles.
+    await user.keyboard("a");
+    expect(active()).toBe(option("Apple"));
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    await user.keyboard("d");
+    expect(active()).toBe(option("Date"));
+    await user.keyboard("d");
+    expect(active()).toBe(option("Durian"));
+
+    await user.keyboard(" ");
+    expect(option("Durian")).toHaveAttribute("aria-selected", "true");
+    expect(
+      container.querySelector<HTMLInputElement>("input[name=fruit]")?.value,
+    ).toBe("durian");
+
+    // The options aren't tab stops: Tab leaves the list.
+    await user.tab();
+    expect(screen.getByRole("button", { name: "After" })).toHaveFocus();
   });
 
   it("renders pagination semantics and clamps typed pages", async () => {
