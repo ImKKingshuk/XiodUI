@@ -446,6 +446,18 @@ describe("canvas and animated feedback contracts", () => {
     act(() => morphicToast.clear());
   });
 
+  it("points each morphic toast's filter at a valid element id", async () => {
+    const { container } = render(<MorphicToaster />);
+    act(() => {
+      morphicToast.info({ duration: null, id: "save file", title: "Saving" });
+    });
+    await screen.findByRole("status");
+    const filter = container.querySelector("filter");
+    const ref = filter?.id ?? "";
+    expect(ref).toMatch(/^[\w-]+$/);
+    act(() => morphicToast.clear());
+  });
+
   it("announces through one live region and pauses while focused", async () => {
     vi.useFakeTimers();
     try {

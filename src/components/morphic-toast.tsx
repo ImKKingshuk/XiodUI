@@ -9,6 +9,7 @@ import {
   type ReactNode,
   useCallback,
   useEffect,
+  useId,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -363,7 +364,6 @@ const GooeyDefs = memo(function GooeyDefs({
 
 /* ------------------------------- Component -------------------------------- */
 interface MorphicToastProps extends React.HTMLAttributes<HTMLDivElement> {
-  id: string;
   fill?: string;
   state?: MorphicToastState;
   title?: string;
@@ -386,7 +386,6 @@ interface MorphicToastProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const MorphicToast = memo(function MorphicToast({
-  id,
   fill,
   state = "success",
   title = state,
@@ -425,7 +424,9 @@ const MorphicToast = memo(function MorphicToast({
   const allowExpand = isLoading ? false : canExpand;
 
   const headerKey = `${view.state}-${view.title}`;
-  const filterId = `morphic-gooey-${id}`;
+  // Toast ids come from callers and may hold spaces or other characters that
+  // break `url(#…)`, so the filter gets its own id.
+  const filterId = `morphic-gooey${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
   const resolvedRoundness = Math.max(0, roundness ?? DEFAULT_ROUNDNESS);
   const blur = resolvedRoundness * BLUR_RATIO;
 
@@ -1389,7 +1390,6 @@ export function MorphicToaster({
               return (
                 <MorphicToast
                   key={item.id}
-                  id={item.id}
                   state={item.state}
                   title={item.title}
                   description={item.description}
