@@ -9,6 +9,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
+  BlossomColorPicker,
   ColorPicker,
   computeAdaptivePosition,
 } from "../../src/components/color-picker";
@@ -234,6 +235,49 @@ describe("specialized phone and color input contracts", () => {
     for (const name of ["Hue", "Saturation", "Lightness", "Alpha"]) {
       expect(screen.getByRole("textbox", { name })).toBeVisible();
     }
+  });
+
+  it("operates the arc sliders from the keyboard", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const { container } = render(
+      <>
+        <BlossomColorPicker
+          collapsible={false}
+          animationDuration={0}
+          onChange={onChange}
+        />
+        <BlossomColorPicker collapsible={false} animationDuration={0} />
+      </>,
+    );
+
+    const [lightness] = screen.getAllByRole("slider", { name: "Lightness" });
+    const [opacity] = screen.getAllByRole("slider", { name: "Opacity" });
+    expect(lightness).toHaveAttribute("tabindex", "0");
+    expect(opacity).toHaveAttribute("aria-valuetext", "50%");
+
+    lightness.focus();
+    await user.keyboard("{End}");
+    expect(onChange).toHaveBeenLastCalledWith(
+      expect.objectContaining({ saturation: 100 }),
+    );
+    await user.keyboard("{Shift>}{ArrowLeft}{/Shift}");
+    expect(onChange).toHaveBeenLastCalledWith(
+      expect.objectContaining({ saturation: 90 }),
+    );
+
+    opacity.focus();
+    await user.keyboard("{Home}");
+    expect(onChange).toHaveBeenLastCalledWith(
+      expect.objectContaining({ alpha: 0 }),
+    );
+
+    // Two pickers never share an SVG gradient or pattern id.
+    const ids = Array.from(
+      container.querySelectorAll("linearGradient, pattern"),
+      (node) => node.id,
+    );
+    expect(new Set(ids).size).toBe(ids.length);
   });
 
   it("disables all color inputs", () => {

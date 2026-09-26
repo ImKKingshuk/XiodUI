@@ -706,6 +706,33 @@ export interface BlossomColorPickerProps extends Omit<
   collapsible?: boolean;
 }
 
+// Keyboard for both arc sliders (0–100), as a native range input: arrows
+// ±1 (Shift ±10), PageUp/PageDown ±10, Home/End to the ends.
+function getSliderKeyValue(
+  e: React.KeyboardEvent<SVGElement>,
+  current: number,
+): number | null {
+  const step = e.shiftKey ? 10 : 1;
+  switch (e.key) {
+    case "ArrowRight":
+    case "ArrowUp":
+      return Math.min(100, current + step);
+    case "ArrowLeft":
+    case "ArrowDown":
+      return Math.max(0, current - step);
+    case "PageUp":
+      return Math.min(100, current + 10);
+    case "PageDown":
+      return Math.max(0, current - 10);
+    case "Home":
+      return 0;
+    case "End":
+      return 100;
+    default:
+      return null;
+  }
+}
+
 export function BlossomColorPicker({
   value,
   defaultValue,
@@ -737,6 +764,9 @@ export function BlossomColorPicker({
   const rootRef = React.useRef<HTMLDivElement>(null);
   const svgRef = React.useRef<SVGSVGElement>(null);
   const alphaSvgRef = React.useRef<SVGSVGElement>(null);
+  // SVG ids are document-global: two pickers on a page, or the same hue,
+  // must not share a gradient or pattern.
+  const svgIdPrefix = `bcp${React.useId().replace(/:/g, "")}`;
   React.useImperativeHandle(ref, () => rootRef.current as HTMLDivElement);
 
   // States
@@ -1077,8 +1107,23 @@ export function BlossomColorPicker({
     setMousePos(null);
   };
 
+  const handleSliderKeyDown = (e: React.KeyboardEvent<SVGElement>) => {
+    const next = getSliderKeyValue(e, Math.round(currentValue.saturation));
+    if (next === null) return;
+    e.preventDefault();
+    handleSliderChange(next);
+  };
+
+  const handleAlphaKeyDown = (e: React.KeyboardEvent<SVGElement>) => {
+    const next = getSliderKeyValue(e, Math.round(currentValue.alpha));
+    if (next === null) return;
+    e.preventDefault();
+    updateValue({ ...currentValue, alpha: next });
+  };
+
   // SVG Slider Interaction via global window events to avoid pointer-events: none issues
   const handleSliderPointerDown = (e: React.PointerEvent<SVGElement>) => {
+    if (e.button !== 0) return;
     e.preventDefault();
     setIsDraggingSlider(true);
     updateSliderFromPointer(e.clientX, e.clientY);
@@ -1130,6 +1175,7 @@ export function BlossomColorPicker({
   }, [isDraggingSlider]);
 
   const handleAlphaPointerDown = (e: React.PointerEvent<SVGElement>) => {
+    if (e.button !== 0) return;
     e.preventDefault();
     setIsDraggingAlpha(true);
     updateAlphaFromPointer(e.clientX, e.clientY);
@@ -1521,7 +1567,7 @@ export function BlossomColorPicker({
         <title>Saturation & Lightness Arc Slider</title>
         <defs>
           <linearGradient
-            id={`bcp-arc-grad-${currentValue.hue}`}
+            id={`${svgIdPrefix}-arc-grad`}
             gradientUnits="userSpaceOnUse"
             x1={gradStart.x}
             y1={gradStart.y}
@@ -1551,7 +1597,7 @@ export function BlossomColorPicker({
         <path
           d={arcD}
           fill="none"
-          stroke={`url(#bcp-arc-grad-${currentValue.hue})`}
+          stroke={`url(#${svgIdPrefix}-arc-grad)`}
           strokeWidth={sliderWidth}
           strokeLinecap="round"
           className={cn(
@@ -1570,8 +1616,17 @@ export function BlossomColorPicker({
           fill={handleColor}
           stroke="white"
           strokeWidth="2"
+          role="slider"
+          tabIndex={isExpanded && !disabled ? 0 : -1}
+          aria-label="Lightness"
+          aria-orientation="horizontal"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(currentValue.saturation)}
+          aria-disabled={disabled || undefined}
+          onKeyDown={handleSliderKeyDown}
           className={cn(
-            "touch-none active:cursor-grabbing shadow-[0_1px_4px_rgba(0,0,0,0.3)]",
+            "touch-none outline-none active:cursor-grabbing shadow-[0_1px_4px_rgba(0,0,0,0.3)] focus-visible:stroke-ring focus-visible:[stroke-width:3]",
             isExpanded
               ? "pointer-events-auto cursor-grab"
               : "pointer-events-none",
@@ -1671,7 +1726,7 @@ export function BlossomColorPicker({
         <title>Alpha Opacity Arc Slider</title>
         <defs>
           <pattern
-            id="bcp-checkerboard"
+            id={`${svgIdPrefix}-checkerboard`}
             width="8"
             height="8"
             patternUnits="userSpaceOnUse"
@@ -1681,7 +1736,7 @@ export function BlossomColorPicker({
             <rect x="4" y="4" width="4" height="4" fill="#e2e8f0" />
           </pattern>
           <linearGradient
-            id={`bcp-alpha-grad-${currentValue.hue}`}
+            id={`${svgIdPrefix}-alpha-grad`}
             gradientUnits="userSpaceOnUse"
             x1={gradStart.x}
             y1={gradStart.y}
@@ -1697,7 +1752,7 @@ export function BlossomColorPicker({
         <path
           d={arcD}
           fill="none"
-          stroke="url(#bcp-checkerboard)"
+          stroke={`url(#${svgIdPrefix}-checkerboard)`}
           strokeWidth={sliderWidth}
           strokeLinecap="round"
         />
@@ -1706,7 +1761,7 @@ export function BlossomColorPicker({
         <path
           d={arcD}
           fill="none"
-          stroke={`url(#bcp-alpha-grad-${currentValue.hue})`}
+          stroke={`url(#${svgIdPrefix}-alpha-grad)`}
           strokeWidth={sliderWidth}
           strokeLinecap="round"
           className={cn(
@@ -1725,8 +1780,18 @@ export function BlossomColorPicker({
           fill={colorEnd}
           stroke="white"
           strokeWidth="2"
+          role="slider"
+          tabIndex={isExpanded && !disabled ? 0 : -1}
+          aria-label="Opacity"
+          aria-orientation="horizontal"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(currentValue.alpha)}
+          aria-valuetext={`${Math.round(currentValue.alpha)}%`}
+          aria-disabled={disabled || undefined}
+          onKeyDown={handleAlphaKeyDown}
           className={cn(
-            "touch-none active:cursor-grabbing shadow-[0_1px_4px_rgba(0,0,0,0.3)]",
+            "touch-none outline-none active:cursor-grabbing shadow-[0_1px_4px_rgba(0,0,0,0.3)] focus-visible:stroke-ring focus-visible:[stroke-width:3]",
             isExpanded
               ? "pointer-events-auto cursor-grab"
               : "pointer-events-none",
