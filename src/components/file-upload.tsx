@@ -38,6 +38,8 @@ export interface FileUploadProps extends React.HTMLAttributes<HTMLDivElement> {
   onFilesChange?: (files: FileItem[]) => void;
   onFilesAdded?: (files: File[]) => void;
   onFileRemove?: (id: string) => void;
+  /** Called with the files left out because the list already holds `maxFiles`. */
+  onFilesRejected?: (files: File[]) => void;
   maxFiles?: number;
   maxSizeMB?: number;
   accept?: string;
@@ -56,6 +58,28 @@ interface FileUploadContextValue {
   removeFile: (id: string) => void;
   addFiles: (files: File[]) => void;
   fileInputRef: React.RefObject<HTMLInputElement | null>;
+}
+
+function plural(count: number, word: string) {
+  return `${count} ${word}${count === 1 ? "" : "s"}`;
+}
+
+function syncInputFiles(input: HTMLInputElement | null, files: FileItem[]) {
+  if (!input || typeof DataTransfer === "undefined") return;
+  try {
+    const transfer = new DataTransfer();
+    for (const item of files) {
+      if (item.status !== "error") transfer.items.add(item.file);
+    }
+    input.files = transfer.files;
+  } catch {
+    // Assigning a FileList isn't allowed everywhere; the picker still works.
+    input.value = "";
+  }
+}
+
+function hasFiles(e: React.DragEvent) {
+  return Array.from(e.dataTransfer?.types ?? []).includes("Files");
 }
 
 const FileUploadContext = React.createContext<FileUploadContextValue | null>(
@@ -109,6 +133,7 @@ export function FileUpload({
   onFilesChange,
   onFilesAdded,
   onFileRemove,
+  onFilesRejected,
   maxFiles = 5,
   maxSizeMB = 10,
   accept,
@@ -118,6 +143,7 @@ export function FileUpload({
 }: FileUploadProps): React.JSX.Element {
   const [internalFiles, setInternalFiles] = React.useState<FileItem[]>([]);
   const [isDragging, setIsDragging] = React.useState(false);
+  const [announcement, setAnnouncement] = React.useState("");
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const files = filesProp ?? internalFiles;
@@ -138,8 +164,10 @@ export function FileUpload({
   const removeFile = React.useCallback(
     (id: string) => {
       if (disabled) return;
+      const removed = files.find((f) => f.id === id);
       const updatedFiles = files.filter((f) => f.id !== id);
       setFiles(updatedFiles);
+      if (removed) setAnnouncement(`Removed ${removed.file.name}`);
       if (onFileRemove) {
         onFileRemove(id);
       }
@@ -152,12 +180,14 @@ export function FileUpload({
       if (disabled) return;
 
       const validatedItems: FileItem[] = [];
+      const rejected: File[] = [];
       const currentFileCount = files.length;
 
       let addedCount = 0;
       for (const file of newFiles) {
         if (maxFiles && currentFileCount + addedCount >= maxFiles) {
-          break;
+          rejected.push(file);
+          continue;
         }
 
         let errorMessage: string | undefined;
@@ -189,8 +219,31 @@ export function FileUpload({
           onFilesAdded(validatedItems.map((item) => item.file));
         }
       }
+      if (rejected.length > 0) onFilesRejected?.(rejected);
+
+      const failed = validatedItems.filter((item) => item.status === "error");
+      const messages = [
+        validatedItems.length > failed.length &&
+          `Added ${plural(validatedItems.length - failed.length, "file")}.`,
+        failed.length > 0 &&
+          `${plural(failed.length, "file")} can't be uploaded: ${failed
+            .map((item) => `${item.file.name}, ${item.errorMessage}`)
+            .join("; ")}.`,
+        rejected.length > 0 &&
+          `${plural(rejected.length, "file")} not added: the limit is ${plural(maxFiles, "file")}.`,
+      ].filter(Boolean);
+      setAnnouncement(messages.join(" "));
     },
-    [files, maxFiles, maxSizeMB, accept, disabled, onFilesAdded, setFiles],
+    [
+      files,
+      maxFiles,
+      maxSizeMB,
+      accept,
+      disabled,
+      onFilesAdded,
+      onFilesRejected,
+      setFiles,
+    ],
   );
 
   const contextValue = React.useMemo(
@@ -222,6 +275,14 @@ export function FileUpload({
     <FileUploadContext.Provider value={contextValue}>
       <div className="contents" data-slot="file-upload" {...props}>
         {children}
+        <div
+          aria-live="polite"
+          aria-atomic="true"
+          className="sr-only"
+          data-slot="file-upload-announcer"
+        >
+          {announcement}
+        </div>
       </div>
     </FileUploadContext.Provider>
   );
@@ -240,16 +301,21 @@ export function FileUploadTrigger({
     useFileUploadContext();
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    if (disabled) return;
+    if (disabled || !hasFiles(e)) return;
     e.preventDefault();
     e.stopPropagation();
-    setIsDragging(true);
+    e.dataTransfer.dropEffect = "copy";
+    if (!isDragging) setIsDragging(true);
   };
 
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     if (disabled) return;
     e.preventDefault();
     e.stopPropagation();
+    // Moving onto a child fires dragleave on the zone; only leaving the zone
+    // itself ends the drag.
+    const next = e.relatedTarget;
+    if (next instanceof Node && e.currentTarget.contains(next)) return;
     setIsDragging(false);
   };
 
@@ -280,6 +346,7 @@ export function FileUploadTrigger({
   const defaultProps = {
     role: "button",
     tabIndex: disabled ? -1 : 0,
+    "aria-disabled": disabled || undefined,
     className: cn(
       "relative flex flex-col items-center justify-center rounded-2xl border border-dashed border-input bg-muted/20 hover:bg-muted/40 p-[calc(--spacing(8)-1px)] text-center transition-[color,background-color,border-color,transform,box-shadow,opacity] duration-200 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-64 cursor-pointer select-none",
       "before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-2xl)-1px)] before:shadow-[0_1px_--theme(--color-black/4%)] dark:before:shadow-[0_-1px_--theme(--color-white/6%)]",
@@ -309,14 +376,22 @@ export function FileUploadInput({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"input">): React.JSX.Element {
-  const { fileInputRef, maxFiles, accept, disabled, addFiles } =
+  const { files, fileInputRef, maxFiles, accept, disabled, addFiles } =
     useFileUploadContext();
+
+  // Mirror the accepted files into the input, so a form submit sends the
+  // dropped files too, not just the last picker selection.
+  React.useEffect(() => {
+    syncInputFiles(fileInputRef.current, files);
+  }, [files, fileInputRef]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       addFiles(Array.from(e.target.files));
     }
-    e.target.value = "";
+    // Put back the current list; if files were added, the effect above
+    // syncs again once they're in.
+    syncInputFiles(e.target, files);
   };
 
   return (
@@ -562,7 +637,7 @@ export function FileUploadItemProgress({
   render,
   ...props
 }: useRender.ComponentProps<"div">): React.ReactElement | null {
-  const { progress, status } = useFileItemContext();
+  const { file, progress, status } = useFileItemContext();
 
   const defaultProps = {
     className: cn("absolute bottom-0 left-0 h-1 w-full bg-muted/60", className),
@@ -576,6 +651,7 @@ export function FileUploadItemProgress({
         className="h-full bg-primary transition-[width] duration-300 ease-in-out"
         style={{ width: `${progress}%` }}
         role="progressbar"
+        aria-label={`Uploading ${file.name}`}
         aria-valuenow={progress}
         aria-valuemin={0}
         aria-valuemax={100}
@@ -630,6 +706,7 @@ export function FileUploadItemStatus({
             className="size-3"
           />{" "}
           Failed
+          {errorMessage && <span className="sr-only">: {errorMessage}</span>}
         </span>
       );
     }
@@ -670,7 +747,7 @@ export function FileUploadItemRemove({
   /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
   icon?: React.ReactNode;
 }): React.ReactElement {
-  const { id } = useFileItemContext();
+  const { id, file } = useFileItemContext();
   const { removeFile, disabled } = useFileUploadContext();
 
   const defaultProps = {
@@ -678,7 +755,30 @@ export function FileUploadItemRemove({
     disabled: disabled,
     onClick: (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
+      // The button unmounts with its item: hand focus to the next remove
+      // button, or the previous one, or the drop zone.
+      const button = e.currentTarget;
+      const root = button.closest("[data-slot=file-upload]");
+      const buttons = Array.from(
+        root?.querySelectorAll<HTMLElement>(
+          "[data-slot=file-upload-item-remove]",
+        ) ?? [],
+      );
+      const index = buttons.indexOf(button);
+      const next = buttons[index + 1] ?? buttons[index - 1];
+      const hadFocus = button === document.activeElement;
       removeFile(id);
+      if (!hadFocus) return;
+      requestAnimationFrame(() => {
+        if (button.isConnected) return;
+        const target =
+          next?.isConnected && next !== button
+            ? next
+            : root?.querySelector<HTMLElement>(
+                "[data-slot=file-upload-trigger]",
+              );
+        target?.focus();
+      });
     },
     className: cn(
       "relative flex items-center justify-center rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-64 size-8 pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11",
@@ -697,7 +797,7 @@ export function FileUploadItemRemove({
           className="size-4"
           icon={icon}
         />
-        <span className="sr-only">Remove file</span>
+        <span className="sr-only">Remove {file.name}</span>
       </>
     );
   }

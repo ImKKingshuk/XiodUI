@@ -68,6 +68,9 @@ Renders a `<button>` and takes its props. Pass `render` to render a different el
 | onFileRemove | `((id: string) => void) \| undefined` | — |
 | onFilesAdded | `((files: File[]) => void) \| undefined` | — |
 | onFilesChange | `((files: FileItem[]) => void) \| undefined` | — |
+| onFilesRejected | `((files: File[]) => void) \| undefined` | — |
+
+- `onFilesRejected` — Called with the files left out because the list already holds `maxFiles`.
 
 ## FileUploadInput
 

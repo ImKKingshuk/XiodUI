@@ -1,5 +1,12 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  createEvent,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import * as React from "react";
 import { describe, expect, it, vi } from "vitest";
 import { Circle } from "xiod-icons/icons/Circle";
 import { Square } from "xiod-icons/icons/Square";
@@ -20,7 +27,12 @@ import { DatePicker } from "../../src/components/date-picker";
 import {
   FileUpload,
   FileUploadInput,
+  FileUploadItem,
+  FileUploadItemRemove,
+  FileUploadItemStatus,
+  FileUploadList,
   FileUploadTrigger,
+  type FileItem,
   formatFileSize,
 } from "../../src/components/file-upload";
 import { Input } from "../../src/components/input";
@@ -519,5 +531,90 @@ describe("compound input contracts", () => {
       </FileUpload>,
     );
     expect(screen.getByLabelText("Files")).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: "Choose files" }),
+    ).toHaveAttribute("aria-disabled", "true");
+  });
+
+  it("reports rejected files, announces changes and keeps focus on removal", async () => {
+    const user = userEvent.setup();
+    const onFilesRejected = vi.fn();
+    function Harness() {
+      const [files, setFiles] = React.useState<FileItem[]>([]);
+      return (
+        <FileUpload
+          files={files}
+          onFilesChange={setFiles}
+          maxFiles={2}
+          maxSizeMB={1}
+          onFilesRejected={onFilesRejected}
+        >
+          <FileUploadTrigger>
+            <span>Drop files</span>
+          </FileUploadTrigger>
+          <FileUploadInput aria-label="Files" />
+          <FileUploadList>
+            {files.map((item) => (
+              <FileUploadItem key={item.id} fileItem={item}>
+                <FileUploadItemStatus />
+                <FileUploadItemRemove />
+              </FileUploadItem>
+            ))}
+          </FileUploadList>
+        </FileUpload>
+      );
+    }
+    const { container } = render(<Harness />);
+    const announcer = () =>
+      container.querySelector("[data-slot=file-upload-announcer]");
+    const big = new File([new Uint8Array(2 * 1024 * 1024)], "big.png");
+    const a = new File(["a"], "a.png");
+    const c = new File(["c"], "c.png");
+    fireEvent.change(screen.getByLabelText("Files"), {
+      target: { files: [a, big, c] },
+    });
+
+    expect(onFilesRejected).toHaveBeenCalledWith([c]);
+    expect(announcer()).toHaveTextContent(
+      "Added 1 file. 1 file can't be uploaded: big.png, File exceeds max size of 1MB. 1 file not added: the limit is 2 files.",
+    );
+    // The error is readable without hovering for the title.
+    expect(screen.getByText("Failed")).toHaveTextContent(
+      "Failed: File exceeds max size of 1MB",
+    );
+
+    const removeA = screen.getByRole("button", { name: "Remove a.png" });
+    removeA.focus();
+    await user.keyboard("{Enter}");
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: "Remove big.png" }),
+      ).toHaveFocus(),
+    );
+    expect(announcer()).toHaveTextContent("Removed a.png");
+
+    await user.keyboard("{Enter}");
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Drop files" })).toHaveFocus(),
+    );
+
+    // Crossing onto a child doesn't end the drag highlight.
+    const zone = screen.getByRole("button", { name: "Drop files" });
+    const dataTransfer = { types: ["Files"], dropEffect: "none", files: [] };
+    fireEvent.dragOver(zone, { dataTransfer });
+    expect(zone).toHaveAttribute("data-dragging", "true");
+    // jsdom has no DragEvent, so relatedTarget has to be set by hand.
+    function dragLeave(relatedTarget: Element) {
+      const event = createEvent.dragLeave(zone, { dataTransfer });
+      Object.defineProperty(event, "relatedTarget", { value: relatedTarget });
+      fireEvent(zone, event);
+    }
+    dragLeave(zone.querySelector("span")!);
+    expect(zone).toHaveAttribute("data-dragging", "true");
+    dragLeave(document.body);
+    expect(zone).not.toHaveAttribute("data-dragging");
+    // A text drag isn't a file drag.
+    fireEvent.dragOver(zone, { dataTransfer: { types: ["text/plain"] } });
+    expect(zone).not.toHaveAttribute("data-dragging");
   });
 });
