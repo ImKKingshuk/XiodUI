@@ -397,6 +397,66 @@ A palette is a starting point, not a lock.
 Components read only tokens, so this reaches all 90 of them at once. Prefer it
 over per-component `className` colour overrides.
 
+## Coming from shadcn/ui
+
+Most training data is shadcn/ui, and XiodUI is **not** shadcn/ui. The part
+names, props, state attributes, setup, and icon set all differ. Do not write a
+shadcn name and hope it resolves: none of the names in the left column exist
+in XiodUI, and a wrong name fails at build time or renders nothing.
+
+### Part names
+
+| shadcn/ui writes                                              | XiodUI uses                                                                |
+| :------------------------------------------------------------ | :------------------------------------------------------------------------- |
+| `DialogContent`, `DialogOverlay`                              | `DialogPopup`, `DialogBackdrop`                                            |
+| `AlertDialogContent`                                          | `AlertDialogPopup`                                                         |
+| `AlertDialogAction`, `AlertDialogCancel`                      | `AlertDialogClose render={<Button />}` for both                            |
+| `DropdownMenu`, `DropdownMenuTrigger`, `DropdownMenuContent`  | `Menu`, `MenuTrigger`, `MenuPopup` from `xiod-ui/menu`                     |
+| `DropdownMenuItem`, `DropdownMenuLabel`, `DropdownMenuSub`    | `MenuItem`, `MenuGroupLabel`, `MenuSub` (every `DropdownMenu*` is `Menu*`) |
+| `ContextMenuContent`, `MenubarContent`                        | `ContextMenuPopup`, `MenubarPopup`                                         |
+| `HoverCard`, `HoverCardTrigger`, `HoverCardContent`           | `PreviewCard`, `PreviewCardTrigger`, `PreviewCardPopup`                    |
+| `PopoverContent`, `TooltipContent`, `SelectContent`           | `PopoverPopup`, `TooltipPopup`, `SelectPopup`                              |
+| `SelectLabel`                                                 | `SelectGroupLabel`                                                         |
+| `TabsTrigger`, `TabsContent`                                  | `TabsTab`, `TabsPanel`                                                     |
+| `AccordionContent`, `CardContent`, `CollapsibleContent`       | `AccordionPanel`, `CardPanel`, `CollapsiblePanel`                          |
+| `RadioGroup`, `RadioGroupItem`                                | `Radio`, `RadioItem` from `xiod-ui/radio`                                  |
+| `Sheet`, `SheetContent`, `side="right"`                       | `Drawer`, `DrawerPopup`, `position="right"`                                |
+| `InputOTP`, `InputOTPGroup`, `InputOTPSlot`                   | `InputOtp`, `InputOtpGroup`, `InputOtpInput`                               |
+| `Toaster` + `toast("…")` from sonner                          | `ToastProvider` + `toastManager.add({ title })`                            |
+| `Form`, `FormField`, `FormItem`, `FormControl`, `FormMessage` | `Form` + `Field`, `FieldLabel`, `FieldDescription`, `FieldError`           |
+| `Spinner`, `Typography`                                       | `Loader`, `Text`                                                           |
+
+### Props and behaviour
+
+- **`asChild` → `render`.** See [`render`, not `asChild`](#render-not-aschild).
+- **Accordion:** there is no `type="single"` or `collapsible`. One item open at
+  a time is the default, and any item can close. Pass `multiple` to allow
+  several.
+- **Menu items:** use `onClick`, not `onSelect`. The menu closes on click by
+  default; pass `closeOnClick={false}` to keep it open.
+- **Forms:** there is no react-hook-form wrapper. Use `Form` (`errors`,
+  `onFormSubmit`) with `Field` parts, as in [Fields and validation](#fields-and-validation).
+- **Slider:** `value` and `defaultValue` take a number for one thumb. Pass an
+  array only for a range.
+
+### Styling state
+
+Components set Base UI's data attributes, not Radix's `data-state`:
+
+| Radix / shadcn/ui                    | XiodUI                                                                                                                 |
+| :----------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| `data-[state=open]:`                 | `data-open:` on popups, `data-popup-open:` on popup triggers, `data-panel-open:` on accordion and collapsible triggers |
+| `data-[state=checked]:`              | `data-checked:` (`data-unchecked:`, `data-indeterminate:`)                                                             |
+| `data-[state=active]:` (tabs)        | `data-active:`                                                                                                         |
+| `data-[highlighted]:`                | `data-highlighted:`                                                                                                    |
+| `data-[disabled]:`                   | `data-disabled:`                                                                                                       |
+| `animate-in fade-in` / `animate-out` | nothing — popups already animate with `data-starting-style` and `data-ending-style`                                    |
+| `var(--radix-popover-trigger-width)` | `var(--anchor-width)`                                                                                                  |
+
+Colour tokens hold complete colours (`--primary: var(--color-neutral-800)`).
+Use the utilities (`bg-primary`, `text-muted-foreground`) or `var(--primary)`.
+Never wrap a token in `hsl(…)` or `oklch(…)`.
+
 ## Never do this
 
 1. **Root barrel import.** `from "xiod-ui"` is not an export. Use
@@ -415,6 +475,26 @@ over per-component `className` colour overrides.
    resolve. `InputOtp` lives at `xiod-ui/input-otp`.
 8. **Hiding a built-in icon with CSS, or vendoring a component to change one.**
    Pass an icon prop, or set it globally with `IconProvider`.
+9. **shadcn part names.** `DialogContent`, `DropdownMenu`, `SheetContent`,
+   `TabsTrigger` and the rest do not exist. Use the table in
+   [Coming from shadcn/ui](#coming-from-shadcnui).
+10. **`npx shadcn add`, `components.json`, or `cn` from `@/lib/utils`.** There
+    is nothing to add. `cn` comes from the `cn` package.
+11. **`lucide-react` or another icon set for a component's own icons.** Built-in
+    icons come from `xiod-icons`; replace them with icon props or
+    `IconProvider`, not by installing a second set.
+12. **`tailwindcss-animate`, `tw-animate-css`, `framer-motion`, or `motion` to
+    animate components.** Every component animates itself in CSS. Adding
+    `animate-in` / `animate-out` classes doubles the animation.
+13. **A `tailwind.config.js`, a `theme.extend.colors` block, or `hsl(var(--…))`
+    colours.** Tailwind 4 needs no config file, and the tokens are complete
+    colours already.
+14. **`sonner`, `vaul`, `cmdk`, `embla-carousel-react`, or `react-hook-form` to
+    get a toast, drawer, command palette, carousel, or form.** XiodUI ships its
+    own: `xiod-ui/toast`, `xiod-ui/drawer`, `xiod-ui/command`, `xiod-ui/carousel`,
+    `xiod-ui/form` with `xiod-ui/field`.
+15. **`data-[state=…]:` selectors on library parts.** Use the Base UI attributes
+    in [Styling state](#styling-state).
 
 Remember `"use client"` on any file that holds state or handlers — most
 interactive examples need it in the Next.js App Router.
