@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as React from "react";
 import { describe, expect, it, vi } from "vitest";
@@ -534,5 +540,33 @@ describe("resizing and picker contracts", () => {
     fireEvent.keyDown(letter, { key: "ArrowRight" });
     expect(screen.getByRole("spinbutton", { name: "Number" })).toHaveFocus();
     expect(wheelPickerVariants({ size: "lg" })).toContain("h-[260px]");
+  });
+
+  it("treats a cancelled touch on the wheel as no selection", async () => {
+    const onValueChange = vi.fn();
+    render(
+      <WheelPicker
+        aria-label="Letter"
+        defaultValue="a"
+        onValueChange={onValueChange}
+        options={[
+          { label: "Alpha", value: "a" },
+          { label: "Bravo", value: "b" },
+          { label: "Charlie", value: "c" },
+        ]}
+      />,
+    );
+    const wheel = screen.getByRole("spinbutton", { name: "Letter" });
+    const container = wheel.closest("[data-slot=wheel-picker]") ?? wheel;
+    // A touch one row below the centre, on "Bravo".
+    fireEvent.touchStart(container, { touches: [{ clientY: 180 }] });
+    fireEvent.touchCancel(container);
+    // Losing window focus mid-press isn't a tap either.
+    fireEvent.touchStart(container, { touches: [{ clientY: 180 }] });
+    fireEvent.blur(window);
+    // Let any scroll animation run out.
+    await act(() => new Promise((resolve) => setTimeout(resolve, 1000)));
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(wheel).toHaveAttribute("aria-valuetext", "Alpha");
   });
 });

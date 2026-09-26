@@ -893,6 +893,14 @@ export function WheelPicker<T extends WheelPickerValue = WheelPickerValue>({
     [options.length, finalizeDragAndStartInertiaScroll],
   );
 
+  // A drag the browser cut short (touchcancel, the window losing focus) is
+  // not a tap: settle on the nearest option instead of selecting the one
+  // under the finger.
+  const cancelDragGesture = useCallback(() => {
+    touchDataRef.current.isClick = false;
+    finalizeDragAndStartInertiaScroll();
+  }, [finalizeDragAndStartInertiaScroll]);
+
   const initiateDragGesture = useCallback(
     (event: MouseEvent | TouchEvent) => {
       draggingRef.current = true;
@@ -911,11 +919,14 @@ export function WheelPicker<T extends WheelPickerValue = WheelPickerValue>({
         handleDragEndEvent,
         opts,
       );
+      containerRef.current?.addEventListener(
+        "touchcancel",
+        cancelDragGesture,
+        opts,
+      );
       document.addEventListener("mousemove", handleDragMoveEvent, opts);
       document.addEventListener("mouseup", handleDragEndEvent, opts);
-      window.addEventListener("blur", finalizeDragAndStartInertiaScroll, {
-        signal,
-      });
+      window.addEventListener("blur", cancelDragGesture, { signal });
 
       const startY =
         (event instanceof MouseEvent
@@ -932,7 +943,7 @@ export function WheelPicker<T extends WheelPickerValue = WheelPickerValue>({
     [
       handleDragMoveEvent,
       handleDragEndEvent,
-      finalizeDragAndStartInertiaScroll,
+      cancelDragGesture,
       cancelAnimation,
     ],
   );
