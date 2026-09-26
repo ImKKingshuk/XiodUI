@@ -8,6 +8,7 @@ import { Copy } from "xiod-icons/icons/Copy";
 import { Eye } from "xiod-icons/icons/Eye";
 import { EyeOff } from "xiod-icons/icons/EyeOff";
 
+import { useCopyToClipboard } from "../hooks/use-copy-to-clipboard";
 import { IconSlot } from "./icon-provider";
 
 type Mode = "masked" | "revealed" | "empty";
@@ -56,37 +57,21 @@ function InputSensitive({
   const [mode, setMode] = React.useState<Mode>(() =>
     hasValue ? "masked" : "empty",
   );
-  const [copied, setCopied] = React.useState(false);
-
   const containerRef = React.useRef<HTMLSpanElement>(null);
 
-  React.useEffect(() => {
-    if (copied) {
-      const timeoutId = setTimeout(() => setCopied(false), 2000);
-      return () => clearTimeout(timeoutId);
-    }
-  }, [copied]);
+  // The shared hook falls back to a selection copy where the Clipboard API is
+  // missing (plain http pages) and marks "Copied" only after a copy succeeds.
+  const { copyToClipboard: copyText, isCopied: copied } = useCopyToClipboard({
+    onCopy,
+  });
 
   const copyToClipboard = React.useCallback(
-    async (e: React.MouseEvent<HTMLButtonElement>) => {
+    (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
       e.preventDefault();
-      try {
-        if (
-          typeof navigator !== "undefined" &&
-          navigator.clipboard &&
-          typeof navigator.clipboard.writeText === "function"
-        ) {
-          await navigator.clipboard.writeText(value);
-          setCopied(true);
-          onCopy?.();
-          return;
-        }
-      } catch {
-        // Fallback
-      }
+      void copyText(value);
     },
-    [value, onCopy],
+    [copyText, value],
   );
 
   const prevHasValueRef = React.useRef(hasValue);
@@ -118,7 +103,8 @@ function InputSensitive({
       e.preventDefault();
       if (mode === "revealed") {
         setMode("masked");
-      } else if (mode === "empty" && hasValue) {
+      } else if (hasValue) {
+        // Also reached from the masked state: the eye shows on hover there.
         setMode("revealed");
       }
     },
@@ -206,8 +192,8 @@ function InputSensitive({
     "bg-transparent border-0 ring-0",
     size === "sm" && "h-7.5 leading-7.5 sm:h-6.5 sm:leading-6.5",
     size === "lg" && "h-9.5 leading-9.5 sm:h-8.5 sm:leading-8.5",
-    "px-[calc(--spacing(3)-1px)] pr-[--sensitive-pr]",
-    size === "sm" && "px-[calc(--spacing(2.5)-1px)] pr-[--sensitive-pr]",
+    "px-[calc(--spacing(3)-1px)] pr-(--sensitive-pr)",
+    size === "sm" && "px-[calc(--spacing(2.5)-1px)] pr-(--sensitive-pr)",
     disabled && "cursor-not-allowed",
     isMaskedWithValue && "pointer-events-none opacity-0",
   );
@@ -217,15 +203,10 @@ function InputSensitive({
       ref={containerRef}
       className={
         cn(
-          "group/container relative inline-flex w-full rounded-lg border border-input bg-background not-dark:bg-clip-padding text-base text-foreground shadow-xs/5 ring-ring/24 transition-shadow before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] not-has-disabled:not-has-focus-visible:not-has-aria-invalid:before:shadow-[0_1px_--theme(--color-black/4%)] has-focus-visible:has-aria-invalid:border-destructive/64 has-focus-visible:has-aria-invalid:ring-destructive/16 has-aria-invalid:border-destructive/36 has-focus-visible:border-ring has-autofill:bg-foreground/4 has-disabled:opacity-64 has-[:disabled,:focus-visible,[aria-invalid]]:shadow-none has-focus-visible:ring-[3px] sm:text-sm dark:bg-input/32 dark:has-autofill:bg-foreground/8 dark:has-aria-invalid:ring-destructive/24 dark:not-has-disabled:not-has-focus-visible:not-has-aria-invalid:before:shadow-[0_-1px_--theme(--color-white/6%)] [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+          "group/container relative inline-flex [--sensitive-pr:--spacing(18)] w-full rounded-lg border border-input bg-background not-dark:bg-clip-padding text-base text-foreground shadow-xs/5 ring-ring/24 transition-shadow before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] not-has-disabled:not-has-focus-visible:not-has-aria-invalid:before:shadow-[0_1px_--theme(--color-black/4%)] has-focus-visible:has-aria-invalid:border-destructive/64 has-focus-visible:has-aria-invalid:ring-destructive/16 has-aria-invalid:border-destructive/36 has-focus-visible:border-ring has-autofill:bg-foreground/4 has-disabled:opacity-64 has-[:disabled,:focus-visible,[aria-invalid]]:shadow-none has-focus-visible:ring-[3px] sm:text-sm dark:bg-input/32 dark:has-autofill:bg-foreground/8 dark:has-aria-invalid:ring-destructive/24 dark:not-has-disabled:not-has-focus-visible:not-has-aria-invalid:before:shadow-[0_-1px_--theme(--color-white/6%)] [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
           isMaskedWithValue && !disabled && "cursor-pointer",
           className,
         ) || undefined
-      }
-      style={
-        {
-          "--sensitive-pr": "calc(--spacing(18))",
-        } as React.CSSProperties
       }
       data-size={size}
       data-slot="input-control"
@@ -251,7 +232,7 @@ function InputSensitive({
           "pointer-events-none absolute inset-y-0 left-0 flex items-center overflow-hidden select-none",
           "px-[calc(--spacing(3)-1px)]",
           size === "sm" && "px-[calc(--spacing(2.5)-1px)]",
-          "right-[--sensitive-pr]",
+          "right-(--sensitive-pr)",
           !isMaskedWithValue && "invisible",
           isMaskedWithValue && "pointer-events-auto text-foreground group/mask",
         )}
@@ -273,13 +254,13 @@ function InputSensitive({
               "tracking-widest",
               isMaskedWithValue &&
                 !disabled &&
-                "group-focus/container:invisible group-hover/container:invisible",
+                "group-focus-within/container:invisible group-hover/container:invisible",
             )}
           >
             ••••••••
           </span>
           {isMaskedWithValue && !disabled && (
-            <span className="invisible absolute left-0 whitespace-nowrap text-muted-foreground group-focus/container:visible group-hover/container:visible">
+            <span className="invisible absolute left-0 whitespace-nowrap text-muted-foreground group-focus-within/container:visible group-hover/container:visible">
               Click to reveal
             </span>
           )}

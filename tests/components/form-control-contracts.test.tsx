@@ -197,6 +197,9 @@ describe("native input contracts", () => {
       expect(screen.getByRole("button", { name: "API key" })).toHaveFocus();
     });
 
+    await user.click(screen.getByRole("button", { name: "Reveal value" }));
+    expect(input).toHaveAttribute("type", "text");
+
     rerender(<InputSensitive aria-label="API key" disabled value="locked" />);
     expect(
       screen.getByLabelText("API key", { selector: "input" }),
