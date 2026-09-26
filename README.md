@@ -1,6 +1,6 @@
 # XiodUI
 
-Precision-Crafted React Component Library - 89 Components, 20 Palettes, Native CSS Animations, Light and Dark Themes. Built on Base UI and Tailwind CSS 4. One npm Package, Nothing Extra to Install.
+Precision-Crafted React Component Library - 90 Components, 20 Palettes, Native CSS Animations, Light and Dark Themes. Built on Base UI and Tailwind CSS 4. One npm Package, Nothing Extra to Install.
 
 XiodUI gives you production-ready buttons, forms, overlays, navigation, data display, and layout components that share one design language. Interactive behavior and accessibility come from Base UI primitives; styling comes from Tailwind CSS 4 and a set of CSS variables you can theme. Motion is written in plain CSS inside the components — so controls animate their own state, not just their enter and exit.
 
@@ -18,6 +18,7 @@ Everything ships as a single versioned npm package. Import one component at a ti
   - [Quick start](#quick-start)
   - [Imports](#imports)
   - [Components](#components)
+  - [Icons](#icons)
   - [Theming](#theming)
     - [Palettes](#palettes)
     - [Dark mode](#dark-mode)
@@ -33,7 +34,7 @@ Everything ships as a single versioned npm package. Import one component at a ti
 - **Customizable styling** — adjust CSS variables, component variants, and `className`.
 - **Light and dark themes** — 20 palettes: the default Neutral plus 19 more to choose from.
 - **TypeScript support** — typed props and individual component imports.
-- **XiodIcons included** — built-in icons use the `xiod-icons` package.
+- **XiodIcons included, and swappable** — built-in icons use the `xiod-icons` package, and any of them can be replaced per instance or globally with `IconProvider`.
 
 ## Comparison
 
@@ -145,11 +146,11 @@ import { useCopyToClipboard } from "xiod-ui/hooks/use-copy-to-clipboard";
 import { useIsMobile, useMediaQuery } from "xiod-ui/hooks/use-media-query";
 ```
 
-Individual JavaScript modules allow bundlers to include the components you use. The shared stylesheet registers the full component collection for Tailwind scanning; its CSS output does not follow JavaScript tree-shaking.
+Your bundler ships only the components you import. The stylesheet is the one exception: it covers the whole library, so its size stays the same whether you use one component or ninety.
 
 ## Components
 
-All 89 components, grouped by what they do. Each is imported from its own subpath, such as `xiod-ui/button` or `xiod-ui/date-picker`.
+All 90 components, grouped by what they do. Each is imported from its own subpath, such as `xiod-ui/button` or `xiod-ui/date-picker`.
 
 | Category           | Count | Components                                                                                                                                                                         |
 | ------------------ | :---: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -162,9 +163,53 @@ All 89 components, grouped by what they do. Each is imported from its own subpat
 | Feedback           |   7   | Alert, Progress, CircularProgress, Meter, Gauge, Loader, Skeleton                                                                                                                  |
 | Layout             |  11   | Grid, DashboardGrid, Group, AspectRatio, Separator, Carousel, Resizable, ScrollArea, ScrollBar, Draggable, Sortable                                                                |
 | Visuals            |   4   | Orb, Waveform, DotMatrix, Marker                                                                                                                                                   |
-| Theming            |   1   | ThemeProvider                                                                                                                                                                      |
+| Theming            |   2   | ThemeProvider, IconProvider                                                                                                                                                        |
 
 Components expose their own typed props and variants. Use your editor's TypeScript suggestions to explore the available options.
+
+## Icons
+
+Components come with icons from [XiodIcons](https://icons.xiod.dev). Every one of them can be replaced with your own.
+
+To change one place, pass a prop. Parts with a single icon take `icon`; parts with several take named props such as `prevIcon` / `nextIcon` or `triggerIcon` / `clearIcon`. The value is anything React can render:
+
+```tsx
+import { XMarkIcon } from "@heroicons/react/24/outline";
+
+<DrawerClose closeIcon={<XMarkIcon className="size-4" />} />;
+```
+
+To change an icon everywhere, wrap your app in `IconProvider`:
+
+```tsx
+import { IconProvider } from "xiod-ui/icon-provider";
+import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
+
+export function App({ children }) {
+  return (
+    <IconProvider icons={{ Cancel: XMarkIcon, Check: CheckIcon }}>
+      {children}
+    </IconProvider>
+  );
+}
+```
+
+Pass components here, not elements, so each component keeps setting the size and colour to match its context. Providers can be nested; the nearest one wins.
+
+A prop beats the provider, and the provider beats the built-in icon. Pass `null` to an icon prop to render no icon at all.
+
+FileUpload's file-type icons and AgentSteps' status icons follow the content, so change those through the provider.
+
+The replaceable icons, typed as `IconName`:
+
+| Group      | Names                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Navigation | `ChevronUp`, `ChevronDown`, `ChevronLeft`, `ChevronRight`, `ChevronFirst`, `ChevronLast`, `ArrowRight`, `UnfoldMore`, `MoreHorizontal` |
+| Status     | `Check`, `CheckmarkCircle`, `Alert`, `AlertCircle`, `InformationCircle`, `LoadingSpinner`, `SecurityCheck`                             |
+| Actions    | `Cancel`, `Copy`, `Delete`, `Pencil`, `Search`, `PlusSign`, `MinusSign`, `Eye`, `EyeOff`, `Dropper`, `Zap`, `Terminal`                 |
+| Files      | `File`, `FileEmpty`, `FileArchive`, `FileAudio`, `FileCode`, `FileImage`, `FileVideo`                                                  |
+| Layout     | `GripHorizontal`, `GripVertical`, `ViewSidebarLeft`, `ArrowExpandDiagonalUpRight`, `ArrowShrinkDiagonalUpRight`                        |
+| Other      | `Calendar`, `CreditCard`                                                                                                               |
 
 ## Theming
 
@@ -246,10 +291,9 @@ The provider follows your system's theme preference and remembers your selection
 
 The XiodUI repository includes an [Agent Skill](https://agentskills.io) that
 teaches coding agents how to use the library: the install steps, the subpath import rule, the
-`render` composition API, theming, and a generated prop reference for every one
-of the 89 components. It is distributed from this repository rather than in the
-npm package. Without it, agents tend to guess — reaching for the root barrel,
-`asChild`, or a `npx shadcn add` flow that does not exist here.
+`render` composition API, theming, swappable icons, and a prop reference for every one
+of the 90 components. Without it, agents tend to guess — reaching for a root
+import, `asChild`, or a CLI `add` step, none of which exist here.
 
 The skill lives at `skills/xiod-ui/` in this repository.
 

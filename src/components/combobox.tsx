@@ -6,6 +6,7 @@ import * as React from "react";
 import { Cancel as XIcon } from "xiod-icons/icons/Cancel";
 import { UnfoldMore as ChevronsUpDownIcon } from "xiod-icons/icons/UnfoldMore";
 
+import { IconSlot } from "./icon-provider";
 import { Input } from "./input";
 import { ScrollArea } from "./scroll-area";
 
@@ -69,6 +70,8 @@ function ComboboxInput({
   size,
   triggerProps,
   clearProps,
+  triggerIcon,
+  clearIcon,
   ...props
 }: Omit<ComboboxPrimitive.Input.Props, "size"> & {
   showTrigger?: boolean;
@@ -78,6 +81,10 @@ function ComboboxInput({
   ref?: React.Ref<HTMLInputElement>;
   triggerProps?: ComboboxPrimitive.Trigger.Props;
   clearProps?: ComboboxPrimitive.Clear.Props;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  triggerIcon?: React.ReactNode;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  clearIcon?: React.ReactNode;
 }): React.JSX.Element {
   const sizeValue = size ?? "default";
 
@@ -121,7 +128,11 @@ function ComboboxInput({
           {...triggerProps}
         >
           <ComboboxPrimitive.Icon data-slot="combobox-icon">
-            <ChevronsUpDownIcon />
+            <IconSlot
+              name="UnfoldMore"
+              icon={triggerIcon}
+              fallback={ChevronsUpDownIcon}
+            />
           </ComboboxPrimitive.Icon>
         </ComboboxTrigger>
       )}
@@ -134,7 +145,7 @@ function ComboboxInput({
           )}
           {...clearProps}
         >
-          <XIcon />
+          <IconSlot name="Cancel" icon={clearIcon} fallback={XIcon} />
         </ComboboxClear>
       )}
     </div>
@@ -425,7 +436,13 @@ function ComboboxChip({
   );
 }
 
-function ComboboxChipRemove(props: ComboboxPrimitive.ChipRemove.Props) {
+function ComboboxChipRemove({
+  icon,
+  ...props
+}: ComboboxPrimitive.ChipRemove.Props & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}) {
   return (
     <ComboboxPrimitive.ChipRemove
       aria-label="Remove"
@@ -433,7 +450,7 @@ function ComboboxChipRemove(props: ComboboxPrimitive.ChipRemove.Props) {
       data-slot="combobox-chip-remove"
       {...props}
     >
-      <XIcon />
+      <IconSlot name="Cancel" icon={icon} fallback={XIcon} />
     </ComboboxPrimitive.ChipRemove>
   );
 }

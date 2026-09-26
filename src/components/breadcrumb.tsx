@@ -7,6 +7,8 @@ import type * as React from "react";
 import { ChevronRight } from "xiod-icons/icons/ChevronRight";
 import { MoreHorizontal } from "xiod-icons/icons/MoreHorizontal";
 
+import { IconSlot } from "./icon-provider";
+
 function Breadcrumb({
   className,
   render,
@@ -103,8 +105,12 @@ function BreadcrumbSeparator({
   children,
   className,
   render,
+  icon,
   ...props
-}: useRender.ComponentProps<"li">): React.ReactElement {
+}: useRender.ComponentProps<"li"> & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.ReactElement {
   const defaultProps = {
     "aria-hidden": true,
     className: cn(
@@ -113,7 +119,9 @@ function BreadcrumbSeparator({
     ),
     "data-slot": "breadcrumb-separator",
     role: "presentation",
-    children: children ?? <ChevronRight />,
+    children: children ?? (
+      <IconSlot name="ChevronRight" icon={icon} fallback={ChevronRight} />
+    ),
   };
 
   return useRender({
@@ -126,8 +134,12 @@ function BreadcrumbSeparator({
 function BreadcrumbEllipsis({
   className,
   render,
+  icon,
   ...props
-}: useRender.ComponentProps<"span">): React.ReactElement {
+}: useRender.ComponentProps<"span"> & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.ReactElement {
   const defaultProps = {
     "aria-hidden": true,
     className: cn(
@@ -138,7 +150,12 @@ function BreadcrumbEllipsis({
     role: "presentation",
     children: (
       <>
-        <MoreHorizontal className="size-4" />
+        <IconSlot
+          name="MoreHorizontal"
+          icon={icon}
+          fallback={MoreHorizontal}
+          className="size-4"
+        />
         <span className="sr-only">More</span>
       </>
     ),

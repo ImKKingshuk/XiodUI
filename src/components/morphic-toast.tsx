@@ -21,6 +21,8 @@ import { Check as CheckIcon } from "xiod-icons/icons/Check";
 import { InformationCircle as InfoIcon } from "xiod-icons/icons/InformationCircle";
 import { LoadingSpinner as LoaderCircleIcon } from "xiod-icons/icons/LoadingSpinner";
 
+import { IconSlot } from "./icon-provider";
+
 /* --------------------------------- Layout --------------------------------- */
 const HEIGHT = 40;
 const WIDTH = 350;
@@ -125,14 +127,37 @@ const expandDir = (pos: MorphicToastPosition) =>
   pos.startsWith("top") ? ("bottom" as const) : ("top" as const);
 
 const STATE_ICON: Record<MorphicToastState, ReactNode> = {
-  success: <CheckIcon className="size-3.5" />,
+  success: <IconSlot name="Check" fallback={CheckIcon} className="size-3.5" />,
   loading: (
-    <LoaderCircleIcon className="size-3.5 animate-spin" aria-hidden="true" />
+    <IconSlot
+      name="LoadingSpinner"
+      fallback={LoaderCircleIcon}
+      className="size-3.5 animate-spin"
+      aria-hidden="true"
+    />
   ),
-  error: <XIcon className="size-3.5" />,
-  warning: <CircleAlertIcon className="size-3.5" />,
-  info: <InfoIcon className="size-3.5" />,
-  action: <ArrowRightIcon className="size-3.5" />,
+  error: <IconSlot name="Cancel" fallback={XIcon} className="size-3.5" />,
+  warning: (
+    <IconSlot
+      name="AlertCircle"
+      fallback={CircleAlertIcon}
+      className="size-3.5"
+    />
+  ),
+  info: (
+    <IconSlot
+      name="InformationCircle"
+      fallback={InfoIcon}
+      className="size-3.5"
+    />
+  ),
+  action: (
+    <IconSlot
+      name="ArrowRight"
+      fallback={ArrowRightIcon}
+      className="size-3.5"
+    />
+  ),
 };
 
 /* ------------------------------ Global Store ------------------------------ */

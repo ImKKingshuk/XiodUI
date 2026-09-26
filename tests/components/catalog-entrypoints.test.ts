@@ -40,6 +40,7 @@ const expectedEntrypoints = [
   "gauge",
   "grid",
   "group",
+  "icon-provider",
   "input-group",
   "input-otp",
   "input-payment",
@@ -99,13 +100,13 @@ function entrypointName(path: string): string {
 }
 
 describe("public component entrypoints", () => {
-  it("covers the complete 89-component catalog", () => {
+  it("covers the complete 90-component catalog", () => {
     const actualEntrypoints = Object.keys(modules)
       .map(entrypointName)
       .toSorted();
 
     expect(actualEntrypoints).toEqual(expectedEntrypoints.toSorted());
-    expect(actualEntrypoints).toHaveLength(89);
+    expect(actualEntrypoints).toHaveLength(90);
   });
 
   it.each(Object.entries(modules))(

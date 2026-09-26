@@ -56,9 +56,11 @@ remain available through the exported TypeScript type.
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | className | `string \| ((state: NavigationMenuIconState) => string \| undefined) \| undefined` | — |
+| icon | `ReactNode` | — |
 | style | `CSSProperties \| ((state: NavigationMenuIconState) => CSSProperties \| undefined) \| undefined` | — |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## NavigationMenuIndicator

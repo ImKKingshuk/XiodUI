@@ -26,8 +26,17 @@ remain available through the exported TypeScript type.
 Supports `render={<Element />}` for composition. Inherited DOM props
 remain available through the exported TypeScript type.
 
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+| Prop | Type | Default |
+| :--- | :--- | :--- |
+| clearIcon | `ReactNode` | — |
+| searchIcon | `ReactNode` | — |
+| selectedIcon | `ReactNode` | — |
+| triggerIcon | `ReactNode` | — |
+
+- `clearIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
+- `searchIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
+- `selectedIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
+- `triggerIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## InputPhoneFlag
 
@@ -46,6 +55,7 @@ remain available through the exported TypeScript type.
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | className | `string \| undefined` | — |
+| clearIcon | `ReactNode` | — |
 | defaultValue | `string \| number \| readonly string[] \| undefined` | — |
 | nativeInput | `boolean \| undefined` | — |
 | onValueChange | `((value: string, eventDetails: { reason: "none"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element \| undefined; }) => void) \| undefined` | — |
@@ -53,6 +63,7 @@ remain available through the exported TypeScript type.
 | style | `CSSProperties \| undefined` | — |
 | unstyled | `boolean \| undefined` | — |
 
+- `clearIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `defaultValue` — The default value of the input. Use when uncontrolled.
 - `onValueChange` — Callback fired when the `value` changes. Use when controlled.
 
@@ -78,8 +89,17 @@ remain available through the exported TypeScript type.
 Supports `render={<Element />}` for composition. Inherited DOM props
 remain available through the exported TypeScript type.
 
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+| Prop | Type | Default |
+| :--- | :--- | :--- |
+| clearIcon | `ReactNode` | — |
+| searchIcon | `ReactNode` | — |
+| selectedIcon | `ReactNode` | — |
+| triggerIcon | `ReactNode` | — |
+
+- `clearIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
+- `searchIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
+- `selectedIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
+- `triggerIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## PhoneInputFlag
 
@@ -98,6 +118,7 @@ remain available through the exported TypeScript type.
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | className | `string \| undefined` | — |
+| clearIcon | `ReactNode` | — |
 | defaultValue | `string \| number \| readonly string[] \| undefined` | — |
 | nativeInput | `boolean \| undefined` | — |
 | onValueChange | `((value: string, eventDetails: { reason: "none"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element \| undefined; }) => void) \| undefined` | — |
@@ -105,6 +126,7 @@ remain available through the exported TypeScript type.
 | style | `CSSProperties \| undefined` | — |
 | unstyled | `boolean \| undefined` | — |
 
+- `clearIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `defaultValue` — The default value of the input. Use when uncontrolled.
 - `onValueChange` — Callback fired when the `value` changes. Use when controlled.
 

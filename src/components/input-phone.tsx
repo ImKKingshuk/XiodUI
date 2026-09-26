@@ -10,6 +10,7 @@ import { Check } from "xiod-icons/icons/Check";
 import { ChevronDown } from "xiod-icons/icons/ChevronDown";
 import { Search } from "xiod-icons/icons/Search";
 
+import { IconSlot } from "./icon-provider";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./input-group";
 import { Popover, PopoverPopup, PopoverTrigger } from "./popover";
 import { ScrollArea } from "./scroll-area";
@@ -654,8 +655,21 @@ export type PhoneInputCountrySelectProps = InputPhoneCountrySelectProps;
 function InputPhoneCountrySelect({
   className,
   render,
+  triggerIcon,
+  searchIcon,
+  clearIcon,
+  selectedIcon,
   ...props
-}: InputPhoneCountrySelectProps): React.JSX.Element {
+}: InputPhoneCountrySelectProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  triggerIcon?: React.ReactNode;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  searchIcon?: React.ReactNode;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  clearIcon?: React.ReactNode;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  selectedIcon?: React.ReactNode;
+}): React.JSX.Element {
   const {
     containerRef,
     selectedCountry,
@@ -699,7 +713,12 @@ function InputPhoneCountrySelect({
         <span className="text-xs font-semibold text-muted-foreground">
           {selectedCountry.dialCode}
         </span>
-        <ChevronDown className="size-3.5 opacity-60 shrink-0" />
+        <IconSlot
+          name="ChevronDown"
+          icon={triggerIcon}
+          fallback={ChevronDown}
+          className="size-3.5 opacity-60 shrink-0"
+        />
       </>
     ),
   };
@@ -726,7 +745,12 @@ function InputPhoneCountrySelect({
         >
           {/* Compact Search Header */}
           <div className="relative mb-1 flex items-center gap-1.5 px-2 py-1 border-b border-border/40 pb-1.5">
-            <Search className="size-3.5 text-muted-foreground shrink-0" />
+            <IconSlot
+              name="Search"
+              icon={searchIcon}
+              fallback={Search}
+              className="size-3.5 text-muted-foreground shrink-0"
+            />
             <input
               type="text"
               aria-label="Search countries"
@@ -744,7 +768,12 @@ function InputPhoneCountrySelect({
                 onClick={() => setSearch("")}
                 className="p-0.5 rounded text-muted-foreground hover:text-foreground"
               >
-                <X className="size-3" />
+                <IconSlot
+                  name="Cancel"
+                  icon={clearIcon}
+                  fallback={X}
+                  className="size-3"
+                />
               </button>
             )}
           </div>
@@ -782,7 +811,12 @@ function InputPhoneCountrySelect({
                     <div className="flex items-center gap-1 shrink-0 font-mono text-[11px] text-muted-foreground">
                       <span>{c.dialCode}</span>
                       {isSelected && (
-                        <Check className="size-3.5 text-primary" />
+                        <IconSlot
+                          name="Check"
+                          icon={selectedIcon}
+                          fallback={Check}
+                          className="size-3.5 text-primary"
+                        />
                       )}
                     </div>
                   </button>
@@ -811,8 +845,12 @@ export type PhoneInputInputProps = InputPhoneInputProps;
 
 function InputPhoneInput({
   className,
+  clearIcon,
   ...props
-}: InputPhoneInputProps): React.JSX.Element {
+}: InputPhoneInputProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  clearIcon?: React.ReactNode;
+}): React.JSX.Element {
   const {
     selectedCountry,
     nationalNumber,
@@ -854,7 +892,12 @@ function InputPhoneInput({
             className="p-1 rounded-full text-muted-foreground/60 hover:text-foreground hover:bg-muted/40 transition-colors pointer-coarse:after:absolute pointer-coarse:after:size-8"
             aria-label="Clear Phone Number"
           >
-            <X className="size-3.5" />
+            <IconSlot
+              name="Cancel"
+              icon={clearIcon}
+              fallback={X}
+              className="size-3.5"
+            />
           </button>
         </InputGroupAddon>
       )}

@@ -5,6 +5,8 @@ import { cn } from "cn";
 import type * as React from "react";
 import { ChevronDown as ChevronDownIcon } from "xiod-icons/icons/ChevronDown";
 
+import { IconSlot } from "./icon-provider";
+
 function Accordion(props: AccordionPrimitive.Root.Props): React.JSX.Element {
   return <AccordionPrimitive.Root data-slot="accordion" {...props} />;
 }
@@ -25,8 +27,12 @@ function AccordionItem({
 function AccordionTrigger({
   className,
   children,
+  icon,
   ...props
-}: AccordionPrimitive.Trigger.Props): React.JSX.Element {
+}: AccordionPrimitive.Trigger.Props & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.JSX.Element {
   return (
     <AccordionPrimitive.Header className="flex">
       <AccordionPrimitive.Trigger
@@ -38,7 +44,10 @@ function AccordionTrigger({
         {...props}
       >
         {children}
-        <ChevronDownIcon
+        <IconSlot
+          name="ChevronDown"
+          icon={icon}
+          fallback={ChevronDownIcon}
           className="pointer-events-none size-4 shrink-0 translate-y-0.5 opacity-80 transition-transform duration-200 ease-in-out"
           data-slot="accordion-indicator"
         />

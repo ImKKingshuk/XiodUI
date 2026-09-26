@@ -93,6 +93,7 @@ remain available through the exported TypeScript type.
 | closeDelay | `number \| undefined` | — |
 | delay | `number \| undefined` | — |
 | handle | `PopoverHandle<unknown> \| undefined` | — |
+| icon | `ReactNode` | — |
 | nativeButton | `boolean \| undefined` | — |
 | openOnHover | `boolean \| undefined` | — |
 | payload | `unknown` | — |
@@ -102,6 +103,7 @@ remain available through the exported TypeScript type.
 - `closeDelay` — How long to wait before closing the popover that was opened on hover. Specified in milliseconds. Requires the `openOnHover` prop.
 - `delay` — How long to wait before the popover may be opened on hover. Specified in milliseconds. Requires the `openOnHover` prop.
 - `handle` — A handle to associate the trigger with a popover.
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `nativeButton` — Whether the component renders a native `<button>` element when replacing it via the `render` prop. Set to `false` if the rendered element is not a button (for example, `<div>`). Whether the component renders a native `<button>` element when replacing it via the `render` prop. Set to `false` if the rendered element is not a button (e.g. `<div>`).
 - `openOnHover` — Whether the popover should also open when the trigger is hovered.
 - `payload` — A payload to pass to the popover when it is opened.

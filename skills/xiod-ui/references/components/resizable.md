@@ -13,7 +13,10 @@ remain available through the exported TypeScript type.
 | :--- | :--- | :--- |
 | disabled | `boolean \| undefined` | `false` |
 | disableDoubleClick | `boolean \| undefined` | `false` |
+| icon | `ReactNode` | — |
 | withHandle | `boolean \| undefined` | `false` |
+
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## ResizablePanel
 

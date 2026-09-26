@@ -7,6 +7,8 @@ import { cn } from "cn";
 import type * as React from "react";
 import { MinusSign as MinusIcon } from "xiod-icons/icons/MinusSign";
 
+import { IconSlot } from "./icon-provider";
+
 export interface InputOtpProps extends Omit<
   OTPFieldPrimitive.Root.Props,
   "className"
@@ -92,8 +94,12 @@ function InputOtpInput({
 function InputOtpSeparator({
   className,
   children,
+  icon,
   ...props
-}: InputOtpSeparatorProps): React.JSX.Element {
+}: InputOtpSeparatorProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.JSX.Element {
   return (
     <OTPFieldPrimitive.Separator
       className={cn(
@@ -103,7 +109,14 @@ function InputOtpSeparator({
       data-slot="input-otp-separator"
       {...props}
     >
-      {children || <MinusIcon className="h-5 w-5" />}
+      {children || (
+        <IconSlot
+          name="MinusSign"
+          icon={icon}
+          fallback={MinusIcon}
+          className="h-5 w-5"
+        />
+      )}
     </OTPFieldPrimitive.Separator>
   );
 }

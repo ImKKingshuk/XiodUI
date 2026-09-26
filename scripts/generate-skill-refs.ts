@@ -232,6 +232,19 @@ function describe(checker: ts.TypeChecker, symbol: ts.Symbol): string {
     .trim();
 }
 
+/**
+ * An export's own doc comment, kept as written. Unlike {@link describe}, which
+ * flattens to one line for a list item, this keeps paragraph and fenced-code
+ * structure so a doc comment carrying an example stays copy-pasteable.
+ */
+function describeBlock(checker: ts.TypeChecker, symbol: ts.Symbol): string {
+  return ts
+    .displayPartsToString(symbol.getDocumentationComment(checker))
+    .replaceAll(/[^\S\n]+$/gm, "")
+    .replaceAll(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 function readProps(
   checker: ts.TypeChecker,
   symbol: ts.Symbol,
@@ -474,7 +487,7 @@ for (const file of files) {
     exports.push({
       kind,
       name,
-      description: describe(checker, exported) || undefined,
+      description: describeBlock(checker, exported) || undefined,
       props: readProps(checker, symbol, declaration, recipes),
       params: signature ? readParams(checker, signature) : undefined,
       supportsRender: propsType?.getProperty("render") !== undefined,

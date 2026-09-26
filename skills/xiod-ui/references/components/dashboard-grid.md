@@ -46,7 +46,10 @@ remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
+| icon | `ReactNode` | — |
 | id | `string \| undefined` | — |
+
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## DashboardTileHandle
 
@@ -55,7 +58,10 @@ remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
+| icon | `ReactNode` | — |
 | id | `string \| undefined` | — |
+
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## DashboardTileHeader
 
@@ -64,7 +70,10 @@ remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
+| icon | `ReactNode` | — |
 | id | `string \| undefined` | — |
+
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## DashboardTileResizeHandle
 

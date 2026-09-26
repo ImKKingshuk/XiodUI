@@ -9,6 +9,7 @@ import { Check as CheckIcon } from "xiod-icons/icons/Check";
 import { Copy as CopyIcon } from "xiod-icons/icons/Copy";
 
 import { useCopyToClipboard } from "../hooks/use-copy-to-clipboard";
+import { IconSlot } from "./icon-provider";
 import { anchoredToastManager } from "./toast";
 import {
   Tooltip,
@@ -69,8 +70,15 @@ export function CopyToClipboard({
   copiedText = "Copied!",
   disableTooltip = false,
   render,
+  copiedIcon,
+  copyIcon,
   ...props
-}: CopyToClipboardProps): React.ReactElement {
+}: CopyToClipboardProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  copiedIcon?: React.ReactNode;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  copyIcon?: React.ReactNode;
+}): React.ReactElement {
   const { copyToClipboard, isCopied } = useCopyToClipboard({ timeout: 2000 });
   const buttonRef = React.useRef<HTMLButtonElement>(null);
 
@@ -105,7 +113,12 @@ export function CopyToClipboard({
         )}
         aria-hidden="true"
       >
-        <CheckIcon className="size-4 text-success" />
+        <IconSlot
+          name="Check"
+          icon={copiedIcon}
+          fallback={CheckIcon}
+          className="size-4 text-success"
+        />
       </span>
       <span
         className={cn(
@@ -116,7 +129,12 @@ export function CopyToClipboard({
         )}
         aria-hidden="true"
       >
-        <CopyIcon className="size-4 text-muted-foreground transition-colors group-hover/btn:text-foreground" />
+        <IconSlot
+          name="Copy"
+          icon={copyIcon}
+          fallback={CopyIcon}
+          className="size-4 text-muted-foreground transition-colors group-hover/btn:text-foreground"
+        />
       </span>
     </>
   );

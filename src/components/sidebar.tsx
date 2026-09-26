@@ -10,6 +10,7 @@ import { ViewSidebarLeft as PanelLeftIcon } from "xiod-icons/icons/ViewSidebarLe
 
 import { useIsMobile } from "../hooks/use-media-query";
 import { Button } from "./button";
+import { IconSlot } from "./icon-provider";
 import { Input } from "./input";
 import { ScrollArea } from "./scroll-area";
 import { Separator } from "./separator";
@@ -283,8 +284,12 @@ function Sidebar({
 function SidebarTrigger({
   className,
   onClick,
+  icon,
   ...props
-}: React.ComponentProps<typeof Button>): React.JSX.Element {
+}: React.ComponentProps<typeof Button> & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.JSX.Element {
   const { toggleSidebar } = useSidebar();
 
   return (
@@ -300,7 +305,7 @@ function SidebarTrigger({
       variant="ghost"
       {...props}
     >
-      <PanelLeftIcon />
+      <IconSlot name="ViewSidebarLeft" icon={icon} fallback={PanelLeftIcon} />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   );

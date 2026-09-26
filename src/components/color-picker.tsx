@@ -7,6 +7,8 @@ import * as React from "react";
 import { ChevronDown } from "xiod-icons/icons/ChevronDown";
 import { Dropper as Pipette } from "xiod-icons/icons/Dropper";
 
+import { IconSlot } from "./icon-provider";
+
 // ==========================================
 // Types
 // ==========================================
@@ -1892,7 +1894,9 @@ export function BlossomColorPicker({
           }}
         >
           {isExpanded && hasEyeDropper && (
-            <Pipette
+            <IconSlot
+              name="Dropper"
+              fallback={Pipette}
               className="size-4 shrink-0 transition-opacity duration-200"
               style={{
                 color: currentLightness > 70 ? "rgba(0,0,0,0.6)" : "white",
@@ -1947,8 +1951,12 @@ export function ColorPicker({
   className,
   ref,
   render,
+  triggerIcon,
   ...props
-}: ColorPickerProps & { ref?: React.Ref<HTMLDivElement> }): React.JSX.Element {
+}: ColorPickerProps & {
+  ref?: React.Ref<HTMLDivElement> /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */;
+  triggerIcon?: React.ReactNode;
+}): React.JSX.Element {
   // Mode of inputs: HEX, RGBA, HSLA
   const [colorMode, setColorMode] = React.useState<"HEX" | "RGBA" | "HSLA">(
     "HEX",
@@ -2416,7 +2424,12 @@ export function ColorPicker({
               aria-label="Switch color format"
               className="relative flex items-center justify-center h-7 px-[calc(--spacing(2)-1px)] rounded-md border border-input bg-background/30 hover:bg-muted/70 active:bg-muted/90 cursor-pointer text-muted-foreground transition-colors disabled:opacity-64 disabled:cursor-not-allowed shadow-2xs focus:outline-none focus-visible:ring-1 focus-visible:ring-primary/40 pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11"
             >
-              <ChevronDown className="size-3.5" />
+              <IconSlot
+                name="ChevronDown"
+                icon={triggerIcon}
+                fallback={ChevronDown}
+                className="size-3.5"
+              />
             </button>
           </div>
         </div>

@@ -19,7 +19,7 @@ interface AuditResult {
 // only output is <Context.Provider>. The data-slot and props-spread rules
 // describe how a component forwards to an element it renders; with no element
 // there is nothing to mark up and nothing to spread onto.
-const NON_RENDERING = new Set(["theme-provider.tsx"]);
+const NON_RENDERING = new Set(["theme-provider.tsx", "icon-provider.tsx"]);
 
 // Components that are purely presentational (no client-side APIs)
 const PURE_PRESENTATIONAL = new Set([

@@ -8,6 +8,8 @@ import { Copy } from "xiod-icons/icons/Copy";
 import { Eye } from "xiod-icons/icons/Eye";
 import { EyeOff } from "xiod-icons/icons/EyeOff";
 
+import { IconSlot } from "./icon-provider";
+
 type Mode = "masked" | "revealed" | "empty";
 
 type InputSensitiveProps = Omit<
@@ -29,8 +31,21 @@ function InputSensitive({
   onKeyDown,
   disabled,
   readOnly,
+  copiedIcon,
+  copyIcon,
+  hideIcon,
+  revealIcon,
   ...props
-}: InputSensitiveProps): React.JSX.Element {
+}: InputSensitiveProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  copiedIcon?: React.ReactNode;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  copyIcon?: React.ReactNode;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  hideIcon?: React.ReactNode;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  revealIcon?: React.ReactNode;
+}): React.JSX.Element {
   const isControlled = props.value !== undefined;
   const [internalValue, setInternalValue] = React.useState(
     (props.defaultValue as string) || "",
@@ -285,9 +300,19 @@ function InputSensitive({
             )}
           >
             {copied ? (
-              <Check className="size-4 text-success sm:size-3.5" />
+              <IconSlot
+                name="Check"
+                icon={copiedIcon}
+                fallback={Check}
+                className="size-4 text-success sm:size-3.5"
+              />
             ) : (
-              <Copy className="size-4 sm:size-3.5" />
+              <IconSlot
+                name="Copy"
+                icon={copyIcon}
+                fallback={Copy}
+                className="size-4 sm:size-3.5"
+              />
             )}
           </button>
         )}
@@ -307,9 +332,19 @@ function InputSensitive({
           )}
         >
           {mode === "revealed" ? (
-            <EyeOff className="size-4 sm:size-3.5" />
+            <IconSlot
+              name="EyeOff"
+              icon={hideIcon}
+              fallback={EyeOff}
+              className="size-4 sm:size-3.5"
+            />
           ) : (
-            <Eye className="size-4 sm:size-3.5" />
+            <IconSlot
+              name="Eye"
+              icon={revealIcon}
+              fallback={Eye}
+              className="size-4 sm:size-3.5"
+            />
           )}
         </button>
       </div>

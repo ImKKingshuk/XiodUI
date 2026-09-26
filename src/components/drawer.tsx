@@ -13,6 +13,7 @@ import { Cancel as XIcon } from "xiod-icons/icons/Cancel";
 import { ChevronRight as ChevronRightIcon } from "xiod-icons/icons/ChevronRight";
 
 import { Button } from "./button";
+import { IconSlot } from "./icon-provider";
 import { ScrollArea } from "./scroll-area";
 
 type DrawerPosition = "right" | "left" | "top" | "bottom";
@@ -147,12 +148,15 @@ export function DrawerPopup({
   position: positionProp,
   variant = "default",
   showBar = false,
+  closeIcon,
   ...props
 }: DrawerPrimitive.Popup.Props & {
   showCloseButton?: boolean;
   position?: DrawerPosition;
   variant?: "default" | "straight" | "inset";
   showBar?: boolean;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  closeIcon?: React.ReactNode;
 }): React.ReactElement {
   const { position: contextPosition } = useContext(DrawerContext);
   const position = positionProp ?? contextPosition;
@@ -221,7 +225,7 @@ export function DrawerPopup({
                 <Button size="icon" className="rounded-xl" variant="outline" />
               }
             >
-              <XIcon />
+              <IconSlot name="Cancel" icon={closeIcon} fallback={XIcon} />
             </DrawerPrimitive.Close>
           )}
           {showBar && <DrawerBar />}
@@ -490,8 +494,12 @@ export function DrawerMenuGroupLabel({
 export function DrawerMenuTrigger({
   className,
   children,
+  icon,
   ...props
-}: DrawerPrimitive.Trigger.Props): React.ReactElement {
+}: DrawerPrimitive.Trigger.Props & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.ReactElement {
   return (
     <DrawerTrigger
       className={cn(
@@ -502,7 +510,12 @@ export function DrawerMenuTrigger({
       {...props}
     >
       {children}
-      <ChevronRightIcon className="ms-auto -me-0.5 opacity-80" />
+      <IconSlot
+        name="ChevronRight"
+        icon={icon}
+        fallback={ChevronRightIcon}
+        className="ms-auto -me-0.5 opacity-80"
+      />
     </DrawerTrigger>
   );
 }

@@ -8,6 +8,8 @@ import * as React from "react";
 import { Cancel as X } from "xiod-icons/icons/Cancel";
 import { GripVertical } from "xiod-icons/icons/GripVertical";
 
+import { IconSlot } from "./icon-provider";
+
 // ============================================================================
 // Types & CVA Variants
 // ============================================================================
@@ -104,8 +106,12 @@ function Sortable({
   onRemove,
   render,
   children,
+  handleIcon,
   ...props
-}: SortableProps): React.ReactElement {
+}: SortableProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  handleIcon?: React.ReactNode;
+}): React.ReactElement {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const [activeIndex, setActiveIndex] = React.useState<number | null>(null);
   const [overIndex, setOverIndex] = React.useState<number | null>(null);
@@ -284,7 +290,12 @@ function Sortable({
             }}
           >
             <div className="flex items-center gap-2 text-xs font-medium">
-              <GripVertical className="size-4 text-primary shrink-0" />
+              <IconSlot
+                name="GripVertical"
+                icon={handleIcon}
+                fallback={GripVertical}
+                className="size-4 text-primary shrink-0"
+              />
               <span>{activeItemValue}</span>
             </div>
           </div>
@@ -389,8 +400,12 @@ function SortableItemHandle({
   id: _id,
   render,
   children,
+  icon,
   ...props
-}: SortableItemHandleProps): React.ReactElement {
+}: SortableItemHandleProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.ReactElement {
   const context = React.useContext(SortableContext);
 
   const handlePointerDown = React.useCallback(
@@ -416,7 +431,14 @@ function SortableItemHandle({
     ),
     onPointerDown: handlePointerDown,
     "data-slot": "sortable-handle",
-    children: children || <GripVertical className="size-4 shrink-0" />,
+    children: children || (
+      <IconSlot
+        name="GripVertical"
+        icon={icon}
+        fallback={GripVertical}
+        className="size-4 shrink-0"
+      />
+    ),
   };
 
   return useRender({
@@ -439,8 +461,12 @@ function SortableItemRemove({
   id,
   render,
   children,
+  icon,
   ...props
-}: SortableItemRemoveProps): React.ReactElement {
+}: SortableItemRemoveProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.ReactElement {
   const context = React.useContext(SortableContext);
 
   const handleClick = React.useCallback(
@@ -460,7 +486,14 @@ function SortableItemRemove({
     ),
     onClick: handleClick,
     "data-slot": "sortable-remove",
-    children: children || <X className="size-3.5 shrink-0" />,
+    children: children || (
+      <IconSlot
+        name="Cancel"
+        icon={icon}
+        fallback={X}
+        className="size-3.5 shrink-0"
+      />
+    ),
   };
 
   return useRender({

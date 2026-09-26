@@ -8,6 +8,8 @@ import * as React from "react";
 import { Cancel as X } from "xiod-icons/icons/Cancel";
 import { GripVertical } from "xiod-icons/icons/GripVertical";
 
+import { IconSlot } from "./icon-provider";
+
 // ============================================================================
 // Types & Interfaces
 // ============================================================================
@@ -677,8 +679,12 @@ function DashboardTileHeader({
   id,
   render,
   children,
+  icon,
   ...props
-}: DashboardTileHeaderProps): React.ReactElement {
+}: DashboardTileHeaderProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.ReactElement {
   const context = React.useContext(DashboardGridContext);
 
   const handlePointerDown = React.useCallback(
@@ -700,7 +706,12 @@ function DashboardTileHeader({
     children: children || (
       <>
         <div className="flex items-center gap-1.5 truncate">
-          <GripVertical className="size-3.5 text-muted-foreground/60 shrink-0" />
+          <IconSlot
+            name="GripVertical"
+            icon={icon}
+            fallback={GripVertical}
+            className="size-3.5 text-muted-foreground/60 shrink-0"
+          />
           <DashboardTileTitle />
         </div>
         <DashboardTileControls id={id} />
@@ -745,8 +756,12 @@ function DashboardTileControls({
   id,
   render,
   children,
+  icon,
   ...props
-}: DashboardTileControlsProps): React.ReactElement {
+}: DashboardTileControlsProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.ReactElement {
   const context = React.useContext(DashboardGridContext);
 
   const defaultProps = {
@@ -762,7 +777,7 @@ function DashboardTileControls({
           className="p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors pointer-coarse:after:absolute pointer-coarse:after:size-11"
           aria-label="Remove Widget"
         >
-          <X className="size-3" />
+          <IconSlot name="Cancel" icon={icon} fallback={X} className="size-3" />
         </button>
       )),
   };
@@ -782,8 +797,12 @@ function DashboardTileHandle({
   className,
   id,
   render,
+  icon,
   ...props
-}: DashboardTileHandleProps): React.ReactElement {
+}: DashboardTileHandleProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.ReactElement {
   const context = React.useContext(DashboardGridContext);
 
   const handlePointerDown = React.useCallback(
@@ -804,7 +823,12 @@ function DashboardTileHandle({
     "data-slot": "dashboard-tile-handle",
     children: (
       <>
-        <GripVertical className="size-3.5 opacity-60 shrink-0" />
+        <IconSlot
+          name="GripVertical"
+          icon={icon}
+          fallback={GripVertical}
+          className="size-3.5 opacity-60 shrink-0"
+        />
         <span className="truncate flex-1">Drag Handle</span>
       </>
     ),

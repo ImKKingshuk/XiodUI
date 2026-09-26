@@ -11,6 +11,7 @@ import { ChevronRight as ChevronRightIcon } from "xiod-icons/icons/ChevronRight"
 import { MoreHorizontal as MoreHorizontalIcon } from "xiod-icons/icons/MoreHorizontal";
 
 import { type Button, buttonVariants } from "./button";
+import { IconSlot } from "./icon-provider";
 
 function Pagination({
   className,
@@ -103,8 +104,12 @@ function PaginationLink({
 
 function PaginationFirst({
   className,
+  icon,
   ...props
-}: React.ComponentProps<typeof PaginationLink>): React.JSX.Element {
+}: React.ComponentProps<typeof PaginationLink> & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.JSX.Element {
   return (
     <PaginationLink
       aria-label="Go to first page"
@@ -112,7 +117,12 @@ function PaginationFirst({
       size="default"
       {...props}
     >
-      <ChevronFirstIcon className="sm:-ms-1" />
+      <IconSlot
+        name="ChevronFirst"
+        icon={icon}
+        fallback={ChevronFirstIcon}
+        className="sm:-ms-1"
+      />
       <span className="max-sm:hidden">First</span>
     </PaginationLink>
   );
@@ -120,8 +130,12 @@ function PaginationFirst({
 
 function PaginationPrevious({
   className,
+  icon,
   ...props
-}: React.ComponentProps<typeof PaginationLink>): React.JSX.Element {
+}: React.ComponentProps<typeof PaginationLink> & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.JSX.Element {
   return (
     <PaginationLink
       aria-label="Go to previous page"
@@ -129,7 +143,12 @@ function PaginationPrevious({
       size="default"
       {...props}
     >
-      <ChevronLeftIcon className="sm:-ms-1" />
+      <IconSlot
+        name="ChevronLeft"
+        icon={icon}
+        fallback={ChevronLeftIcon}
+        className="sm:-ms-1"
+      />
       <span className="max-sm:hidden">Previous</span>
     </PaginationLink>
   );
@@ -137,8 +156,12 @@ function PaginationPrevious({
 
 function PaginationNext({
   className,
+  icon,
   ...props
-}: React.ComponentProps<typeof PaginationLink>): React.JSX.Element {
+}: React.ComponentProps<typeof PaginationLink> & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.JSX.Element {
   return (
     <PaginationLink
       aria-label="Go to next page"
@@ -147,15 +170,24 @@ function PaginationNext({
       {...props}
     >
       <span className="max-sm:hidden">Next</span>
-      <ChevronRightIcon className="sm:-me-1" />
+      <IconSlot
+        name="ChevronRight"
+        icon={icon}
+        fallback={ChevronRightIcon}
+        className="sm:-me-1"
+      />
     </PaginationLink>
   );
 }
 
 function PaginationLast({
   className,
+  icon,
   ...props
-}: React.ComponentProps<typeof PaginationLink>): React.JSX.Element {
+}: React.ComponentProps<typeof PaginationLink> & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.JSX.Element {
   return (
     <PaginationLink
       aria-label="Go to last page"
@@ -164,7 +196,12 @@ function PaginationLast({
       {...props}
     >
       <span className="max-sm:hidden">Last</span>
-      <ChevronLastIcon className="sm:-me-1" />
+      <IconSlot
+        name="ChevronLast"
+        icon={icon}
+        fallback={ChevronLastIcon}
+        className="sm:-me-1"
+      />
     </PaginationLink>
   );
 }
@@ -172,15 +209,24 @@ function PaginationLast({
 function PaginationEllipsis({
   className,
   render,
+  icon,
   ...props
-}: useRender.ComponentProps<"span">): React.ReactElement {
+}: useRender.ComponentProps<"span"> & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.ReactElement {
   const defaultProps = {
     "aria-hidden": true,
     className: cn("flex min-w-7 justify-center", className),
     "data-slot": "pagination-ellipsis",
     children: (
       <>
-        <MoreHorizontalIcon className="size-5 sm:size-4" />
+        <IconSlot
+          name="MoreHorizontal"
+          icon={icon}
+          fallback={MoreHorizontalIcon}
+          className="size-5 sm:size-4"
+        />
         <span className="sr-only">More pages</span>
       </>
     ),

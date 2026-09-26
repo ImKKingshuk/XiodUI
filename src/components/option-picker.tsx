@@ -6,6 +6,7 @@ import * as React from "react";
 import { ChevronDown as ChevronDownIcon } from "xiod-icons/icons/ChevronDown";
 
 import { Button } from "./button";
+import { IconSlot } from "./icon-provider";
 
 export interface Option {
   id: string;
@@ -33,8 +34,12 @@ function OptionPicker({
   className,
   triggerClassName,
   popupClassName,
+  icon,
   ...props
-}: OptionPickerProps): React.JSX.Element {
+}: OptionPickerProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.JSX.Element {
   const [open, setOpen] = React.useState(false);
 
   // Restrict to max 5 options
@@ -95,7 +100,10 @@ function OptionPicker({
             </span>
           )}
 
-          <ChevronDownIcon
+          <IconSlot
+            name="ChevronDown"
+            icon={icon}
+            fallback={ChevronDownIcon}
             className={cn(
               "size-4 sm:size-3.5 text-muted-foreground/80 dark:text-muted-foreground transition-transform duration-200",
               open && "rotate-180",

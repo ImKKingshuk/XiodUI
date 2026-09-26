@@ -6,6 +6,7 @@ import type * as React from "react";
 import { Cancel as XIcon } from "xiod-icons/icons/Cancel";
 import { UnfoldMore as ChevronsUpDownIcon } from "xiod-icons/icons/UnfoldMore";
 
+import { IconSlot } from "./icon-provider";
 import { Input } from "./input";
 import { ScrollArea } from "./scroll-area";
 
@@ -19,6 +20,8 @@ function AutocompleteInput({
   size,
   triggerProps,
   clearProps,
+  triggerIcon,
+  clearIcon,
   ...props
 }: Omit<AutocompletePrimitive.Input.Props, "size"> & {
   showTrigger?: boolean;
@@ -28,6 +31,10 @@ function AutocompleteInput({
   ref?: React.Ref<HTMLInputElement>;
   triggerProps?: AutocompletePrimitive.Trigger.Props;
   clearProps?: AutocompletePrimitive.Clear.Props;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  triggerIcon?: React.ReactNode;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  clearIcon?: React.ReactNode;
 }): React.JSX.Element {
   const sizeValue = size ?? "default";
 
@@ -65,7 +72,11 @@ function AutocompleteInput({
           {...triggerProps}
         >
           <AutocompletePrimitive.Icon data-slot="autocomplete-icon">
-            <ChevronsUpDownIcon />
+            <IconSlot
+              name="UnfoldMore"
+              icon={triggerIcon}
+              fallback={ChevronsUpDownIcon}
+            />
           </AutocompletePrimitive.Icon>
         </AutocompleteTrigger>
       )}
@@ -78,7 +89,7 @@ function AutocompleteInput({
           )}
           {...clearProps}
         >
-          <XIcon />
+          <IconSlot name="Cancel" icon={clearIcon} fallback={XIcon} />
         </AutocompleteClear>
       )}
     </div>
@@ -249,8 +260,12 @@ function AutocompleteList({
 
 function AutocompleteClear({
   className,
+  icon,
   ...props
-}: AutocompletePrimitive.Clear.Props): React.JSX.Element {
+}: AutocompletePrimitive.Clear.Props & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.JSX.Element {
   return (
     <AutocompletePrimitive.Clear
       className={cn(
@@ -260,7 +275,7 @@ function AutocompleteClear({
       data-slot="autocomplete-clear"
       {...props}
     >
-      <XIcon />
+      <IconSlot name="Cancel" icon={icon} fallback={XIcon} />
     </AutocompletePrimitive.Clear>
   );
 }

@@ -8,6 +8,7 @@ import * as React from "react";
 import { CreditCard } from "xiod-icons/icons/CreditCard";
 import { Zap } from "xiod-icons/icons/Zap";
 
+import { IconSlot } from "./icon-provider";
 import { Tabs, TabsList, TabsTab } from "./tabs";
 
 // ============================================================================
@@ -713,8 +714,15 @@ function InputPayment({
 
 function InputPaymentMethodSelector({
   className,
+  cardIcon,
+  upiIcon,
   ...props
-}: React.ComponentProps<typeof Tabs>): React.JSX.Element {
+}: React.ComponentProps<typeof Tabs> & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  cardIcon?: React.ReactNode;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  upiIcon?: React.ReactNode;
+}): React.JSX.Element {
   const { disabled, paymentMethod, readOnly, setPaymentMethod } =
     useInputPaymentContext();
 
@@ -732,7 +740,12 @@ function InputPaymentMethodSelector({
           value="card"
           className="pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11"
         >
-          <CreditCard className="size-4 shrink-0" />
+          <IconSlot
+            name="CreditCard"
+            icon={cardIcon}
+            fallback={CreditCard}
+            className="size-4 shrink-0"
+          />
           <span>Card</span>
         </TabsTab>
         <TabsTab
@@ -740,7 +753,12 @@ function InputPaymentMethodSelector({
           value="upi"
           className="pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11"
         >
-          <Zap className="size-4 shrink-0 text-amber-500 fill-amber-500/20" />
+          <IconSlot
+            name="Zap"
+            icon={upiIcon}
+            fallback={Zap}
+            className="size-4 shrink-0 text-amber-500 fill-amber-500/20"
+          />
           <span>UPI</span>
         </TabsTab>
       </TabsList>
@@ -1123,8 +1141,12 @@ function InputPaymentUpiId({
 function InputPaymentBrandIcon({
   className,
   render,
+  icon,
   ...props
-}: useRender.ComponentProps<"div">): React.ReactElement {
+}: useRender.ComponentProps<"div"> & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.ReactElement {
   const { brand } = useInputPaymentContext();
 
   const defaultProps = {
@@ -1283,7 +1305,14 @@ function InputPaymentBrandIcon({
           </svg>
         );
       default:
-        return <CreditCard className="size-4 text-muted-foreground/80" />;
+        return (
+          <IconSlot
+            name="CreditCard"
+            icon={icon}
+            fallback={CreditCard}
+            className="size-4 text-muted-foreground/80"
+          />
+        );
     }
   };
 
@@ -1304,8 +1333,12 @@ function InputPaymentBrandIcon({
 function InputPaymentUpiProviderIcon({
   className,
   render,
+  icon,
   ...props
-}: useRender.ComponentProps<"div">): React.ReactElement {
+}: useRender.ComponentProps<"div"> & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.ReactElement {
   const { upiProvider } = useInputPaymentContext();
 
   const defaultProps = {
@@ -1411,7 +1444,14 @@ function InputPaymentUpiProviderIcon({
           </svg>
         );
       default:
-        return <Zap className="size-4 text-amber-500" />;
+        return (
+          <IconSlot
+            name="Zap"
+            icon={icon}
+            fallback={Zap}
+            className="size-4 text-amber-500"
+          />
+        );
     }
   };
 

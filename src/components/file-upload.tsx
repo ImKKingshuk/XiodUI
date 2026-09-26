@@ -17,6 +17,7 @@ import { FileImage } from "xiod-icons/icons/FileImage";
 import { FileVideo } from "xiod-icons/icons/FileVideo";
 
 import { Button } from "./button";
+import { IconSlot } from "./icon-provider";
 
 // ============================================================================
 // Types & Helpers
@@ -411,16 +412,40 @@ export function FileUploadItemIcon({
     const type = file.type.toLowerCase();
     const name = file.name.toLowerCase();
     if (type.startsWith("image/")) {
-      return <FileImage className="size-5 text-primary" />;
+      return (
+        <IconSlot
+          name="FileImage"
+          fallback={FileImage}
+          className="size-5 text-primary"
+        />
+      );
     }
     if (type.startsWith("video/")) {
-      return <FileVideo className="size-5 text-primary" />;
+      return (
+        <IconSlot
+          name="FileVideo"
+          fallback={FileVideo}
+          className="size-5 text-primary"
+        />
+      );
     }
     if (type.startsWith("audio/")) {
-      return <FileAudio className="size-5 text-warning" />;
+      return (
+        <IconSlot
+          name="FileAudio"
+          fallback={FileAudio}
+          className="size-5 text-warning"
+        />
+      );
     }
     if (type.includes("pdf") || name.endsWith(".pdf")) {
-      return <FileText className="size-5 text-destructive" />;
+      return (
+        <IconSlot
+          name="File"
+          fallback={FileText}
+          className="size-5 text-destructive"
+        />
+      );
     }
     if (
       type.includes("zip") ||
@@ -431,7 +456,13 @@ export function FileUploadItemIcon({
       name.endsWith(".rar") ||
       name.endsWith(".gz")
     ) {
-      return <FileArchive className="size-5 text-success" />;
+      return (
+        <IconSlot
+          name="FileArchive"
+          fallback={FileArchive}
+          className="size-5 text-success"
+        />
+      );
     }
     if (
       type.includes("json") ||
@@ -446,9 +477,21 @@ export function FileUploadItemIcon({
       name.endsWith(".html") ||
       name.endsWith(".css")
     ) {
-      return <FileCode className="size-5 text-info" />;
+      return (
+        <IconSlot
+          name="FileCode"
+          fallback={FileCode}
+          className="size-5 text-info"
+        />
+      );
     }
-    return <File className="size-5 text-muted-foreground" />;
+    return (
+      <IconSlot
+        name="FileEmpty"
+        fallback={File}
+        className="size-5 text-muted-foreground"
+      />
+    );
   };
 
   const defaultContent = getIcon();
@@ -566,7 +609,12 @@ export function FileUploadItemStatus({
     if (status === "success") {
       return (
         <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-xs font-medium text-success dark:bg-success/20">
-          <CheckCircle className="size-3" /> Done
+          <IconSlot
+            name="CheckmarkCircle"
+            fallback={CheckCircle}
+            className="size-3"
+          />{" "}
+          Done
         </span>
       );
     }
@@ -576,7 +624,12 @@ export function FileUploadItemStatus({
           className="inline-flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-medium text-destructive dark:bg-destructive/20"
           title={errorMessage}
         >
-          <AlertCircle className="size-3" /> Failed
+          <IconSlot
+            name="AlertCircle"
+            fallback={AlertCircle}
+            className="size-3"
+          />{" "}
+          Failed
         </span>
       );
     }
@@ -611,8 +664,12 @@ export function FileUploadItemStatus({
 export function FileUploadItemRemove({
   className,
   render,
+  icon,
   ...props
-}: useRender.ComponentProps<"button">): React.ReactElement {
+}: useRender.ComponentProps<"button"> & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.ReactElement {
   const { id } = useFileItemContext();
   const { removeFile, disabled } = useFileUploadContext();
 
@@ -634,7 +691,12 @@ export function FileUploadItemRemove({
   if (mergedProps.children === undefined) {
     mergedProps.children = (
       <>
-        <Trash2 className="size-4" />
+        <IconSlot
+          name="Delete"
+          fallback={Trash2}
+          className="size-4"
+          icon={icon}
+        />
         <span className="sr-only">Remove file</span>
       </>
     );

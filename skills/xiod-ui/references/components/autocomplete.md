@@ -86,12 +86,14 @@ remain available through the exported TypeScript type.
 | :--- | :--- | :--- |
 | className | `string \| ((state: ComboboxClearState) => string \| undefined) \| undefined` | — |
 | disabled | `boolean \| undefined` | — |
+| icon | `ReactNode` | — |
 | keepMounted | `boolean \| undefined` | — |
 | nativeButton | `boolean \| undefined` | — |
 | style | `CSSProperties \| ((state: ComboboxClearState) => CSSProperties \| undefined) \| undefined` | — |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `disabled` — Whether the component should ignore user interaction.
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `keepMounted` — Whether the component should remain mounted in the DOM when not visible.
 - `nativeButton` — Whether the component renders a native `<button>` element when replacing it via the `render` prop. Set to `false` if the rendered element is not a button (for example, `<div>`).
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
@@ -151,6 +153,7 @@ remain available through the exported TypeScript type.
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | className | `string \| ((state: ComboboxInputState) => string \| undefined) \| undefined` | — |
+| clearIcon | `ReactNode` | — |
 | clearProps | `ComboboxClearProps \| undefined` | — |
 | disabled | `boolean \| undefined` | — |
 | showClear | `boolean \| undefined` | `false` |
@@ -158,11 +161,14 @@ remain available through the exported TypeScript type.
 | size | `number \| "sm" \| "default" \| "lg" \| undefined` | — |
 | startAddon | `ReactNode` | — |
 | style | `CSSProperties \| ((state: ComboboxInputState) => CSSProperties \| undefined) \| undefined` | — |
+| triggerIcon | `ReactNode` | — |
 | triggerProps | `AutocompleteTriggerProps \| undefined` | — |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
+- `clearIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `disabled` — Whether the component should ignore user interaction.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
+- `triggerIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## AutocompleteItem
 

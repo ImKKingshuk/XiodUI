@@ -8,6 +8,7 @@ import { Calendar as CalendarIcon } from "xiod-icons/icons/Calendar";
 
 import { Button } from "./button";
 import { Calendar, type DateRange } from "./calendar";
+import { IconSlot } from "./icon-provider";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./input-group";
 import { Popover, PopoverPopup, PopoverTrigger } from "./popover";
 
@@ -138,8 +139,12 @@ function DatePicker({
   triggerVariant = "outline",
   triggerSize = "default",
   render,
+  icon,
   ...props
-}: DatePickerProps): React.JSX.Element {
+}: DatePickerProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.JSX.Element {
   const [open, setOpen] = React.useState(false);
   const inputGroupRef = React.useRef<HTMLDivElement>(null);
 
@@ -328,7 +333,12 @@ function DatePicker({
               />
             }
           >
-            <CalendarIcon className="size-4 shrink-0 pointer-events-none mr-2" />
+            <IconSlot
+              name="Calendar"
+              icon={icon}
+              fallback={CalendarIcon}
+              className="size-4 shrink-0 pointer-events-none mr-2"
+            />
             {renderTriggerLabel()}
           </PopoverTrigger>
         ) : (
@@ -386,7 +396,12 @@ function DatePicker({
                   />
                 }
               >
-                <CalendarIcon className="size-4 shrink-0 pointer-events-none" />
+                <IconSlot
+                  name="Calendar"
+                  icon={icon}
+                  fallback={CalendarIcon}
+                  className="size-4 shrink-0 pointer-events-none"
+                />
               </PopoverTrigger>
             </InputGroupAddon>
           </InputGroup>

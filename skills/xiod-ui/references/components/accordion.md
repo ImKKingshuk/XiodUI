@@ -79,10 +79,12 @@ remain available through the exported TypeScript type.
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | className | `string \| ((state: AccordionTriggerState) => string \| undefined) \| undefined` | — |
+| icon | `ReactNode` | — |
 | nativeButton | `boolean \| undefined` | — |
 | style | `CSSProperties \| ((state: AccordionTriggerState) => CSSProperties \| undefined) \| undefined` | — |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `nativeButton` — Whether the component renders a native `<button>` element when replacing it via the `render` prop. Set to `false` if the rendered element is not a button (for example, `<div>`).
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 

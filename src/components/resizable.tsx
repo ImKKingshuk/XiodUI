@@ -7,6 +7,8 @@ import * as React from "react";
 import { GripHorizontal } from "xiod-icons/icons/GripHorizontal";
 import { GripVertical } from "xiod-icons/icons/GripVertical";
 
+import { IconSlot } from "./icon-provider";
+
 // --- Global Registry for Coordinating Dragging across Groups ---
 
 interface GroupRegistryEntry {
@@ -1553,8 +1555,12 @@ function ResizableHandle({
   disableDoubleClick = false,
   render,
   children,
+  icon,
   ...props
-}: ResizableHandleProps): React.JSX.Element {
+}: ResizableHandleProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.JSX.Element {
   const id = React.useId();
   const ref = React.useRef<HTMLButtonElement | null>(null);
   const {
@@ -1706,9 +1712,19 @@ function ResizableHandle({
             )}
           >
             {isHorizontal ? (
-              <GripVertical className="size-2 text-muted-foreground/64" />
+              <IconSlot
+                name="GripVertical"
+                icon={icon}
+                fallback={GripVertical}
+                className="size-2 text-muted-foreground/64"
+              />
             ) : (
-              <GripHorizontal className="size-2 text-muted-foreground/64" />
+              <IconSlot
+                name="GripHorizontal"
+                icon={icon}
+                fallback={GripHorizontal}
+                className="size-2 text-muted-foreground/64"
+              />
             )}
           </div>
         )}

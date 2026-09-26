@@ -37,8 +37,11 @@ import { InputPayment, InputPaymentBrandIcon, InputPaymentCardNumber, InputPayme
 Supports `render={<Element />}` for composition. Inherited DOM props
 remain available through the exported TypeScript type.
 
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+| Prop | Type | Default |
+| :--- | :--- | :--- |
+| icon | `ReactNode` | — |
+
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## InputPaymentCardNumber
 
@@ -115,18 +118,22 @@ remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
+| cardIcon | `ReactNode` | — |
 | className | `string \| ((state: TabsRootState) => string \| undefined) \| undefined` | — |
 | defaultValue | `any` | — |
 | onValueChange | `((value: any, eventDetails: TabsRootChangeEventDetails) => void) \| undefined` | — |
 | orientation | `Orientation \| undefined` | — |
 | style | `CSSProperties \| ((state: TabsRootState) => CSSProperties \| undefined) \| undefined` | — |
+| upiIcon | `ReactNode` | — |
 | value | `any` | — |
 
+- `cardIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `defaultValue` — The default value. Use when the component is not controlled. When the value is `null`, no Tab will be active.
 - `onValueChange` — Callback invoked when new value is being set. The event `reason` is `'none'` for user-initiated changes, such as a click or keyboard navigation; `'initial'` for the first automatic selection or fallback in uncontrolled roots when `defaultValue` is omitted or `undefined`, including when the implicit initial value is disabled or missing; `'disabled'` for automatic fallback when the selected tab becomes disabled in uncontrolled roots; or `'missing'` for automatic fallback when the selected tab is removed, or when an explicit `defaultValue` never matches a mounted tab in uncontrolled roots. For automatic changes, the selected value can be `null` when no enabled Tab is available as a fallback. Automatic changes cannot be canceled; calling `eventDetails.cancel()` for `'initial'`, `'disabled'`, or `'missing'` has no effect.
 - `orientation` — The component orientation (layout flow direction).
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
+- `upiIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `value` — The value of the currently active `Tab`. Use when the component is controlled. When the value is `null`, no Tab will be active.
 
 ## InputPaymentUpiGroup
@@ -162,8 +169,11 @@ remain available through the exported TypeScript type.
 Supports `render={<Element />}` for composition. Inherited DOM props
 remain available through the exported TypeScript type.
 
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+| Prop | Type | Default |
+| :--- | :--- | :--- |
+| icon | `ReactNode` | — |
+
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## InputPaymentZip
 
@@ -218,8 +228,11 @@ remain available through the exported TypeScript type.
 Supports `render={<Element />}` for composition. Inherited DOM props
 remain available through the exported TypeScript type.
 
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+| Prop | Type | Default |
+| :--- | :--- | :--- |
+| icon | `ReactNode` | — |
+
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## PaymentInputCardNumber
 
@@ -296,18 +309,22 @@ remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
+| cardIcon | `ReactNode` | — |
 | className | `string \| ((state: TabsRootState) => string \| undefined) \| undefined` | — |
 | defaultValue | `any` | — |
 | onValueChange | `((value: any, eventDetails: TabsRootChangeEventDetails) => void) \| undefined` | — |
 | orientation | `Orientation \| undefined` | — |
 | style | `CSSProperties \| ((state: TabsRootState) => CSSProperties \| undefined) \| undefined` | — |
+| upiIcon | `ReactNode` | — |
 | value | `any` | — |
 
+- `cardIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `defaultValue` — The default value. Use when the component is not controlled. When the value is `null`, no Tab will be active.
 - `onValueChange` — Callback invoked when new value is being set. The event `reason` is `'none'` for user-initiated changes, such as a click or keyboard navigation; `'initial'` for the first automatic selection or fallback in uncontrolled roots when `defaultValue` is omitted or `undefined`, including when the implicit initial value is disabled or missing; `'disabled'` for automatic fallback when the selected tab becomes disabled in uncontrolled roots; or `'missing'` for automatic fallback when the selected tab is removed, or when an explicit `defaultValue` never matches a mounted tab in uncontrolled roots. For automatic changes, the selected value can be `null` when no enabled Tab is available as a fallback. Automatic changes cannot be canceled; calling `eventDetails.cancel()` for `'initial'`, `'disabled'`, or `'missing'` has no effect.
 - `orientation` — The component orientation (layout flow direction).
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
+- `upiIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `value` — The value of the currently active `Tab`. Use when the component is controlled. When the value is `null`, no Tab will be active.
 
 ## PaymentInputUpiGroup
@@ -343,8 +360,11 @@ remain available through the exported TypeScript type.
 Supports `render={<Element />}` for composition. Inherited DOM props
 remain available through the exported TypeScript type.
 
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+| Prop | Type | Default |
+| :--- | :--- | :--- |
+| icon | `ReactNode` | — |
+
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## PaymentInputZip
 

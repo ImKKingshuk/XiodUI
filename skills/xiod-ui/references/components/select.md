@@ -64,7 +64,10 @@ remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
+| icon | `ReactNode` | — |
 | size | `"sm" \| "default" \| "lg" \| null \| undefined` | `"default"` |
+
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## SelectGroup
 
@@ -128,12 +131,16 @@ remain available through the exported TypeScript type.
 | children | `ReactNode` | — |
 | className | `string \| ((state: SelectPopupState) => string \| undefined) \| undefined` | — |
 | finalFocus | `boolean \| RefObject<HTMLElement \| null> \| ((closeType: InteractionType) => boolean \| void \| HTMLElement \| null) \| undefined` | — |
+| scrollDownIcon | `ReactNode` | — |
+| scrollUpIcon | `ReactNode` | — |
 | side | `Side \| undefined` | `"bottom"` |
 | sideOffset | `number \| OffsetFunction \| undefined` | `4` |
 | style | `CSSProperties \| ((state: SelectPopupState) => CSSProperties \| undefined) \| undefined` | — |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `finalFocus` — Determines the element to focus when the select popup is closed. - `false`: Do not move focus. - `true`: Move focus based on the default behavior (trigger or previously focused element). - `RefObject`: Move focus to the ref element. - `function`: Called with the interaction type (`mouse`, `touch`, `pen`, or `keyboard`). Return an element to focus, `true` to use the default behavior, or `false`/`undefined` to do nothing.
+- `scrollDownIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
+- `scrollUpIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## SelectSeparator
@@ -161,12 +168,14 @@ remain available through the exported TypeScript type.
 | children | `ReactNode` | — |
 | className | `string \| ((state: SelectTriggerState) => string \| undefined) \| undefined` | — |
 | disabled | `boolean \| undefined` | — |
+| icon | `ReactNode` | — |
 | nativeButton | `boolean \| undefined` | — |
 | size | `"sm" \| "default" \| "lg" \| null \| undefined` | `"default"` |
 | style | `CSSProperties \| ((state: SelectTriggerState) => CSSProperties \| undefined) \| undefined` | — |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `disabled` — Whether the component should ignore user interaction.
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `nativeButton` — Whether the component renders a native `<button>` element when replacing it via the `render` prop. Set to `false` if the rendered element is not a button (for example, `<div>`).
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 

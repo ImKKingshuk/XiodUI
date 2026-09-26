@@ -11,6 +11,8 @@ import { Cancel as X } from "xiod-icons/icons/Cancel";
 import { GripHorizontal } from "xiod-icons/icons/GripHorizontal";
 import { MinusSign as Minus } from "xiod-icons/icons/MinusSign";
 
+import { IconSlot } from "./icon-provider";
+
 // ============================================================================
 // Types & CVA Variants
 // ============================================================================
@@ -320,8 +322,12 @@ function DraggableHeader({
   className,
   render,
   children,
+  icon,
   ...props
-}: DraggableHeaderProps): React.ReactElement {
+}: DraggableHeaderProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.ReactElement {
   const context = React.useContext(DraggableContext);
 
   const defaultProps = {
@@ -334,7 +340,12 @@ function DraggableHeader({
     children: children || (
       <>
         <div className="flex items-center gap-1.5 truncate">
-          <GripHorizontal className="size-3.5 text-muted-foreground/60 shrink-0" />
+          <IconSlot
+            name="GripHorizontal"
+            icon={icon}
+            fallback={GripHorizontal}
+            className="size-3.5 text-muted-foreground/60 shrink-0"
+          />
           <DraggableTitle />
         </div>
         <DraggableControls />
@@ -376,8 +387,21 @@ function DraggableControls({
   className,
   render,
   children,
+  minimizeIcon,
+  restoreIcon,
+  maximizeIcon,
+  closeIcon,
   ...props
-}: DraggableControlsProps): React.ReactElement {
+}: DraggableControlsProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  minimizeIcon?: React.ReactNode;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  restoreIcon?: React.ReactNode;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  maximizeIcon?: React.ReactNode;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  closeIcon?: React.ReactNode;
+}): React.ReactElement {
   const context = React.useContext(DraggableContext);
 
   const defaultProps = {
@@ -392,7 +416,12 @@ function DraggableControls({
           className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors pointer-coarse:after:absolute pointer-coarse:after:size-11"
           aria-label="Minimize"
         >
-          <Minus className="size-3" />
+          <IconSlot
+            name="MinusSign"
+            icon={minimizeIcon}
+            fallback={Minus}
+            className="size-3"
+          />
         </button>
         <button
           type="button"
@@ -401,9 +430,19 @@ function DraggableControls({
           aria-label="Maximize"
         >
           {context?.isMaximized ? (
-            <Minimize2 className="size-3" />
+            <IconSlot
+              name="ArrowShrinkDiagonalUpRight"
+              icon={restoreIcon}
+              fallback={Minimize2}
+              className="size-3"
+            />
           ) : (
-            <Maximize2 className="size-3" />
+            <IconSlot
+              name="ArrowExpandDiagonalUpRight"
+              icon={maximizeIcon}
+              fallback={Maximize2}
+              className="size-3"
+            />
           )}
         </button>
         <button
@@ -412,7 +451,12 @@ function DraggableControls({
           className="p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors pointer-coarse:after:absolute pointer-coarse:after:size-11"
           aria-label="Close"
         >
-          <X className="size-3" />
+          <IconSlot
+            name="Cancel"
+            icon={closeIcon}
+            fallback={X}
+            className="size-3"
+          />
         </button>
       </>
     ),

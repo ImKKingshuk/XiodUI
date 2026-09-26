@@ -19,6 +19,7 @@ import {
   AutocompleteList,
   AutocompleteSeparator,
 } from "./autocomplete";
+import { IconSlot } from "./icon-provider";
 
 const CommandDialog = CommandDialogPrimitive.Root;
 
@@ -112,8 +113,12 @@ function Command({
 function CommandInput({
   className,
   placeholder,
+  icon,
   ...props
-}: React.ComponentProps<typeof AutocompleteInput>): React.JSX.Element {
+}: React.ComponentProps<typeof AutocompleteInput> & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.JSX.Element {
   return (
     <div className="px-2.5 py-1.5">
       <AutocompleteInput
@@ -123,7 +128,9 @@ function CommandInput({
         )}
         placeholder={placeholder}
         size="lg"
-        startAddon={<SearchIcon />}
+        startAddon={
+          <IconSlot name="Search" icon={icon} fallback={SearchIcon} />
+        }
         {...props}
       />
     </div>

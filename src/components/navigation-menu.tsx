@@ -7,6 +7,8 @@ import { cn } from "cn";
 import type * as React from "react";
 import { ChevronDown as ChevronDownIcon } from "xiod-icons/icons/ChevronDown";
 
+import { IconSlot } from "./icon-provider";
+
 function NavigationMenu({
   className,
   ...props
@@ -73,8 +75,12 @@ function NavigationMenuTrigger({
 
 function NavigationMenuIcon({
   className,
+  icon,
   ...props
-}: NavigationMenuPrimitive.Icon.Props): React.JSX.Element {
+}: NavigationMenuPrimitive.Icon.Props & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.JSX.Element {
   return (
     <NavigationMenuPrimitive.Icon
       className={cn(
@@ -84,7 +90,12 @@ function NavigationMenuIcon({
       data-slot="navigation-menu-icon"
       {...props}
     >
-      <ChevronDownIcon className="size-full" />
+      <IconSlot
+        name="ChevronDown"
+        icon={icon}
+        fallback={ChevronDownIcon}
+        className="size-full"
+      />
     </NavigationMenuPrimitive.Icon>
   );
 }

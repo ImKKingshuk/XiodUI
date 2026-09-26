@@ -7,6 +7,7 @@ import { ChevronDown as ChevronDownIcon } from "xiod-icons/icons/ChevronDown";
 
 import { Button, type buttonVariants } from "./button";
 import { Group, GroupSeparator } from "./group";
+import { IconSlot } from "./icon-provider";
 import { Popover, PopoverPopup, PopoverTrigger } from "./popover";
 
 const ButtonSplitContext = React.createContext<{
@@ -83,8 +84,12 @@ function ButtonSplitTrigger({
   className,
   render,
   children,
+  icon,
   ...props
-}: React.ComponentProps<typeof PopoverTrigger>): React.JSX.Element {
+}: React.ComponentProps<typeof PopoverTrigger> & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.JSX.Element {
   const { variant, size } = React.useContext(ButtonSplitContext);
 
   const triggerSize =
@@ -104,7 +109,9 @@ function ButtonSplitTrigger({
       render={render ?? <Button variant={variant} size={triggerSize} />}
       {...props}
     >
-      {children ?? <ChevronDownIcon />}
+      {children ?? (
+        <IconSlot name="ChevronDown" icon={icon} fallback={ChevronDownIcon} />
+      )}
     </PopoverTrigger>
   );
 }

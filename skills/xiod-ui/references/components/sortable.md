@@ -11,11 +11,14 @@ remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
+| handleIcon | `ReactNode` | — |
 | **items** | `string[]` | — |
 | onRemove | `((id: string) => void) \| undefined` | — |
 | **onReorder** | `(newItems: string[]) => void` | — |
 | orientation | `SortableOrientation \| undefined` | `"vertical"` |
 | variant | `"default" \| "ghost" \| "bordered" \| null \| undefined` | `"default"` |
+
+- `handleIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## SortableColumn
 
@@ -62,7 +65,10 @@ remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
+| icon | `ReactNode` | — |
 | id | `string \| undefined` | — |
+
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## SortableItemRemove
 
@@ -71,6 +77,9 @@ remain available through the exported TypeScript type.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
+| icon | `ReactNode` | — |
 | **id** | `string` | — |
+
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

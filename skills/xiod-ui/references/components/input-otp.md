@@ -80,9 +80,11 @@ remain available through the exported TypeScript type.
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | className | `string \| undefined` | — |
+| icon | `ReactNode` | — |
 | orientation | `Orientation \| undefined` | — |
 | style | `CSSProperties \| ((state: SeparatorState) => CSSProperties \| undefined) \| undefined` | — |
 
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `orientation` — The orientation of the separator.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
@@ -162,9 +164,11 @@ remain available through the exported TypeScript type.
 | Prop | Type | Default |
 | :--- | :--- | :--- |
 | className | `string \| undefined` | — |
+| icon | `ReactNode` | — |
 | orientation | `Orientation \| undefined` | — |
 | style | `CSSProperties \| ((state: SeparatorState) => CSSProperties \| undefined) \| undefined` | — |
 
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `orientation` — The orientation of the separator.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 

@@ -9,6 +9,7 @@ import { Cancel as XIcon } from "xiod-icons/icons/Cancel";
 
 // SVG guards present via Button (uses [&_svg:not([class*='size-'])] / [&_svg])
 import { Button } from "./button";
+import { IconSlot } from "./icon-provider";
 import { ScrollArea } from "./scroll-area";
 
 const DialogCreateHandle = DialogPrimitive.createHandle;
@@ -65,11 +66,14 @@ function DialogPopup({
   showCloseButton = true,
   bottomStickOnMobile = true,
   closeProps,
+  closeIcon,
   ...props
 }: DialogPrimitive.Popup.Props & {
   showCloseButton?: boolean;
   bottomStickOnMobile?: boolean;
   closeProps?: DialogPrimitive.Close.Props;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  closeIcon?: React.ReactNode;
 }): React.JSX.Element {
   return (
     <DialogPortal>
@@ -98,7 +102,7 @@ function DialogPopup({
               render={<Button size="icon" variant="ghost" />}
               {...closeProps}
             >
-              <XIcon />
+              <IconSlot name="Cancel" icon={closeIcon} fallback={XIcon} />
             </DialogPrimitive.Close>
           )}
         </DialogPrimitive.Popup>

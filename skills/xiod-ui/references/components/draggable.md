@@ -43,8 +43,17 @@ TypeScript type for inherited element or primitive props.
 Supports `render={<Element />}` for composition. Inherited DOM props
 remain available through the exported TypeScript type.
 
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+| Prop | Type | Default |
+| :--- | :--- | :--- |
+| closeIcon | `ReactNode` | — |
+| maximizeIcon | `ReactNode` | — |
+| minimizeIcon | `ReactNode` | — |
+| restoreIcon | `ReactNode` | — |
+
+- `closeIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
+- `maximizeIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
+- `minimizeIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
+- `restoreIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## DraggableFooter
 
@@ -59,8 +68,11 @@ TypeScript type for inherited element or primitive props.
 Supports `render={<Element />}` for composition. Inherited DOM props
 remain available through the exported TypeScript type.
 
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+| Prop | Type | Default |
+| :--- | :--- | :--- |
+| icon | `ReactNode` | — |
+
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## DraggableResizeHandle
 

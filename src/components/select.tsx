@@ -10,6 +10,8 @@ import { ChevronDown as ChevronDownIcon } from "xiod-icons/icons/ChevronDown";
 import { ChevronUp as ChevronUpIcon } from "xiod-icons/icons/ChevronUp";
 import { UnfoldMore as ChevronsUpDownIcon } from "xiod-icons/icons/UnfoldMore";
 
+import { IconSlot } from "./icon-provider";
+
 const Select = SelectPrimitive.Root;
 
 const selectTriggerVariants = cva(
@@ -39,8 +41,12 @@ function SelectButton({
   size,
   render,
   children,
+  icon,
   ...props
-}: SelectButtonProps): React.ReactElement {
+}: SelectButtonProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.ReactElement {
   const typeValue: React.ButtonHTMLAttributes<HTMLButtonElement>["type"] =
     render ? undefined : "button";
 
@@ -50,7 +56,12 @@ function SelectButton({
         <span className="flex-1 truncate in-data-placeholder:text-muted-foreground/72">
           {children}
         </span>
-        <ChevronsUpDownIcon className={selectTriggerIconClassName} />
+        <IconSlot
+          name="UnfoldMore"
+          icon={icon}
+          fallback={ChevronsUpDownIcon}
+          className={selectTriggerIconClassName}
+        />
       </>
     ),
     className: cn(selectTriggerVariants({ size }), "min-w-0", className),
@@ -69,9 +80,13 @@ function SelectTrigger({
   className,
   size = "default",
   children,
+  icon,
   ...props
 }: SelectPrimitive.Trigger.Props &
-  VariantProps<typeof selectTriggerVariants>): React.JSX.Element {
+  VariantProps<typeof selectTriggerVariants> & {
+    /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+    icon?: React.ReactNode;
+  }): React.JSX.Element {
   return (
     <SelectPrimitive.Trigger
       className={cn(selectTriggerVariants({ size }), className)}
@@ -80,7 +95,12 @@ function SelectTrigger({
     >
       {children}
       <SelectPrimitive.Icon data-slot="select-icon">
-        <ChevronsUpDownIcon className={selectTriggerIconClassName} />
+        <IconSlot
+          name="UnfoldMore"
+          icon={icon}
+          fallback={ChevronsUpDownIcon}
+          className={selectTriggerIconClassName}
+        />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );
@@ -111,6 +131,8 @@ function SelectPopup({
   alignOffset = 0,
   alignItemWithTrigger = true,
   anchor,
+  scrollUpIcon,
+  scrollDownIcon,
   ...props
 }: SelectPrimitive.Popup.Props & {
   side?: SelectPrimitive.Positioner.Props["side"];
@@ -119,6 +141,10 @@ function SelectPopup({
   alignOffset?: SelectPrimitive.Positioner.Props["alignOffset"];
   alignItemWithTrigger?: SelectPrimitive.Positioner.Props["alignItemWithTrigger"];
   anchor?: SelectPrimitive.Positioner.Props["anchor"];
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  scrollUpIcon?: React.ReactNode;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  scrollDownIcon?: React.ReactNode;
 }): React.JSX.Element {
   return (
     <SelectPrimitive.Portal>
@@ -141,7 +167,12 @@ function SelectPopup({
             className="top-0 z-50 flex h-6 w-full cursor-default items-center justify-center before:pointer-events-none before:absolute before:inset-x-px before:top-px before:h-[200%] before:rounded-t-[calc(var(--radius-lg)-1px)] before:bg-linear-to-b before:from-50% before:from-popover"
             data-slot="select-scroll-up-arrow"
           >
-            <ChevronUpIcon className="relative size-4.5 sm:size-4" />
+            <IconSlot
+              name="ChevronUp"
+              icon={scrollUpIcon}
+              fallback={ChevronUpIcon}
+              className="relative size-4.5 sm:size-4"
+            />
           </SelectPrimitive.ScrollUpArrow>
           <div className="relative h-full min-w-(--anchor-width) rounded-lg border bg-popover not-dark:bg-clip-padding shadow-lg/5 before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] before:shadow-[0_1px_--theme(--color-black/4%)] dark:before:shadow-[0_-1px_--theme(--color-white/6%)]">
             <SelectPrimitive.List
@@ -158,7 +189,12 @@ function SelectPopup({
             className="bottom-0 z-50 flex h-6 w-full cursor-default items-center justify-center before:pointer-events-none before:absolute before:inset-x-px before:bottom-px before:h-[200%] before:rounded-b-[calc(var(--radius-lg)-1px)] before:bg-linear-to-t before:from-50% before:from-popover"
             data-slot="select-scroll-down-arrow"
           >
-            <ChevronDownIcon className="relative size-4.5 sm:size-4" />
+            <IconSlot
+              name="ChevronDown"
+              icon={scrollDownIcon}
+              fallback={ChevronDownIcon}
+              className="relative size-4.5 sm:size-4"
+            />
           </SelectPrimitive.ScrollDownArrow>
         </SelectPrimitive.Popup>
       </SelectPrimitive.Positioner>

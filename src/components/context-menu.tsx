@@ -7,6 +7,8 @@ import { cn } from "cn";
 import type * as React from "react";
 import { ChevronRight as ChevronRightIcon } from "xiod-icons/icons/ChevronRight";
 
+import { IconSlot } from "./icon-provider";
+
 const ContextMenu = ContextMenuPrimitive.Root;
 
 const ContextMenuPortal = ContextMenuPrimitive.Portal;
@@ -265,9 +267,12 @@ function ContextMenuSubTrigger({
   className,
   inset,
   children,
+  icon,
   ...props
 }: ContextMenuPrimitive.SubmenuTrigger.Props & {
   inset?: boolean;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
 }): React.JSX.Element {
   return (
     <ContextMenuPrimitive.SubmenuTrigger
@@ -280,7 +285,12 @@ function ContextMenuSubTrigger({
       {...props}
     >
       {children}
-      <ChevronRightIcon className="-me-0.5 ms-auto opacity-80" />
+      <IconSlot
+        name="ChevronRight"
+        icon={icon}
+        fallback={ChevronRightIcon}
+        className="-me-0.5 ms-auto opacity-80"
+      />
     </ContextMenuPrimitive.SubmenuTrigger>
   );
 }

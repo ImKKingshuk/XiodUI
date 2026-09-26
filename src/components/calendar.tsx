@@ -7,6 +7,8 @@ import * as React from "react";
 import { ChevronLeft as ChevronLeftIcon } from "xiod-icons/icons/ChevronLeft";
 import { ChevronRight as ChevronRightIcon } from "xiod-icons/icons/ChevronRight";
 
+import { IconSlot } from "./icon-provider";
+
 /* --------------------------------- Types --------------------------------- */
 
 export type CalendarMode = "single" | "range";
@@ -217,8 +219,15 @@ function Calendar({
   localeMonthsShort,
   classNames,
   render,
+  prevIcon,
+  nextIcon,
   ...props
-}: CalendarProps): React.JSX.Element {
+}: CalendarProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  prevIcon?: React.ReactNode;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  nextIcon?: React.ReactNode;
+}): React.JSX.Element {
   const today = React.useMemo(() => new Date(), []);
 
   const weekdaysList = localeWeekdays || WEEKDAYS;
@@ -561,7 +570,12 @@ function Calendar({
             )}
             aria-label="Previous Page"
           >
-            <ChevronLeftIcon className="size-4 shrink-0 pointer-events-none" />
+            <IconSlot
+              name="ChevronLeft"
+              icon={prevIcon}
+              fallback={ChevronLeftIcon}
+              className="size-4 shrink-0 pointer-events-none"
+            />
           </button>
 
           {/* Dynamic Zoom Title */}
@@ -590,7 +604,12 @@ function Calendar({
             )}
             aria-label="Next Page"
           >
-            <ChevronRightIcon className="size-4 shrink-0 pointer-events-none" />
+            <IconSlot
+              name="ChevronRight"
+              icon={nextIcon}
+              fallback={ChevronRightIcon}
+              className="size-4 shrink-0 pointer-events-none"
+            />
           </button>
         </div>
 

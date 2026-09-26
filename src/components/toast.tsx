@@ -11,16 +11,21 @@ import { InformationCircle as InfoIcon } from "xiod-icons/icons/InformationCircl
 import { LoadingSpinner as LoaderCircleIcon } from "xiod-icons/icons/LoadingSpinner";
 
 import { buttonVariants } from "./button";
+import { IconSlot } from "./icon-provider";
 
 const toastManager = Toast.createToastManager();
 const anchoredToastManager = Toast.createToastManager();
 
+// The slot name travels with the default so the status icon goes through
+// `IconSlot` like every other icon and stays overridable. It cannot resolve
+// with `useIcon` here: the lookup happens inside a `.map()`, where a hook
+// cannot be called.
 const TOAST_ICONS = {
-  error: CircleAlertIcon,
-  info: InfoIcon,
-  loading: LoaderCircleIcon,
-  success: CircleCheckIcon,
-  warning: TriangleAlertIcon,
+  error: { name: "AlertCircle", fallback: CircleAlertIcon },
+  info: { name: "InformationCircle", fallback: InfoIcon },
+  loading: { name: "LoadingSpinner", fallback: LoaderCircleIcon },
+  success: { name: "CheckmarkCircle", fallback: CircleCheckIcon },
+  warning: { name: "Alert", fallback: TriangleAlertIcon },
 } as const;
 
 type ToastPosition =
@@ -34,18 +39,25 @@ type ToastPosition =
 interface ToastProviderProps extends Toast.Provider.Props {
   position?: ToastPosition;
   closeButton?: boolean;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  closeIcon?: React.ReactNode;
 }
 
 function ToastProvider({
   children,
   position = "bottom-right",
   closeButton = false,
+  closeIcon,
   ...props
 }: ToastProviderProps): React.JSX.Element {
   return (
     <Toast.Provider toastManager={toastManager} {...props}>
       {children}
-      <Toasts position={position} closeButton={closeButton} />
+      <Toasts
+        position={position}
+        closeButton={closeButton}
+        closeIcon={closeIcon}
+      />
     </Toast.Provider>
   );
 }
@@ -53,9 +65,12 @@ function ToastProvider({
 function Toasts({
   position,
   closeButton = false,
+  closeIcon,
 }: {
   position: ToastPosition;
   closeButton?: boolean;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  closeIcon?: React.ReactNode;
 }) {
   const { toasts } = Toast.useToastManager();
   const isTop = position.startsWith("top");
@@ -77,7 +92,7 @@ function Toasts({
         data-slot="toast-viewport"
       >
         {toasts.map((toast) => {
-          const Icon = toast.type
+          const statusIcon = toast.type
             ? TOAST_ICONS[toast.type as keyof typeof TOAST_ICONS]
             : null;
 
@@ -142,12 +157,16 @@ function Toasts({
             >
               <Toast.Content className="pointer-events-auto flex items-center justify-between gap-1.5 overflow-hidden px-3.5 py-3 text-sm transition-opacity duration-250 data-behind:not-data-expanded:pointer-events-none data-behind:opacity-0 data-expanded:opacity-100">
                 <div className="flex gap-2">
-                  {Icon && (
+                  {statusIcon && (
                     <div
                       className="[&>svg]:h-lh [&>svg]:w-4 [&_svg]:pointer-events-none [&_svg]:shrink-0"
                       data-slot="toast-icon"
                     >
-                      <Icon className="in-data-[type=loading]:animate-spin in-data-[type=error]:text-destructive in-data-[type=info]:text-info in-data-[type=success]:text-success in-data-[type=warning]:text-warning in-data-[type=loading]:opacity-80" />
+                      <IconSlot
+                        name={statusIcon.name}
+                        fallback={statusIcon.fallback}
+                        className="in-data-[type=loading]:animate-spin in-data-[type=error]:text-destructive in-data-[type=info]:text-info in-data-[type=success]:text-success in-data-[type=warning]:text-warning in-data-[type=loading]:opacity-80"
+                      />
                     </div>
                   )}
 
@@ -179,7 +198,12 @@ function Toasts({
                         "text-muted-foreground hover:text-foreground select-none",
                       )}
                     >
-                      <XIcon className="size-4 sm:size-3.5" />
+                      <IconSlot
+                        name="Cancel"
+                        icon={closeIcon}
+                        fallback={XIcon}
+                        className="size-4 sm:size-3.5"
+                      />
                     </Toast.Close>
                   )}
                 </div>
@@ -194,22 +218,32 @@ function Toasts({
 
 interface AnchoredToastProviderProps extends Toast.Provider.Props {
   closeButton?: boolean;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  closeIcon?: React.ReactNode;
 }
 
 function AnchoredToastProvider({
   children,
   closeButton = false,
+  closeIcon,
   ...props
 }: AnchoredToastProviderProps): React.JSX.Element {
   return (
     <Toast.Provider toastManager={anchoredToastManager} {...props}>
       {children}
-      <AnchoredToasts closeButton={closeButton} />
+      <AnchoredToasts closeButton={closeButton} closeIcon={closeIcon} />
     </Toast.Provider>
   );
 }
 
-function AnchoredToasts({ closeButton = false }: { closeButton?: boolean }) {
+function AnchoredToasts({
+  closeButton = false,
+  closeIcon,
+}: {
+  closeButton?: boolean;
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  closeIcon?: React.ReactNode;
+}) {
   const { toasts } = Toast.useToastManager();
 
   return (
@@ -219,7 +253,7 @@ function AnchoredToasts({ closeButton = false }: { closeButton?: boolean }) {
         data-slot="toast-viewport-anchored"
       >
         {toasts.map((toast) => {
-          const Icon = toast.type
+          const statusIcon = toast.type
             ? TOAST_ICONS[toast.type as keyof typeof TOAST_ICONS]
             : null;
           const tooltipStyle =
@@ -260,12 +294,16 @@ function AnchoredToasts({ closeButton = false }: { closeButton?: boolean }) {
                 ) : (
                   <Toast.Content className="pointer-events-auto flex items-center justify-between gap-1.5 overflow-hidden px-3.5 py-3 text-sm">
                     <div className="flex gap-2">
-                      {Icon && (
+                      {statusIcon && (
                         <div
                           className="[&>svg]:h-lh [&>svg]:w-4 [&_svg]:pointer-events-none [&_svg]:shrink-0"
                           data-slot="toast-icon"
                         >
-                          <Icon className="in-data-[type=loading]:animate-spin in-data-[type=error]:text-destructive in-data-[type=info]:text-info in-data-[type=success]:text-success in-data-[type=warning]:text-warning in-data-[type=loading]:opacity-80" />
+                          <IconSlot
+                            name={statusIcon.name}
+                            fallback={statusIcon.fallback}
+                            className="in-data-[type=loading]:animate-spin in-data-[type=error]:text-destructive in-data-[type=info]:text-info in-data-[type=success]:text-success in-data-[type=warning]:text-warning in-data-[type=loading]:opacity-80"
+                          />
                         </div>
                       )}
 
@@ -300,7 +338,12 @@ function AnchoredToasts({ closeButton = false }: { closeButton?: boolean }) {
                             "text-muted-foreground hover:text-foreground select-none",
                           )}
                         >
-                          <XIcon className="size-4 sm:size-3.5" />
+                          <IconSlot
+                            name="Cancel"
+                            icon={closeIcon}
+                            fallback={XIcon}
+                            className="size-4 sm:size-3.5"
+                          />
                         </Toast.Close>
                       )}
                     </div>

@@ -9,6 +9,7 @@ import { ChevronLeft } from "xiod-icons/icons/ChevronLeft";
 import { ChevronRight } from "xiod-icons/icons/ChevronRight";
 
 import { Button } from "./button";
+import { IconSlot } from "./icon-provider";
 
 // ============================================================================
 // Carousel viewport engine — scrolling, snapping and drag, implemented here
@@ -753,8 +754,12 @@ export function CarouselPrevious({
   className,
   variant = "outline",
   size = "icon-sm",
+  icon,
   ...props
-}: React.ComponentProps<typeof Button>): React.JSX.Element {
+}: React.ComponentProps<typeof Button> & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.JSX.Element {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel();
 
   return (
@@ -773,7 +778,12 @@ export function CarouselPrevious({
       onClick={scrollPrev}
       {...props}
     >
-      <ChevronLeft className="size-4.5 sm:size-4 cn-rtl-flip" />
+      <IconSlot
+        name="ChevronLeft"
+        icon={icon}
+        fallback={ChevronLeft}
+        className="size-4.5 sm:size-4 cn-rtl-flip"
+      />
       <span className="sr-only">Previous slide</span>
     </Button>
   );
@@ -783,8 +793,12 @@ export function CarouselNext({
   className,
   variant = "outline",
   size = "icon-sm",
+  icon,
   ...props
-}: React.ComponentProps<typeof Button>): React.JSX.Element {
+}: React.ComponentProps<typeof Button> & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.JSX.Element {
   const { orientation, scrollNext, canScrollNext } = useCarousel();
 
   return (
@@ -803,7 +817,12 @@ export function CarouselNext({
       onClick={scrollNext}
       {...props}
     >
-      <ChevronRight className="size-4.5 sm:size-4 cn-rtl-flip" />
+      <IconSlot
+        name="ChevronRight"
+        icon={icon}
+        fallback={ChevronRight}
+        className="size-4.5 sm:size-4 cn-rtl-flip"
+      />
       <span className="sr-only">Next slide</span>
     </Button>
   );

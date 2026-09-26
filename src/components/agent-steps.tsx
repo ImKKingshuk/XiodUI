@@ -13,6 +13,8 @@ import { Search } from "xiod-icons/icons/Search";
 import { SecurityCheck as ShieldCheck } from "xiod-icons/icons/SecurityCheck";
 import { Terminal } from "xiod-icons/icons/Terminal";
 
+import { IconSlot } from "./icon-provider";
+
 // Predefined SMIL path morph geometries for the thinking/loading state
 const pathCircleA =
   "M 12 8 C 14.21 8 16 9.79 16 12 C 16 14.21 14.21 16 12 16 C 9.79 16 8 14.21 8 12 C 8 9.79 9.79 8 12 8 Z";
@@ -306,10 +308,24 @@ export function AgentStepIcon({
       size === "sm" ? "size-3" : size === "lg" ? "size-5" : "size-3.5";
 
     if (status === "completed" || icon === "done") {
-      return <Check className={iconSizeClass} strokeWidth={3} />;
+      return (
+        <IconSlot
+          name="Check"
+          fallback={Check}
+          className={iconSizeClass}
+          strokeWidth={3}
+        />
+      );
     }
     if (status === "failed" || icon === "error") {
-      return <X className={iconSizeClass} strokeWidth={3} />;
+      return (
+        <IconSlot
+          name="Cancel"
+          fallback={X}
+          className={iconSizeClass}
+          strokeWidth={3}
+        />
+      );
     }
     if (status === "waiting") {
       const waitDotSize =
@@ -350,16 +366,32 @@ export function AgentStepIcon({
     }
 
     if (icon === "searching") {
-      return <Search className={iconSizeClass} />;
+      return (
+        <IconSlot name="Search" fallback={Search} className={iconSizeClass} />
+      );
     }
     if (icon === "editing") {
-      return <Pencil className={iconSizeClass} />;
+      return (
+        <IconSlot name="Pencil" fallback={Pencil} className={iconSizeClass} />
+      );
     }
     if (icon === "execute") {
-      return <Terminal className={iconSizeClass} />;
+      return (
+        <IconSlot
+          name="Terminal"
+          fallback={Terminal}
+          className={iconSizeClass}
+        />
+      );
     }
     if (icon === "verify") {
-      return <ShieldCheck className={iconSizeClass} />;
+      return (
+        <IconSlot
+          name="SecurityCheck"
+          fallback={ShieldCheck}
+          className={iconSizeClass}
+        />
+      );
     }
 
     if (

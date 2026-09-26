@@ -285,6 +285,7 @@ remain available through the exported TypeScript type.
 | closeDelay | `number \| undefined` | — |
 | delay | `number \| undefined` | — |
 | disabled | `boolean \| undefined` | — |
+| icon | `ReactNode` | — |
 | id | `string \| undefined` | — |
 | inset | `boolean \| undefined` | — |
 | label | `string \| undefined` | — |
@@ -297,6 +298,7 @@ remain available through the exported TypeScript type.
 - `closeDelay` — How long to wait before closing the menu that was opened on hover. Specified in milliseconds. Requires the `openOnHover` prop.
 - `delay` — How long to wait before the menu may be opened on hover. Specified in milliseconds. Requires the `openOnHover` prop.
 - `disabled` — Whether the component should ignore user interaction.
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `label` — Overrides the text label to use when the item is matched during keyboard text navigation.
 - `nativeButton` — Whether the component renders a native `<button>` element when replacing it via the `render` prop. Set to `true` if the rendered element is a native button.
 - `openOnHover` — Whether the menu should also open when the trigger is hovered.

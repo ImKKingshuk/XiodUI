@@ -1,6 +1,6 @@
 ---
 name: xiod-ui
-description: Build React UIs with XiodUI (the `xiod-ui` npm package) — 89 accessible components, 19 colour palettes, built on Base UI and Tailwind CSS 4. Use when installing xiod-ui, importing or composing its components (Button, Dialog, Field, Form, Select, Toast, ColorPicker, Sidebar, and the rest), wiring dark mode or a palette, or fixing an import that does not resolve. Also use when a task mentions XiodUI, xiod-ui, ui.xiod.dev, or asks for components that turn out to be from this library.
+description: Build React UIs with XiodUI (the `xiod-ui` npm package) — 90 accessible components, 19 colour palettes, built on Base UI and Tailwind CSS 4. Use when installing xiod-ui, importing or composing its components (Button, Dialog, Field, Form, Select, Toast, ColorPicker, Sidebar, and the rest), wiring dark mode or a palette, swapping a component's built-in icon, or fixing an import that does not resolve. Also use when a task mentions XiodUI, xiod-ui, ui.xiod.dev, or asks for components that turn out to be from this library.
 license: PolyForm Perimeter 1.0.1
 metadata:
   package: xiod-ui
@@ -13,7 +13,7 @@ A React component library shipped **only** as an npm package. No CLI, no `init`
 command, no copy-the-source-into-your-repo flow. Installing the package installs
 every component.
 
-- 89 components, each on its own import subpath
+- 90 components, each on its own import subpath
 - Built on [Base UI](https://base-ui.com) (bundled — never install it yourself)
 - Styled with Tailwind CSS 4 and CSS custom properties
 - 19 palettes + a neutral base, light and dark for each
@@ -232,6 +232,36 @@ import { ArrowRight, Check, Copy } from "xiod-icons";
 Named exports only. Icons inherit `currentColor` and size from the surrounding
 component.
 
+#### Replacing built-in icons
+
+Every icon a component renders itself is replaceable.
+
+To change one place, pass a prop. A part with one icon takes `icon`; a part with
+several takes named props (`prevIcon` / `nextIcon`, `triggerIcon` / `clearIcon`,
+`copiedIcon` / `copyIcon`). The value is any `ReactNode`:
+
+```tsx
+<DrawerClose closeIcon={<XMarkIcon className="size-4" />} />
+```
+
+To change one everywhere, use `IconProvider` at the app root:
+
+```tsx
+import { IconProvider } from "xiod-ui/icon-provider";
+
+<IconProvider icons={{ Cancel: XMarkIcon, Check: CheckIcon }}>
+  <App />
+</IconProvider>;
+```
+
+Keys come from the `IconName` union. Pass components, not elements — the
+component sets the size and colour. Nested providers merge, the nearest winning.
+
+A prop beats the provider, which beats the default. `null` renders no icon.
+
+FileUpload's file-type icons and AgentSteps' status icons follow the content, so
+change those through the provider.
+
 ## Theme
 
 ### Dark mode
@@ -329,7 +359,7 @@ A palette is a starting point, not a lock.
 }
 ```
 
-Components read only tokens, so this reaches all 89 of them at once. Prefer it
+Components read only tokens, so this reaches all 90 of them at once. Prefer it
 over per-component `className` colour overrides.
 
 ## Never do this
@@ -348,20 +378,22 @@ over per-component `className` colour overrides.
    vendored copy to edit.
 7. **Guessing a slug.** PascalCase, camelCase, and pluralised subpaths do not
    resolve. `InputOtp` lives at `xiod-ui/input-otp`.
+8. **Hiding a built-in icon with CSS, or vendoring a component to change one.**
+   Pass an icon prop, or set it globally with `IconProvider`.
 
 Remember `"use client"` on any file that holds state or handlers — most
 interactive examples need it in the Next.js App Router.
 
 ## Finding a component
 
-All 89 slugs:
+All 90 slugs:
 
 `accordion` `agent-steps` `alert` `alert-dialog` `aspect-ratio` `autocomplete`
 `avatar` `badge` `breadcrumb` `button` `button-group` `button-split` `calendar`
 `card` `carousel` `checkbox` `circular-progress` `collapsible` `color-picker`
 `combobox` `command` `context-menu` `copy-to-clipboard` `corner-badge`
 `dashboard-grid` `date-picker` `dialog` `dot-matrix` `draggable` `drawer`
-`empty` `field` `fieldset` `file-upload` `form` `frame` `gauge` `grid` `group`
+`empty` `field` `fieldset` `file-upload` `form` `frame` `gauge` `grid` `group` `icon-provider`
 `input` `input-group` `input-otp` `input-payment` `input-phone`
 `input-sensitive` `kbd` `kinetic-click` `label` `list-box` `loader` `marker`
 `menu` `menubar` `message` `meter` `morphic-toast` `navigation-menu`

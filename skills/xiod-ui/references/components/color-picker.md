@@ -60,6 +60,7 @@ remain available through the exported TypeScript type.
 | sliderOffset | `number \| undefined` | `SLIDER_OFFSET` |
 | sliderPosition | `SliderPosition \| undefined` | — |
 | sliderWidth | `number \| undefined` | `BAR_WIDTH` |
+| triggerIcon | `ReactNode` | — |
 | value | `BlossomColorPickerValue \| undefined` | — |
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

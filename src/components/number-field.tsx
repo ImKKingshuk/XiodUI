@@ -6,6 +6,7 @@ import * as React from "react";
 import { MinusSign as MinusIcon } from "xiod-icons/icons/MinusSign";
 import { PlusSign as PlusIcon } from "xiod-icons/icons/PlusSign";
 
+import { IconSlot } from "./icon-provider";
 import { Label } from "./label";
 
 const NumberFieldContext = React.createContext<{
@@ -55,8 +56,12 @@ function NumberFieldGroup({
 
 function NumberFieldDecrement({
   className,
+  icon,
   ...props
-}: NumberFieldPrimitive.Decrement.Props): React.JSX.Element {
+}: NumberFieldPrimitive.Decrement.Props & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.JSX.Element {
   return (
     <NumberFieldPrimitive.Decrement
       className={cn(
@@ -66,15 +71,19 @@ function NumberFieldDecrement({
       data-slot="number-field-decrement"
       {...props}
     >
-      <MinusIcon />
+      <IconSlot name="MinusSign" icon={icon} fallback={MinusIcon} />
     </NumberFieldPrimitive.Decrement>
   );
 }
 
 function NumberFieldIncrement({
   className,
+  icon,
   ...props
-}: NumberFieldPrimitive.Increment.Props): React.JSX.Element {
+}: NumberFieldPrimitive.Increment.Props & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.JSX.Element {
   return (
     <NumberFieldPrimitive.Increment
       className={cn(
@@ -84,7 +93,7 @@ function NumberFieldIncrement({
       data-slot="number-field-increment"
       {...props}
     >
-      <PlusIcon />
+      <IconSlot name="PlusSign" icon={icon} fallback={PlusIcon} />
     </NumberFieldPrimitive.Increment>
   );
 }
