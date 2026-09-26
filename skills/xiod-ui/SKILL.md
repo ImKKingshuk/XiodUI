@@ -1,6 +1,6 @@
 ---
 name: xiod-ui
-description: Build React UIs with XiodUI (the `xiod-ui` npm package) — 90 accessible components, 19 colour palettes, built on Base UI and Tailwind CSS 4. Use when installing xiod-ui, importing or composing its components (Button, Dialog, Field, Form, Select, Toast, ColorPicker, Sidebar, and the rest), wiring dark mode or a palette, swapping a component's built-in icon, or fixing an import that does not resolve. Also use when a task mentions XiodUI, xiod-ui, ui.xiod.dev, or asks for components that turn out to be from this library.
+description: Build React UIs with XiodUI (the `xiod-ui` npm package) — 90 accessible components, 19 colour palettes, built on Base UI and Tailwind CSS 4. Use when installing xiod-ui, importing or composing its components (Button, Dialog, Field, Form, Select, Toast, ColorPicker, Sidebar, and the rest), wiring dark mode or a palette, swapping a component's built-in icon, fixing an import that does not resolve, or migrating an app from shadcn/ui, HeroUI, MUI, Ant Design, Mantine, or Chakra UI to XiodUI. Also use when a task mentions XiodUI, xiod-ui, ui.xiod.dev, or asks for components that turn out to be from this library.
 license: PolyForm Perimeter 1.0.1
 metadata:
   package: xiod-ui
@@ -438,6 +438,13 @@ in XiodUI, and a wrong name fails at build time or renders nothing.
   `onFormSubmit`) with `Field` parts, as in [Fields and validation](#fields-and-validation).
 - **Slider:** `value` and `defaultValue` take a number for one thumb. Pass an
   array only for a range.
+- **Select:** pass `items={[{ label, value }]}` to `Select`, or `SelectValue`
+  shows the raw value instead of the label.
+- **Combobox, Autocomplete, Command:** data-driven. Pass the entries as `items`
+  on the root; the `…List` part takes a function that returns one `…Item` per
+  entry (`<ComboboxList>{(item) => <ComboboxItem key={item.value} value={item}>{item.label}</ComboboxItem>}</ComboboxList>`).
+  Filtering works only through `items`. Static children, as in cmdk, don't
+  filter.
 
 ### Styling state
 
@@ -456,6 +463,43 @@ Components set Base UI's data attributes, not Radix's `data-state`:
 Colour tokens hold complete colours (`--primary: var(--color-neutral-800)`).
 Use the utilities (`bg-primary`, `text-muted-foreground`) or `var(--primary)`.
 Never wrap a token in `hsl(…)` or `oklch(…)`.
+
+## Migrating an existing app
+
+To move an app from another UI library to XiodUI, find the library in
+`package.json`, then read its guide before changing any code:
+
+| The app depends on                                  | Guide                                                                |
+| :-------------------------------------------------- | :------------------------------------------------------------------- |
+| `components.json`, `components/ui/*`, `@radix-ui/*` | [references/migrations/shadcn.md](references/migrations/shadcn.md)   |
+| `@heroui/react` (v3 or v2), `@nextui-org/react`     | [references/migrations/heroui.md](references/migrations/heroui.md)   |
+| `@mui/material`                                     | [references/migrations/mui.md](references/migrations/mui.md)         |
+| `antd`                                              | [references/migrations/antd.md](references/migrations/antd.md)       |
+| `@mantine/core`                                     | [references/migrations/mantine.md](references/migrations/mantine.md) |
+| `@chakra-ui/react`                                  | [references/migrations/chakra.md](references/migrations/chakra.md)   |
+
+Every guide follows the same order. Do the steps in this order and finish
+each one before starting the next:
+
+1. **Inventory.** Run the guide's search commands and list every file that
+   imports the old library. That list is the migration's scope.
+2. **Set up XiodUI next to the old library.** Install `xiod-ui`, add the two
+   CSS imports, and mount `ThemeProvider` (and `ToastProvider` if the app shows
+   toasts). Leave the old library installed so the app keeps building.
+3. **Migrate one file at a time.** Change its imports, part names, and props
+   using the guide's tables, then build or typecheck before the next file. Never
+   leave a file half on each library.
+4. **Replace the old library's helpers.** Its toast, theme, form, and icon APIs
+   are handled in the guide's "Patterns" section.
+5. **Remove the old library.** Once its search commands return nothing,
+   uninstall its packages, delete its providers, config files, and CSS, and
+   build again.
+6. **Verify.** Work through the guide's checklist, including light and dark
+   mode and a phone-width screen.
+
+When a component has no XiodUI equivalent, the guide says what to do. Never
+invent a XiodUI component or prop to fill the gap; check
+[Finding a component](#finding-a-component) first.
 
 ## Never do this
 
