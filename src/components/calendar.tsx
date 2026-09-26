@@ -90,6 +90,22 @@ const addDays = (d: Date, n: number) =>
 
 const firstOfMonth = (d: Date) => new Date(d.getFullYear(), d.getMonth(), 1);
 
+// The same day of the month `months` away, clamped to that month's length
+// (Jan 31 + 1 month = Feb 28/29).
+const addMonthsClamped = (d: Date, months: number) => {
+  const target = new Date(d.getFullYear(), d.getMonth() + months, 1);
+  const lastDay = new Date(
+    target.getFullYear(),
+    target.getMonth() + 1,
+    0,
+  ).getDate();
+  return new Date(
+    target.getFullYear(),
+    target.getMonth(),
+    Math.min(d.getDate(), lastDay),
+  );
+};
+
 function buildMonth(
   cursor: Date,
   weekStartsOn = 0,
@@ -283,6 +299,9 @@ function Calendar({
   });
 
   const gridRef = React.useRef<HTMLDivElement>(null);
+  // Set by a key press in the grid, so only keyboard navigation moves focus:
+  // rendering the calendar, or paging with the header buttons, doesn't.
+  const keyboardNavRef = React.useRef(false);
 
   // Helper to check if a date matches the disabled prop
   const isDateDisabled = React.useCallback(
@@ -393,69 +412,128 @@ function Calendar({
   };
 
   // Keyboard navigation
-  const moveFocus = (days: number) => {
-    setFocusDate((prev) => {
-      const next = addDays(prev, days);
-      if (isDateDisabled(next)) return prev;
+  const viewStart = cursor;
+  const viewEnd = new Date(
+    cursor.getFullYear(),
+    cursor.getMonth() + numberOfMonths,
+    0,
+  );
+  const isInView = (date: Date) =>
+    startOfDay(date).getTime() >= viewStart.getTime() &&
+    startOfDay(date).getTime() <= viewEnd.getTime();
 
-      // Adjust cursor month if focus moves out of current page
-      if (
-        next.getMonth() !== prev.getMonth() ||
-        next.getFullYear() !== prev.getFullYear()
-      ) {
-        setCursor(firstOfMonth(next));
-      }
-      return next;
-    });
+  // Steps from `start` by `step` days until an enabled date, giving up past
+  // minDate/maxDate or after a year (everything disabled).
+  const findEnabled = (start: Date, step: number): Date | null => {
+    let date = start;
+    for (let i = 0; i < 366; i++) {
+      if (minDate && startOfDay(date) < startOfDay(minDate)) return null;
+      if (maxDate && startOfDay(date) > startOfDay(maxDate)) return null;
+      if (!isDateDisabled(date)) return date;
+      date = addDays(date, step);
+    }
+    return null;
+  };
+
+  // The one day in the grid that takes Tab (roving tabindex). Paging with
+  // the header buttons can leave focusDate off screen; the stop then falls
+  // on the same day of the first visible month, or the nearest enabled day.
+  const tabbableDate = (() => {
+    if (isInView(focusDate) && !isDateDisabled(focusDate)) return focusDate;
+    const start = new Date(
+      cursor.getFullYear(),
+      cursor.getMonth(),
+      Math.min(
+        focusDate.getDate(),
+        new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0).getDate(),
+      ),
+    );
+    const forward = findEnabled(start, 1);
+    if (forward && isInView(forward)) return forward;
+    const backward = findEnabled(start, -1);
+    if (backward && isInView(backward)) return backward;
+    return null;
+  })();
+
+  const focusOn = (next: Date | null) => {
+    if (!next) return;
+    keyboardNavRef.current = true;
+    setFocusDate(next);
+    // Page the view so the new day is on screen.
+    if (startOfDay(next) < viewStart) {
+      setCursor(firstOfMonth(next));
+    } else if (startOfDay(next) > viewEnd) {
+      setCursor(
+        new Date(next.getFullYear(), next.getMonth() - numberOfMonths + 1, 1),
+      );
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (viewMode !== "days") return;
+    const from = tabbableDate ?? focusDate;
+    // Offset of `from` within its week, for Home/End.
+    const weekOffset = (from.getDay() - weekStartsOn + 7) % 7;
 
     switch (e.key) {
       case "ArrowLeft":
         e.preventDefault();
-        moveFocus(-1);
+        focusOn(findEnabled(addDays(from, -1), -1));
         break;
       case "ArrowRight":
         e.preventDefault();
-        moveFocus(1);
+        focusOn(findEnabled(addDays(from, 1), 1));
         break;
       case "ArrowUp":
         e.preventDefault();
-        moveFocus(-7);
+        focusOn(findEnabled(addDays(from, -7), -7));
         break;
       case "ArrowDown":
         e.preventDefault();
-        moveFocus(7);
+        focusOn(findEnabled(addDays(from, 7), 7));
         break;
-      case "PageUp":
+      case "Home":
         e.preventDefault();
-        handlePrev();
+        focusOn(findEnabled(addDays(from, -weekOffset), 1));
         break;
-      case "PageDown":
+      case "End":
         e.preventDefault();
-        handleNext();
+        focusOn(findEnabled(addDays(from, 6 - weekOffset), -1));
         break;
+      // PageUp/PageDown: a month; with Shift, a year.
+      case "PageUp": {
+        e.preventDefault();
+        const target = addMonthsClamped(from, e.shiftKey ? -12 : -1);
+        focusOn(findEnabled(target, 1) ?? findEnabled(target, -1));
+        break;
+      }
+      case "PageDown": {
+        e.preventDefault();
+        const target = addMonthsClamped(from, e.shiftKey ? 12 : 1);
+        focusOn(findEnabled(target, -1) ?? findEnabled(target, 1));
+        break;
+      }
       case "Enter":
       case " ":
         e.preventDefault();
-        handleDateClick(focusDate);
+        if (tabbableDate) handleDateClick(tabbableDate);
         break;
       default:
         break;
     }
   };
 
-  // Focus grid element when focus changes
+  // Move DOM focus to the new day after keyboard navigation. Runs after every
+  // render; the ref makes it a no-op unless a key press asked for it.
   React.useEffect(() => {
+    if (!keyboardNavRef.current) return;
+    keyboardNavRef.current = false;
     if (viewMode !== "days") return;
-    if (Number.isNaN(focusDate.getTime())) return;
     const activeEl = gridRef.current?.querySelector<HTMLElement>(
       '[data-focused="true"]',
     );
     activeEl?.focus();
-  }, [viewMode, focusDate]);
+  });
 
   const renderHeaderLabel = () => {
     if (viewMode === "days") {
@@ -583,6 +661,8 @@ function Calendar({
             type="button"
             onClick={handleHeaderClick}
             disabled={viewMode === "years"}
+            // Announces the new month or year range when paging.
+            aria-live="polite"
             className={cn(
               "rounded-md px-2.5 py-1 text-sm font-semibold tracking-tight transition-colors outline-none focus-visible:ring-1 focus-visible:ring-ring",
               viewMode !== "years" &&
@@ -693,7 +773,8 @@ function Calendar({
                           );
                         }
 
-                        const isFocused = sameDay(date, focusDate);
+                        const isFocused =
+                          inMonth && sameDay(date, tabbableDate);
 
                         return (
                           <button
@@ -703,6 +784,11 @@ function Calendar({
                             data-focused={isFocused}
                             disabled={disabledState}
                             onClick={() => handleDateClick(date)}
+                            onFocus={() => {
+                              if (!sameDay(date, focusDate)) {
+                                setFocusDate(date);
+                              }
+                            }}
                             className={cn(
                               "relative h-8 w-8 sm:h-7.5 sm:w-7.5 m-auto text-[12.5px] font-medium transition-[background-color,color,border-radius] duration-150 flex items-center justify-center outline-none focus-visible:z-10 focus-visible:ring-1 focus-visible:ring-ring pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11",
                               // Range middle styles
@@ -746,6 +832,7 @@ function Calendar({
                             )}
                             aria-label={`${weekdaysLongList[date.getDay()]}, ${monthsList[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`}
                             aria-pressed={isSelected}
+                            aria-current={isToday ? "date" : undefined}
                           >
                             <span className="relative z-10">
                               {date.getDate()}

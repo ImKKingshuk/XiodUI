@@ -129,6 +129,64 @@ describe("core component contracts", () => {
     expect(onSelect).toHaveBeenCalledOnce();
     expect(onSelect.mock.calls[0]?.[0]).toEqual(new Date(2026, 8, 16));
   });
+
+  it("follows the date grid keyboard pattern without stealing focus", async () => {
+    const user = userEvent.setup();
+    const day = (name: RegExp) => screen.getByRole("button", { name });
+    const isWeekend = (date: Date) =>
+      date.getDay() === 0 || date.getDay() === 6;
+
+    render(<Calendar selected={new Date(2026, 8, 15)} disabled={isWeekend} />);
+
+    // Rendering doesn't move focus; the selected day is the one tab stop.
+    expect(document.body).toHaveFocus();
+    await user.tab();
+    await user.tab();
+    await user.tab();
+    await user.tab();
+    expect(day(/September 15, 2026/)).toHaveFocus();
+
+    // Home/End: the week's ends, skipping disabled weekend days.
+    await user.keyboard("{Home}");
+    expect(day(/Monday, September 14, 2026/)).toHaveFocus();
+    await user.keyboard("{End}");
+    expect(day(/Friday, September 18, 2026/)).toHaveFocus();
+
+    // Arrows step over disabled days.
+    await user.keyboard("{ArrowRight}");
+    expect(day(/Monday, September 21, 2026/)).toHaveFocus();
+
+    // PageDown moves a month (paging the view); Shift+PageDown a year.
+    await user.keyboard("{PageDown}");
+    expect(day(/October 21, 2026/)).toHaveFocus();
+    expect(screen.getByText("October 2026")).toHaveAttribute(
+      "aria-live",
+      "polite",
+    );
+    await user.keyboard("{Shift>}{PageDown}{/Shift}");
+    expect(day(/October 21, 2027/)).toHaveFocus();
+  });
+
+  it("keeps a tab stop in the grid after paging with the header buttons", async () => {
+    const user = userEvent.setup();
+    render(<Calendar selected={new Date(2026, 8, 15)} />);
+
+    await user.click(screen.getByRole("button", { name: "Next Page" }));
+    expect(screen.getByRole("button", { name: "Next Page" })).toHaveFocus();
+    expect(
+      screen.getByRole("button", { name: /October 15, 2026/ }),
+    ).toHaveAttribute("tabindex", "0");
+  });
+
+  it("marks today with aria-current", () => {
+    render(<Calendar />);
+    const today = new Date();
+    const current = screen
+      .getAllByRole("button")
+      .filter((button) => button.getAttribute("aria-current") === "date");
+    expect(current).toHaveLength(1);
+    expect(current[0]).toHaveTextContent(String(today.getDate()));
+  });
 });
 
 function ThemeConsumer(): React.JSX.Element {
