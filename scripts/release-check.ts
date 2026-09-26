@@ -66,7 +66,13 @@ export function walk(directory: string, prefix = "dist"): string[] {
 }
 
 export function expectedFiles(): Set<string> {
-  const files = ["package.json", "README.md", "LICENSE", "dist/styles.css"];
+  const files = [
+    "package.json",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "dist/styles.css",
+  ];
   for (const [directory, extension] of [
     ["components", ".tsx"],
     ["hooks", ".ts"],
