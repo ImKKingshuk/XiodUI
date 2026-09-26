@@ -19,6 +19,7 @@ Everything ships as a single versioned npm package. Import one component at a ti
 - [Icons](#icons)
 - [Theming](#theming)
   - [Palettes](#palettes)
+  - [Switching palettes](#switching-palettes)
   - [Dark mode](#dark-mode)
 - [AI Agents](#ai-agents)
   - [Install Agent Skill](#install-agent-skill)
@@ -267,6 +268,49 @@ XiodUI ships 20 palettes: the default Neutral plus 19 more. Every palette includ
 | Blacklight | `xiod-ui/themes/blacklight` | Ultraviolet, acid green and hot pink.            |
 | Toxin      | `xiod-ui/themes/toxin`      | Biohazard green and blood on wet concrete.       |
 | Cinder     | `xiod-ui/themes/cinder`     | Molten orange on cold ash.                       |
+
+### Switching palettes
+
+The imports above fix one palette for the whole app. To let people switch
+palettes at runtime, import the `/scoped` variant of each palette you offer.
+A scoped palette applies only under its own `data-palette` attribute, so several
+can be imported at once:
+
+```css
+@import "tailwindcss";
+@import "xiod-ui/styles";
+@import "xiod-ui/themes/cobalt/scoped";
+@import "xiod-ui/themes/lagoon/scoped";
+```
+
+Then switch with `setPalette` from `useTheme()`, inside a `ThemeProvider`
+(see [Dark mode](#dark-mode)):
+
+```tsx
+"use client";
+
+import { useTheme } from "xiod-ui/theme-provider";
+
+export function PalettePicker() {
+  const { palette, setPalette } = useTheme();
+
+  return (
+    <select
+      value={palette ?? ""}
+      onChange={(event) => setPalette(event.target.value || undefined)}
+    >
+      <option value="">Neutral</option>
+      <option value="cobalt">Cobalt</option>
+      <option value="lagoon">Lagoon</option>
+    </select>
+  );
+}
+```
+
+`setPalette` writes `data-palette` on `<html>` and remembers the choice. Pass
+`undefined` to return to Neutral, or set a starting palette with the provider's
+`defaultPalette` prop. Every palette has light and dark modes, so the palette
+and the theme change independently.
 
 ### Dark mode
 
