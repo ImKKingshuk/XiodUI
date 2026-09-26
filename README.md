@@ -37,19 +37,23 @@ Everything ships as a single versioned npm package. Import one component at a ti
 
 ## Comparison
 
-| Feature                                                          | XiodUI | shadcn/ui | HeroUI | Others |
-| :--------------------------------------------------------------- | :----: | :-------: | :----: | :----: |
-| Native CSS motion in the box — no tw-animate-css / framer-motion |   ✅   |    ❌     |   ❌   |   ❌   |
-| Controls animate their own state — not just enter / exit         |   ✅   |    ❌     |   ✅   |   ❌   |
-| Nothing extra to install beyond React                            |   ✅   |    ❌     |   ❌   |   ❌   |
-| Tailwind CSS v4 native                                           |   ✅   |    ✅     |   ✅   |   ❌   |
-| 20 ready-made palettes imported by name, not pasted in           |   ✅   |    ❌     |   ❌   |   ❌   |
-| 44px touch targets on coarse pointers (WCAG 2.5.5)               |   ✅   |    ❌     |   ❌   |   ❌   |
-| Versioned npm package (no copy-paste drift)                      |   ✅   |    ❌     |   ✅   |   ✅   |
-| Import one component, ship one component                         |   ✅   |    ✅     |   ✅   |   ❌   |
-| Primitives bundled — no peer dependency to keep in sync          |   ✅   |    ❌     |   ✅   |   ❌   |
-| Command, Carousel & Drawer built in — no cmdk / embla / vaul     |   ✅   |    ❌     |   ✅   |   ❌   |
-| One version number for the whole library                         |   ✅   |    ❌     |   ❌   |   ❌   |
+| Feature                                                         | XiodUI | shadcn/ui | HeroUI |
+| :-------------------------------------------------------------- | :----: | :-------: | :----: |
+| Native CSS motion — no tw-animate-css or Motion (framer-motion) |   ✅   |    ❌     |   ❌   |
+| Controls animate their own state — not just enter / exit        |   ✅   |    ❌     |   ✅   |
+| Nothing extra to install beyond React                           |   ✅   |    ❌     |   ❌   |
+| Primitives bundled — no peer dependency to keep in sync         |   ✅   |    ❌     |   ❌   |
+| Tailwind CSS v4 native                                          |   ✅   |    ✅     |   ✅   |
+| Versioned npm package (no copy-paste drift)                     |   ✅   |    ❌     |   ✅   |
+| One version number for the whole library                        |   ✅   |    ❌     |   ✅   |
+| Import one component, ship one component                        |   ✅   |    ✅     |   ✅   |
+| 20 ready-made palettes imported by name, not pasted in          |   ✅   |    ❌     |   ❌   |
+| 44px touch targets on coarse pointers (WCAG 2.5.5)              |   ✅   |    ❌     |   ❌   |
+| Command & Carousel built in — no cmdk / embla                   |   ✅   |    ❌     |   ❌   |
+| Phone number & payment card inputs                              |   ✅   |    ❌     |   ❌   |
+| File upload with drag and drop                                  |   ✅   |    ❌     |   ❌   |
+| Drag-to-reorder lists & dashboard grids                         |   ✅   |    ❌     |   ❌   |
+| Wheel & ruler pickers                                           |   ✅   |    ❌     |   ❌   |
 
 "Nothing extra to install" means beyond `react` and `react-dom`: XiodUI's own dependencies (Base UI, class-variance-authority, cn, and XiodIcons) are installed with the package. Your project still needs Tailwind CSS 4 configured.
 
