@@ -235,6 +235,22 @@ function moveElement(
   return compactLayout(updatedLayout, compactType, cols);
 }
 
+// Arrow key → grid step, for moving and resizing tiles from the keyboard.
+function getArrowDelta(key: string): [number, number] | null {
+  switch (key) {
+    case "ArrowLeft":
+      return [-1, 0];
+    case "ArrowRight":
+      return [1, 0];
+    case "ArrowUp":
+      return [0, -1];
+    case "ArrowDown":
+      return [0, 1];
+    default:
+      return null;
+  }
+}
+
 function getColsForWidth(
   width: number,
   breakpoints: Breakpoints = defaultBreakpoints,
@@ -267,6 +283,12 @@ interface DashboardGridContextValue {
   isResizable: boolean;
   onTileDragStart: (id: string, e: React.PointerEvent) => void;
   onTileResizeStart: (id: string, e: React.PointerEvent) => void;
+  onTileNudge: (
+    id: string,
+    mode: "drag" | "resize",
+    dx: number,
+    dy: number,
+  ) => void;
   onTileRemove?: (id: string) => void;
 }
 
@@ -336,6 +358,9 @@ function DashboardGrid({
   const compactTypeRef = React.useRef(compactType);
   const preventCollisionRef = React.useRef(preventCollision);
   const onLayoutChangeRef = React.useRef(onLayoutChange);
+  // Removes the window listeners of a pointer drag or resize in progress.
+  const pointerCleanupRef = React.useRef<(() => void) | null>(null);
+  const [announcement, setAnnouncement] = React.useState("");
 
   React.useEffect(() => {
     layoutRef.current = layout;
@@ -383,11 +408,16 @@ function DashboardGrid({
     );
   }, [maxRows, rowHeight, margin, containerPadding]);
 
+  // Unmounting mid-drag must not leave window listeners behind.
+  React.useEffect(() => () => pointerCleanupRef.current?.(), []);
+
   const handlePointerStart = React.useCallback(
     (id: string, mode: "drag" | "resize", e: React.PointerEvent) => {
+      if (e.button !== 0) return;
       const currentLayout = layoutRef.current;
       const targetItem = currentLayout.find((l) => l.i === id);
       if (!targetItem || targetItem.static) return;
+      pointerCleanupRef.current?.();
 
       e.preventDefault();
       e.stopPropagation();
@@ -462,9 +492,23 @@ function DashboardGrid({
         }
       };
 
-      const onPointerUp = () => {
+      const cleanup = () => {
         window.removeEventListener("pointermove", onPointerMove);
         window.removeEventListener("pointerup", onPointerUp);
+        window.removeEventListener("pointercancel", onPointerCancel);
+        pointerCleanupRef.current = null;
+      };
+
+      // The browser took the pointer: put the layout back as it was.
+      const onPointerCancel = () => {
+        cleanup();
+        setDragItem(null);
+        setResizeItem(null);
+        setLayout(currentLayout);
+      };
+
+      const onPointerUp = () => {
+        cleanup();
 
         setDragItem(null);
         setResizeItem(null);
@@ -484,8 +528,62 @@ function DashboardGrid({
 
       window.addEventListener("pointermove", onPointerMove);
       window.addEventListener("pointerup", onPointerUp);
+      window.addEventListener("pointercancel", onPointerCancel);
+      pointerCleanupRef.current = cleanup;
     },
     [colWidth, margin, rowHeight],
+  );
+
+  // Keyboard counterpart of a drag or resize: one grid step at a time,
+  // committed (onLayoutChange) and announced at once.
+  const handleTileNudge = React.useCallback(
+    (id: string, mode: "drag" | "resize", dx: number, dy: number) => {
+      const prev = layoutRef.current;
+      const item = prev.find((l) => l.i === id);
+      if (!item || item.static) return;
+      const cols = currentColsRef.current;
+      const compact = compactTypeRef.current;
+
+      let next: DashboardTileData[];
+      if (mode === "drag") {
+        next = moveElement(
+          prev,
+          item,
+          item.x + dx,
+          item.y + dy,
+          preventCollisionRef.current,
+          cols,
+          compact,
+        );
+      } else {
+        const w = Math.max(
+          item.minW ?? 1,
+          Math.min(item.maxW ?? cols, cols - item.x, item.w + dx),
+        );
+        const h = Math.max(
+          item.minH ?? 1,
+          Math.min(item.maxH ?? 20, item.h + dy),
+        );
+        if (w === item.w && h === item.h) return;
+        next = compactLayout(
+          prev.map((l) => (l.i === id ? { ...item, w, h } : l)),
+          compact,
+          cols,
+        );
+      }
+
+      const moved = next.find((l) => l.i === id);
+      if (next === prev || !moved) return;
+      layoutRef.current = next;
+      setLayout(next);
+      onLayoutChangeRef.current?.(next);
+      setAnnouncement(
+        mode === "drag"
+          ? `Moved to column ${moved.x + 1}, row ${moved.y + 1}.`
+          : `Resized to ${moved.w} columns by ${moved.h} rows.`,
+      );
+    },
+    [],
   );
 
   const handleTileDragStart = React.useCallback(
@@ -511,6 +609,7 @@ function DashboardGrid({
       isResizable,
       onTileDragStart: handleTileDragStart,
       onTileResizeStart: handleTileResizeStart,
+      onTileNudge: handleTileNudge,
       onTileRemove,
     }),
     [
@@ -525,6 +624,7 @@ function DashboardGrid({
       isResizable,
       handleTileDragStart,
       handleTileResizeStart,
+      handleTileNudge,
       onTileRemove,
     ],
   );
@@ -551,6 +651,15 @@ function DashboardGrid({
         )}
 
         {children}
+
+        <div
+          aria-live="polite"
+          aria-atomic="true"
+          className="sr-only"
+          data-slot="dashboard-grid-announcer"
+        >
+          {announcement}
+        </div>
 
         {/* Active Drag/Resize Placeholder Ghost */}
         {activeGhost && (
@@ -650,6 +759,12 @@ function DashboardTile({
         {context?.isResizable && !tileData?.static && (
           <DashboardTileResizeHandle
             onPointerDown={(e) => context?.onTileResizeStart(id, e)}
+            onKeyDown={(e) => {
+              const delta = getArrowDelta(e.key);
+              if (!delta) return;
+              e.preventDefault();
+              context?.onTileNudge(id, "resize", delta[0], delta[1]);
+            }}
           />
         )}
       </>
@@ -669,6 +784,31 @@ function DashboardTile({
 // ============================================================================
 // Sub-Components (TileHeader, TileTitle, TileControls, TileHandle, ResizeHandle)
 // ============================================================================
+
+// Focus and keyboard props for a tile's move handle: a button that moves
+// the tile one cell per arrow key. Inert when the tile can't be dragged.
+function getMoveHandleProps(
+  context: DashboardGridContextValue | null,
+  id: string | undefined,
+): React.HTMLAttributes<HTMLElement> {
+  const tile = id ? context?.layout.find((item) => item.i === id) : undefined;
+  if (!context || !id || !context.isDraggable || !tile || tile.static) {
+    return {};
+  }
+  return {
+    role: "button",
+    tabIndex: 0,
+    "aria-label": "Move tile",
+    "aria-roledescription": "draggable",
+    "aria-keyshortcuts": "ArrowUp ArrowDown ArrowLeft ArrowRight",
+    onKeyDown: (e: React.KeyboardEvent) => {
+      const delta = getArrowDelta(e.key);
+      if (!delta) return;
+      e.preventDefault();
+      context.onTileNudge(id, "drag", delta[0], delta[1]);
+    },
+  };
+}
 
 export interface DashboardTileHeaderProps extends useRender.ComponentProps<"div"> {
   id?: string;
@@ -706,12 +846,19 @@ function DashboardTileHeader({
     children: children || (
       <>
         <div className="flex items-center gap-1.5 truncate">
-          <IconSlot
-            name="GripVertical"
-            icon={icon}
-            fallback={GripVertical}
-            className="size-3.5 text-muted-foreground/60 shrink-0"
-          />
+          {/* The keyboard way to move the tile, since the header itself
+              can't be a button: it holds the remove button. */}
+          <span
+            {...getMoveHandleProps(context, id)}
+            className="inline-flex shrink-0 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <IconSlot
+              name="GripVertical"
+              icon={icon}
+              fallback={GripVertical}
+              className="size-3.5 text-muted-foreground/60 shrink-0"
+            />
+          </span>
           <DashboardTileTitle />
         </div>
         <DashboardTileControls id={id} />
@@ -815,8 +962,9 @@ function DashboardTileHandle({
   );
 
   const defaultProps = {
+    ...getMoveHandleProps(context, id),
     className: cn(
-      "flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-border/40 bg-muted/40 cursor-grab active:cursor-grabbing select-none text-xs font-medium text-muted-foreground hover:text-foreground",
+      "flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-border/40 bg-muted/40 cursor-grab active:cursor-grabbing select-none text-xs font-medium text-muted-foreground hover:text-foreground touch-none outline-none focus-visible:ring-2 focus-visible:ring-ring",
       className,
     ),
     onPointerDown: handlePointerDown,
@@ -850,12 +998,17 @@ function DashboardTileResizeHandle({
 }: DashboardTileResizeHandleProps): React.ReactElement {
   const defaultProps = {
     className: cn(
-      "absolute bottom-1 right-1 size-4 cursor-se-resize flex items-center justify-center opacity-40 hover:opacity-100 transition-opacity touch-none pointer-coarse:after:absolute pointer-coarse:after:size-8",
+      "absolute bottom-1 right-1 size-4 cursor-se-resize flex items-center justify-center rounded-sm opacity-40 hover:opacity-100 focus-visible:opacity-100 transition-opacity touch-none outline-none focus-visible:ring-2 focus-visible:ring-ring pointer-coarse:after:absolute pointer-coarse:after:size-8",
       className,
     ),
     "data-slot": "dashboard-tile-resize-handle",
+    role: "button",
+    tabIndex: 0,
+    "aria-label": "Resize tile",
+    "aria-keyshortcuts": "ArrowUp ArrowDown ArrowLeft ArrowRight",
     children: (
       <svg
+        aria-hidden="true"
         className="size-3 text-muted-foreground"
         viewBox="0 0 6 6"
         fill="currentColor"

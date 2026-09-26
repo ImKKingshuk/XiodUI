@@ -220,6 +220,58 @@ describe("movable and sortable layout contracts", () => {
     expect(onRemove).toHaveBeenCalledWith("traffic");
   });
 
+  it("moves and resizes dashboard tiles from the keyboard", async () => {
+    const user = userEvent.setup();
+    const onLayoutChange = vi.fn();
+    const layout = [
+      { h: 2, i: "traffic", w: 4, x: 0, y: 0 },
+      { h: 2, i: "sales", w: 4, x: 0, y: 2, static: true },
+    ];
+    const { container } = render(
+      <DashboardGrid
+        layout={layout}
+        cols={12}
+        compactType={null}
+        onLayoutChange={onLayoutChange}
+      >
+        <DashboardTile id="traffic">
+          <DashboardTileHeader id="traffic" />
+        </DashboardTile>
+        <DashboardTile id="sales">
+          <DashboardTileHeader id="sales" />
+        </DashboardTile>
+      </DashboardGrid>,
+    );
+    const announcer = container.querySelector(
+      "[data-slot=dashboard-grid-announcer]",
+    );
+
+    // Only the movable tile gets a move handle and a resize handle.
+    const [move] = screen.getAllByRole("button", { name: "Move tile" });
+    expect(screen.getAllByRole("button", { name: "Move tile" })).toHaveLength(
+      1,
+    );
+    expect(screen.getAllByRole("button", { name: "Resize tile" })).toHaveLength(
+      1,
+    );
+
+    move.focus();
+    await user.keyboard("{ArrowRight}{ArrowRight}");
+    expect(onLayoutChange).toHaveBeenLastCalledWith([
+      expect.objectContaining({ i: "traffic", x: 2, y: 0 }),
+      expect.objectContaining({ i: "sales", x: 0, y: 2 }),
+    ]);
+    expect(announcer).toHaveTextContent("Moved to column 3, row 1.");
+
+    screen.getByRole("button", { name: "Resize tile" }).focus();
+    await user.keyboard("{ArrowRight}{ArrowDown}");
+    expect(onLayoutChange).toHaveBeenLastCalledWith([
+      expect.objectContaining({ i: "traffic", w: 5, h: 3 }),
+      expect.objectContaining({ i: "sales" }),
+    ]);
+    expect(announcer).toHaveTextContent("Resized to 5 columns by 3 rows.");
+  });
+
   it("reorders by keyboard and names icon-only removal controls", async () => {
     const user = userEvent.setup();
     const onReorder = vi.fn();
