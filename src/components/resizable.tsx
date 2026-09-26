@@ -867,9 +867,14 @@ function ResizablePanelGroup({
     },
   }));
 
+  // Ends a drag in progress; also run on unmount so a drag cut short can't
+  // leave the page's cursor and text selection locked.
+  const dragCleanupRef = React.useRef<(() => void) | null>(null);
+  React.useEffect(() => () => dragCleanupRef.current?.(), []);
+
   const startDragging = React.useCallback(
     (handleId: string, event: React.PointerEvent<HTMLButtonElement>) => {
-      if (disabled) return;
+      if (disabled || event.button !== 0) return;
       event.preventDefault();
 
       const container = containerRef.current;
@@ -1007,16 +1012,20 @@ function ResizablePanelGroup({
           }
         });
 
-        const styleElement = document.getElementById(
-          `resizable-style-${handleId}`,
-        );
-        styleElement?.remove();
+        style.remove();
         window.removeEventListener("pointermove", handlePointerMove);
         window.removeEventListener("pointerup", handlePointerUp);
+        window.removeEventListener("pointercancel", handlePointerUp);
+        dragCleanupRef.current = null;
       };
 
+      dragCleanupRef.current?.();
+      dragCleanupRef.current = handlePointerUp;
       window.addEventListener("pointermove", handlePointerMove);
       window.addEventListener("pointerup", handlePointerUp);
+      // A touch the browser takes over (a scroll, a system gesture) ends the
+      // drag the same way as letting go.
+      window.addEventListener("pointercancel", handlePointerUp);
     },
     [disabled, groupSize],
   );
@@ -1586,7 +1595,7 @@ function ResizableHandle({
   const isDragging = activeHandleId === id;
 
   const handleClasses = cn(
-    "relative flex items-center justify-center transition-colors select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 z-10 bg-border",
+    "relative flex touch-none items-center justify-center transition-colors select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 z-10 bg-border",
     isHorizontal
       ? "w-px h-full cursor-col-resize before:absolute before:inset-y-0 before:inset-x-0 before:bg-gradient-to-b before:from-transparent before:via-ring/80 before:to-transparent before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100 data-[state=dragging]:before:opacity-100 after:absolute after:-inset-x-2 after:inset-y-0 pointer-coarse:after:-inset-x-5"
       : "h-px w-full cursor-row-resize before:absolute before:inset-x-0 before:inset-y-0 before:bg-gradient-to-r before:from-transparent before:via-ring/80 before:to-transparent before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100 data-[state=dragging]:before:opacity-100 after:absolute after:-inset-y-2 after:inset-x-0 pointer-coarse:after:-inset-y-5",

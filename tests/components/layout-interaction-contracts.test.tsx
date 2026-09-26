@@ -85,6 +85,9 @@ function SortableList(): React.JSX.Element {
 const sortableOrder = () =>
   screen.getAllByRole("listitem").map((item) => item.dataset.sortableId);
 
+const cursorLock = () =>
+  document.head.querySelector("style[id^=resizable-style-]");
+
 describe("carousel and drawer contracts", () => {
   it("exposes carousel structure, slide semantics, orientation, and named controls", () => {
     const { container, rerender } = render(
@@ -412,6 +415,50 @@ describe("resizing and picker contracts", () => {
     expect(
       container.querySelectorAll('[data-slot="resizable-panel"]'),
     ).toHaveLength(2);
+  });
+
+  it("ends a resize drag on pointercancel or unmount and ignores other buttons", () => {
+    // Report a real size so the group allows dragging.
+    const offsetWidth = vi
+      .spyOn(HTMLElement.prototype, "offsetWidth", "get")
+      .mockReturnValue(300);
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        constructor(private readonly callback: ResizeObserverCallback) {}
+        observe(target: Element) {
+          this.callback([{ target } as ResizeObserverEntry], this);
+        }
+        unobserve() {}
+        disconnect() {}
+      },
+    );
+    try {
+      const { unmount } = render(
+        <ResizablePanelGroup defaultLayout={[50, 50]}>
+          <ResizablePanel id="left">Left</ResizablePanel>
+          <ResizableHandle aria-label="Resize panels" />
+          <ResizablePanel id="right">Right</ResizablePanel>
+        </ResizablePanelGroup>,
+      );
+      const handle = screen.getByRole("separator", { name: "Resize panels" });
+
+      fireEvent.pointerDown(handle, { button: 2, pointerId: 1 });
+      expect(cursorLock()).toBeNull();
+
+      fireEvent.pointerDown(handle, { button: 0, pointerId: 1 });
+      expect(cursorLock()).not.toBeNull();
+      fireEvent(window, new Event("pointercancel"));
+      expect(cursorLock()).toBeNull();
+
+      fireEvent.pointerDown(handle, { button: 0, pointerId: 1 });
+      expect(cursorLock()).not.toBeNull();
+      unmount();
+      expect(cursorLock()).toBeNull();
+    } finally {
+      vi.unstubAllGlobals();
+      offsetWidth.mockRestore();
+    }
   });
 
   it("updates ruler picker value through keyboard-driven scrolling", async () => {
