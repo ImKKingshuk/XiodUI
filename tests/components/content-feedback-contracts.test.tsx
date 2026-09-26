@@ -52,6 +52,17 @@ function AdvanceTimeline() {
   );
 }
 
+// Passes a new steps array on every render.
+function Harness({ tick }: { tick: number }) {
+  return (
+    <AgentSteps
+      data-tick={tick}
+      interval={100}
+      steps={["Planning", "Executing"]}
+    />
+  );
+}
+
 describe("agent progress contracts", () => {
   it("preserves status icon weight and accepts XiodIcons components", () => {
     const { container, rerender } = render(
@@ -105,6 +116,43 @@ describe("agent progress contracts", () => {
     rerender(<AgentSteps label="Done" status="completed" />);
     expect(screen.getByText("Done")).toBeVisible();
     vi.useRealTimers();
+  });
+
+  it("announces the step, names each status and keeps cycling across renders", async () => {
+    vi.useFakeTimers();
+    try {
+      const { rerender } = render(<Harness tick={0} />);
+      const status = screen.getByRole("status");
+      expect(status).toHaveTextContent("In progress");
+
+      // Re-rendering faster than the interval must not reset the timer.
+      await act(async () => vi.advanceTimersByTimeAsync(30));
+      rerender(<Harness tick={1} />);
+      await act(async () => vi.advanceTimersByTimeAsync(30));
+      rerender(<Harness tick={2} />);
+      await act(async () => vi.advanceTimersByTimeAsync(30));
+      rerender(<Harness tick={3} />);
+      await act(async () => vi.advanceTimersByTimeAsync(30));
+      rerender(<Harness tick={4} />);
+      // Only the visible label is exposed, not the faded-out buffer.
+      expect(screen.getByText("Executing")).not.toHaveAttribute("aria-hidden");
+      expect(screen.getByText("Planning")).toHaveAttribute(
+        "aria-hidden",
+        "true",
+      );
+    } finally {
+      vi.useRealTimers();
+    }
+
+    render(
+      <AgentSteps>
+        <AgentStep status="failed">
+          <AgentStepIcon />
+          <AgentStepLabel>Deploy</AgentStepLabel>
+        </AgentStep>
+      </AgentSteps>,
+    );
+    expect(screen.getByText("Failed")).toHaveClass("sr-only");
   });
 });
 

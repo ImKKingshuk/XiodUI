@@ -13,6 +13,7 @@ import { Search } from "xiod-icons/icons/Search";
 import { SecurityCheck as ShieldCheck } from "xiod-icons/icons/SecurityCheck";
 import { Terminal } from "xiod-icons/icons/Terminal";
 
+import { useMediaQuery } from "../hooks/use-media-query";
 import { IconSlot } from "./icon-provider";
 
 // Predefined SMIL path morph geometries for the thinking/loading state
@@ -33,7 +34,7 @@ const STYLE_INLINE = `
   100% { background-position: -200% 0; }
 }
 .animate-agent-step-icon {
-  animation: agent-step-icon-in 350ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation: agent-step-icon-in 350ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
 }
 .agent-step-text-base {
   transition: opacity 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -53,7 +54,23 @@ const STYLE_INLINE = `
   -webkit-text-fill-color: transparent;
   animation: agent-shimmer-sweep 5s infinite linear;
 }
+@media (prefers-reduced-motion: reduce) {
+  .animate-agent-step-icon { animation: none; }
+  .agent-step-text-base { transition: none; }
+  .agent-shimmer-text-base {
+    animation: none;
+    background: none;
+    -webkit-text-fill-color: currentColor;
+  }
+}
 `;
+
+const STATUS_LABELS = {
+  waiting: "Waiting",
+  running: "In progress",
+  completed: "Completed",
+  failed: "Failed",
+} as const;
 
 // Contexts for compound components
 interface AgentStepsContextValue {
@@ -188,15 +205,20 @@ export function AgentSteps({
     });
   }, [steps]);
 
+  // Depend on the count, not the array: an inline `steps={[...]}` is a new
+  // array every render and would restart the timer before it ever fires.
+  const stepCount = normalizedSteps.length;
   React.useEffect(() => {
-    if (!isSingleMode || normalizedSteps.length <= 1) return;
+    if (!isSingleMode || stepCount <= 1) return;
     const timer = setInterval(() => {
-      setCycleIndex((prev) => (prev + 1) % normalizedSteps.length);
+      setCycleIndex((prev) => (prev + 1) % stepCount);
     }, interval);
     return () => clearInterval(timer);
-  }, [isSingleMode, normalizedSteps, interval]);
+  }, [isSingleMode, stepCount, interval]);
 
-  const activeStep = normalizedSteps[cycleIndex];
+  const activeStep = stepCount
+    ? normalizedSteps[cycleIndex % stepCount]
+    : undefined;
   const activeLabel = activeStep ? activeStep.label : labelProp;
   const activeIcon = activeStep ? activeStep.icon : iconProp;
   const activeStatus = activeStep ? (activeStep.status ?? status) : status;
@@ -215,6 +237,8 @@ export function AgentSteps({
       className,
     ),
     "data-slot": "agent-steps",
+    // In single mode the root is one changing status line: announce it.
+    ...(isSingleMode && { role: "status", "aria-live": "polite" as const }),
     children: (
       <>
         {/* Static, self-contained keyframes. `href` + `precedence` let React
@@ -301,6 +325,7 @@ export function AgentStepIcon({
 }: AgentStepIconProps): React.ReactElement {
   const { size } = useAgentSteps();
   const { status } = useAgentStep();
+  const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 
   // Resolve inner icon SVG element
   const iconElement = React.useMemo(() => {
@@ -352,14 +377,16 @@ export function AgentStepIcon({
           strokeLinejoin="round"
           className={cn("text-primary shrink-0", thinkingSize)}
         >
-          <path d={pathCircleA}>
-            <animate
-              attributeName="d"
-              dur="6s"
-              repeatCount="indefinite"
-              values={`${pathCircleA}; ${pathInfinity}; ${pathCircleB}; ${pathInfinity}; ${pathCircleA}`}
-              keyTimes="0; 0.25; 0.5; 0.75; 1"
-            />
+          <path d={reducedMotion ? pathInfinity : pathCircleA}>
+            {!reducedMotion && (
+              <animate
+                attributeName="d"
+                dur="6s"
+                repeatCount="indefinite"
+                values={`${pathCircleA}; ${pathInfinity}; ${pathCircleB}; ${pathInfinity}; ${pathCircleA}`}
+                keyTimes="0; 0.25; 0.5; 0.75; 1"
+              />
+            )}
           </path>
         </svg>
       );
@@ -403,7 +430,7 @@ export function AgentStepIcon({
     }
 
     return icon as React.ReactNode;
-  }, [icon, status, size]);
+  }, [icon, status, size, reducedMotion]);
 
   const iconFrameClasses = cn(
     "relative flex items-center justify-center rounded-full shrink-0 select-none bg-transparent text-muted-foreground transition-[color,background-color,opacity] duration-300",
@@ -421,7 +448,7 @@ export function AgentStepIcon({
         {status === "running" && showSpinner && (
           <div
             className={cn(
-              "absolute inset-[-1.5px] rounded-full border border-dashed border-primary/60 animate-spin pointer-events-none",
+              "absolute inset-[-1.5px] rounded-full border border-dashed border-primary/60 animate-spin motion-reduce:animate-none pointer-events-none",
               size === "sm" && "inset-[-1.5px]",
               size === "md" && "inset-[-2px]",
               size === "lg" && "inset-[-3px]",
@@ -434,6 +461,8 @@ export function AgentStepIcon({
         >
           {iconElement}
         </div>
+        {/* The icon and colour carry the status visually; say it too. */}
+        <span className="sr-only">{STATUS_LABELS[status]}</span>
       </>
     ),
   };
@@ -489,6 +518,7 @@ export function AgentStepLabel({
     children: (
       <>
         <span
+          aria-hidden={!isAActive || undefined}
           className={cn(
             "col-start-1 row-start-1 flex items-center whitespace-nowrap agent-step-text-base",
             isAActive ? "opacity-100" : "opacity-0 pointer-events-none",
@@ -501,6 +531,7 @@ export function AgentStepLabel({
           {labelA}
         </span>
         <span
+          aria-hidden={isAActive || undefined}
           className={cn(
             "col-start-1 row-start-1 flex items-center whitespace-nowrap agent-step-text-base",
             !isAActive ? "opacity-100" : "opacity-0 pointer-events-none",
