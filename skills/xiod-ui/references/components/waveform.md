@@ -10,7 +10,7 @@ import { useWaveform, Waveform, WaveformHandle, WaveformScrubber, WaveformVisual
 useWaveform()
 ```
 
-Returns `{ value: number; duration: number; onValueChange?: ((value: number) => void) | undefined; active: boolean; processing: boolean; mode: "static" | "scrolling" | "live"; barWidth: number; barGap: number; barRadius: number; barColor?: string | undefined; progressColor?: string | undefined; fadeEdges: boolean; fadeWidth: number; sensitivity: number; updateRate: number; seed: number; data?: number[] | undefined; canvasRef: RefObject<HTMLCanvasElement | null>; containerRef: RefObject<HTMLDivElement | null>; isDragging: boolean; setIsDragging: (dragging: boolean) => void; seekTo: (clientX: number) => void; liveDataRef: MutableRefObject<number[]>; needsRedrawRef: MutableRefObject<boolean>; triggerRedraw: () => void }`.
+Returns `{ value: number; duration: number; onValueChange?: ((value: number) => void) | undefined; active: boolean; processing: boolean; mode: "static" | "scrolling" | "live"; barWidth: number; barGap: number; barRadius: number; barColor?: string | undefined; progressColor?: string | undefined; fadeEdges: boolean; fadeWidth: number; sensitivity: number; updateRate: number; seed: number; data?: number[] | undefined; canvasRef: RefObject<HTMLCanvasElement | null>; containerRef: RefObject<HTMLDivElement | null>; isDragging: boolean; setIsDragging: (dragging: boolean) => void; seekTo: (clientX: number) => void; liveDataRef: MutableRefObject<number[]>; needsRedrawRef: MutableRefObject<boolean>; requestDrawRef: MutableRefObject<(() => void) | null>; triggerRedraw: () => void }`.
 
 ## Waveform
 
