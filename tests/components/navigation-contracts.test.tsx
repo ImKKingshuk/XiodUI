@@ -66,6 +66,8 @@ import {
   SidebarTrigger,
 } from "../../src/components/sidebar";
 
+const option = (name: string) => screen.getByRole("option", { name });
+
 describe("navigation and disclosure contracts", () => {
   it("opens, closes, and disables a collapsible section", async () => {
     const user = userEvent.setup();
@@ -161,7 +163,6 @@ describe("navigation and disclosure contracts", () => {
       </form>,
     );
     const list = screen.getByRole("listbox", { name: "Fruit" });
-    const option = (name: string) => screen.getByRole("option", { name });
     const active = () =>
       document.getElementById(list.getAttribute("aria-activedescendant")!);
 

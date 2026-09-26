@@ -25,6 +25,9 @@ import {
 } from "../../src/components/theme-provider";
 import { useMediaQuery } from "../../src/hooks/use-media-query";
 
+const day = (name: RegExp) => screen.getByRole("button", { name });
+const isWeekend = (date: Date) => date.getDay() === 0 || date.getDay() === 6;
+
 describe("core component contracts", () => {
   it("renders a safe native button and preserves consumer overrides", async () => {
     const user = userEvent.setup();
@@ -132,9 +135,6 @@ describe("core component contracts", () => {
 
   it("follows the date grid keyboard pattern without stealing focus", async () => {
     const user = userEvent.setup();
-    const day = (name: RegExp) => screen.getByRole("button", { name });
-    const isWeekend = (date: Date) =>
-      date.getDay() === 0 || date.getDay() === 6;
 
     render(<Calendar selected={new Date(2026, 8, 15)} disabled={isWeekend} />);
 
