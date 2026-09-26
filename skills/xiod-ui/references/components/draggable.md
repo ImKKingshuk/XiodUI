@@ -1,4 +1,4 @@
-# draggable
+# Draggable
 
 ```tsx
 import { Draggable, DraggableBody, DraggableControls, DraggableFooter, DraggableHeader, DraggableResizeHandle, DraggableTitle } from "xiod-ui/draggable";
@@ -6,8 +6,7 @@ import { Draggable, DraggableBody, DraggableControls, DraggableFooter, Draggable
 
 ## Draggable
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -32,23 +31,18 @@ remain available through the exported TypeScript type.
 
 ## DraggableBody
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 ## DraggableControls
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| closeIcon | `ReactNode` | — |
-| maximizeIcon | `ReactNode` | — |
-| minimizeIcon | `ReactNode` | — |
-| restoreIcon | `ReactNode` | — |
+| Prop | Type |
+| :--- | :--- |
+| closeIcon | `ReactNode` |
+| maximizeIcon | `ReactNode` |
+| minimizeIcon | `ReactNode` |
+| restoreIcon | `ReactNode` |
 
 - `closeIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `maximizeIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
@@ -57,37 +51,24 @@ remain available through the exported TypeScript type.
 
 ## DraggableFooter
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 ## DraggableHeader
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| icon | `ReactNode` | — |
+| Prop | Type |
+| :--- | :--- |
+| icon | `ReactNode` |
 
 - `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## DraggableResizeHandle
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 ## DraggableTitle
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

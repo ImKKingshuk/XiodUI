@@ -1,4 +1,4 @@
-# waveform
+# Waveform
 
 ```tsx
 import { useWaveform, Waveform, WaveformHandle, WaveformScrubber, WaveformVisual } from "xiod-ui/waveform";
@@ -10,10 +10,11 @@ import { useWaveform, Waveform, WaveformHandle, WaveformScrubber, WaveformVisual
 useWaveform()
 ```
 
+Returns `{ value: number; duration: number; onValueChange?: ((value: number) => void) | undefined; active: boolean; processing: boolean; mode: "static" | "scrolling" | "live"; barWidth: number; barGap: number; barRadius: number; barColor?: string | undefined; progressColor?: string | undefined; fadeEdges: boolean; fadeWidth: number; sensitivity: number; updateRate: number; seed: number; data?: number[] | undefined; canvasRef: RefObject<HTMLCanvasElement | null>; containerRef: RefObject<HTMLDivElement | null>; isDragging: boolean; setIsDragging: (dragging: boolean) => void; seekTo: (clientX: number) => void; liveDataRef: MutableRefObject<number[]>; needsRedrawRef: MutableRefObject<boolean>; triggerRedraw: () => void }`.
+
 ## Waveform
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -40,23 +41,14 @@ remain available through the exported TypeScript type.
 
 ## WaveformHandle
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 ## WaveformScrubber
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 ## WaveformVisual
 
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+No props of its own. Takes the DOM props of the element it renders.
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

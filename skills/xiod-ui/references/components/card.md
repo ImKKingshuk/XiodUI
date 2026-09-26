@@ -1,4 +1,4 @@
-# card
+# Card
 
 ```tsx
 import { Card, CardAction, CardDescription, CardFooter, CardFrame, CardFrameDescription, CardFrameFooter, CardFrameHeader, CardFrameTitle, CardHeader, CardPanel, CardTitle } from "xiod-ui/card";
@@ -6,98 +6,50 @@ import { Card, CardAction, CardDescription, CardFooter, CardFrame, CardFrameDesc
 
 ## Card
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## CardAction
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## CardDescription
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## CardFooter
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## CardFrame
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## CardFrameDescription
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## CardFrameFooter
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## CardFrameHeader
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## CardFrameTitle
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## CardHeader
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## CardPanel
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## CardTitle
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

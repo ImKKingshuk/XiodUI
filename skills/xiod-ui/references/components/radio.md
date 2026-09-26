@@ -1,4 +1,4 @@
-# radio
+# Radio
 
 ```tsx
 import { Radio, RadioItem } from "xiod-ui/radio";
@@ -6,25 +6,25 @@ import { Radio, RadioItem } from "xiod-ui/radio";
 
 ## Radio
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: RadioGroupState) => string \| undefined) \| undefined` | — |
-| defaultValue | `any` | — |
-| disabled | `boolean \| undefined` | — |
-| form | `string \| undefined` | — |
-| inputRef | `Ref<HTMLInputElement> \| undefined` | — |
-| name | `string \| undefined` | — |
-| onValueChange | `((value: any, eventDetails: { reason: "none"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element \| undefined; }) => void) \| undefined` | — |
-| readOnly | `boolean \| undefined` | — |
-| required | `boolean \| undefined` | — |
-| style | `CSSProperties \| ((state: RadioGroupState) => CSSProperties \| undefined) \| undefined` | — |
-| value | `any` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: RadioGroupState) => string \| undefined) \| undefined` |
+| defaultValue | `any` |
+| disabled | `boolean \| undefined` |
+| form | `string \| undefined` |
+| inputRef | `Ref<HTMLInputElement> \| undefined` |
+| name | `string \| undefined` |
+| onValueChange | `((value: any, eventDetails: { reason: "none"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element \| undefined; }) => void) \| undefined` |
+| readOnly | `boolean \| undefined` |
+| required | `boolean \| undefined` |
+| style | `CSSProperties \| ((state: RadioGroupState) => CSSProperties \| undefined) \| undefined` |
+| value | `any` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `defaultValue` — The uncontrolled value of the radio button that should be initially selected. To render a controlled radio group, use the `value` prop instead.
+- `defaultValue` — The uncontrolled value of the radio button that should be initially selected.
+  To render a controlled radio group, use the `value` prop instead.
 - `disabled` — Whether the component should ignore user interaction.
 - `form` — Identifies the form that owns the radio inputs. Useful when the radio group is rendered outside the form.
 - `inputRef` — A ref to access the hidden input element.
@@ -33,12 +33,12 @@ remain available through the exported TypeScript type.
 - `readOnly` — Whether the user should be unable to select a different radio button in the group.
 - `required` — Whether the user must choose a value before submitting a form.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
-- `value` — The controlled value of the radio item that should be currently selected. To render an uncontrolled radio group, use the `defaultValue` prop instead.
+- `value` — The controlled value of the radio item that should be currently selected.
+  To render an uncontrolled radio group, use the `defaultValue` prop instead.
 
 ## RadioItem
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |

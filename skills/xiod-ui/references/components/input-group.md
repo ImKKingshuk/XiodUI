@@ -1,4 +1,4 @@
-# input-group
+# InputGroup
 
 ```tsx
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText, InputGroupTextarea } from "xiod-ui/input-group";
@@ -6,16 +6,11 @@ import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText, InputGrou
 
 ## InputGroup
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## InputGroupAddon
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -23,19 +18,18 @@ remain available through the exported TypeScript type.
 
 ## InputGroupInput
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| undefined` | — |
-| defaultValue | `string \| number \| readonly string[] \| undefined` | — |
-| nativeInput | `boolean \| undefined` | — |
-| onValueChange | `((value: string, eventDetails: { reason: "none"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element \| undefined; }) => void) \| undefined` | — |
-| size | `number \| "sm" \| "default" \| "lg" \| undefined` | — |
-| style | `CSSProperties \| undefined` | — |
-| unstyled | `boolean \| undefined` | — |
-| value | `string \| number \| readonly string[] \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| undefined` |
+| defaultValue | `string \| number \| readonly string[] \| undefined` |
+| nativeInput | `boolean \| undefined` |
+| onValueChange | `((value: string, eventDetails: { reason: "none"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element \| undefined; }) => void) \| undefined` |
+| size | `number \| "sm" \| "default" \| "lg" \| undefined` |
+| style | `CSSProperties \| undefined` |
+| unstyled | `boolean \| undefined` |
+| value | `string \| number \| readonly string[] \| undefined` |
 
 - `defaultValue` — The default value of the input. Use when uncontrolled.
 - `onValueChange` — Callback fired when the `value` changes. Use when controlled.
@@ -43,17 +37,13 @@ remain available through the exported TypeScript type.
 
 ## InputGroupText
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<span>` and takes its props. Pass `render` to render a different element.
 
 ## InputGroupTextarea
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| size | `number \| "sm" \| "default" \| "lg" \| undefined` | — |
-| unstyled | `boolean \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| size | `number \| "sm" \| "default" \| "lg" \| undefined` |
+| unstyled | `boolean \| undefined` |
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

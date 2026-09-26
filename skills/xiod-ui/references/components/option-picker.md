@@ -1,4 +1,4 @@
-# option-picker
+# OptionPicker
 
 ```tsx
 import { OptionPicker } from "xiod-ui/option-picker";
@@ -6,15 +6,15 @@ import { OptionPicker } from "xiod-ui/option-picker";
 
 ## OptionPicker
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| defaultValue | `string \| undefined` | — |
-| icon | `ReactNode` | — |
-| onChange | `((value: string) => void) \| undefined` | — |
-| **options** | `Option[]` | — |
-| popupClassName | `string \| undefined` | — |
-| triggerClassName | `string \| undefined` | — |
-| value | `string \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| defaultValue | `string \| undefined` |
+| icon | `ReactNode` |
+| onChange | `((value: string) => void) \| undefined` |
+| **options** | `Option[]` |
+| popupClassName | `string \| undefined` |
+| triggerClassName | `string \| undefined` |
+| value | `string \| undefined` |
 
 - `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 

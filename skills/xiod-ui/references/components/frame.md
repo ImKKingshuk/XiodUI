@@ -1,4 +1,4 @@
-# frame
+# Frame
 
 ```tsx
 import { Frame, FrameDescription, FrameFooter, FrameHeader, FramePanel, FrameTitle } from "xiod-ui/frame";
@@ -6,50 +6,26 @@ import { Frame, FrameDescription, FrameFooter, FrameHeader, FramePanel, FrameTit
 
 ## Frame
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## FrameDescription
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## FrameFooter
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<footer>` and takes its props. Pass `render` to render a different element.
 
 ## FrameHeader
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<header>` and takes its props. Pass `render` to render a different element.
 
 ## FramePanel
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## FrameTitle
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

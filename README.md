@@ -10,22 +10,20 @@ Everything ships as a single versioned npm package. Import one component at a ti
 
 ## Contents
 
-- [XiodUI](#xiodui)
-  - [Contents](#contents)
-  - [Features](#features)
-  - [Comparison](#comparison)
-  - [Installation](#installation)
-  - [Quick start](#quick-start)
-  - [Imports](#imports)
-  - [Components](#components)
-  - [Icons](#icons)
-  - [Theming](#theming)
-    - [Palettes](#palettes)
-    - [Dark mode](#dark-mode)
-  - [AI Agents](#ai-agents)
-    - [Install Agent Skill](#install-agent-skill)
-  - [Support](#support)
-  - [License](#license)
+- [Features](#features)
+- [Comparison](#comparison)
+- [Installation](#installation)
+- [Quick start](#quick-start)
+- [Imports](#imports)
+- [Components](#components)
+- [Icons](#icons)
+- [Theming](#theming)
+  - [Palettes](#palettes)
+  - [Dark mode](#dark-mode)
+- [AI Agents](#ai-agents)
+  - [Install Agent Skill](#install-agent-skill)
+- [Support](#support)
+- [License](#license)
 
 ## Features
 
@@ -56,7 +54,7 @@ Everything ships as a single versioned npm package. Import one component at a ti
 
 ## Installation
 
-XiodUI requires React 19.3 or later within React 19, matching React DOM, Node.js 20 or later, and a project configured with Tailwind CSS 4.3 or later.
+XiodUI requires React and React DOM 19.3 or later (React 19), Node.js 20 or later, and a project set up with Tailwind CSS 4.3 or later.
 
 ```bash
 # npm
@@ -99,7 +97,7 @@ Import XiodUI's stylesheet after Tailwind in the global CSS loaded by your appli
 @import "xiod-ui/styles";
 ```
 
-This provides the design tokens and registers the component files for Tailwind's utility generation. Your project's Tailwind integration must already be configured.
+This adds the design tokens and makes Tailwind generate the classes the components use. Without it, components render unstyled.
 
 Then import the components you need:
 

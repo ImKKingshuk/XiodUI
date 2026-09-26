@@ -1,4 +1,4 @@
-# toggle
+# Toggle
 
 ```tsx
 import { Toggle } from "xiod-ui/toggle";
@@ -6,8 +6,7 @@ import { Toggle } from "xiod-ui/toggle";
 
 ## Toggle
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |

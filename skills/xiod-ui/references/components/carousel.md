@@ -1,4 +1,4 @@
-# carousel
+# Carousel
 
 ```tsx
 import { Carousel, CarouselContent, CarouselDots, CarouselItem, CarouselNext, CarouselPrevious, useCarousel, useCarouselViewport } from "xiod-ui/carousel";
@@ -6,8 +6,7 @@ import { Carousel, CarouselContent, CarouselDots, CarouselItem, CarouselNext, Ca
 
 ## Carousel
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -21,32 +20,19 @@ remain available through the exported TypeScript type.
 
 ## CarouselContent
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## CarouselDots
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## CarouselItem
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## CarouselNext
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -58,8 +44,7 @@ remain available through the exported TypeScript type.
 
 ## CarouselPrevious
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -75,22 +60,26 @@ remain available through the exported TypeScript type.
 useCarousel()
 ```
 
+Returns `{ carouselRef: (node: HTMLElement | null) => void; api: CarouselApi | undefined; scrollPrev: () => void; scrollNext: () => void; canScrollPrev: boolean; canScrollNext: boolean; orientation: "horizontal" | "vertical"; autoplay?: boolean | undefined; autoplayInterval?: number | undefined; loop?: boolean | undefined; activeIndex?: number | undefined }`.
+
 ## useCarouselViewport
 
 ```tsx
 useCarouselViewport(options?, plugins?)
 ```
 
+Returns `UseCarouselViewport`.
+
 `options` — `CarouselOptions`:
 
-| Field | Type | Default |
-| :--- | :--- | :--- |
-| align | `"center" \| "start" \| "end" \| undefined` | — |
-| axis | `"x" \| "y" \| undefined` | — |
-| containScroll | `boolean \| undefined` | — |
-| dragFree | `boolean \| undefined` | — |
-| loop | `boolean \| undefined` | — |
-| speed | `number \| undefined` | — |
+| Field | Type |
+| :--- | :--- |
+| align | `"center" \| "start" \| "end" \| undefined` |
+| axis | `"x" \| "y" \| undefined` |
+| containScroll | `boolean \| undefined` |
+| dragFree | `boolean \| undefined` |
+| loop | `boolean \| undefined` |
+| speed | `number \| undefined` |
 
 - `plugins` — `CarouselPlugin[]`
 

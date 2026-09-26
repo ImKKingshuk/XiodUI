@@ -1,4 +1,4 @@
-# loader
+# Loader
 
 ```tsx
 import { Loader } from "xiod-ui/loader";
@@ -6,8 +6,7 @@ import { Loader } from "xiod-ui/loader";
 
 ## Loader
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |

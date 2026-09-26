@@ -1,4 +1,4 @@
-# skeleton
+# Skeleton
 
 ```tsx
 import { Skeleton } from "xiod-ui/skeleton";
@@ -6,10 +6,6 @@ import { Skeleton } from "xiod-ui/skeleton";
 
 ## Skeleton
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

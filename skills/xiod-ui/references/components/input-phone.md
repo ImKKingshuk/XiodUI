@@ -1,4 +1,4 @@
-# input-phone
+# InputPhone
 
 ```tsx
 import { InputPhone, InputPhoneCountrySelect, InputPhoneFlag, InputPhoneInput, PhoneInput, PhoneInputCountrySelect, PhoneInputFlag, PhoneInputInput, useInputPhone, usePhoneInput } from "xiod-ui/input-phone";
@@ -6,8 +6,7 @@ import { InputPhone, InputPhoneCountrySelect, InputPhoneFlag, InputPhoneInput, P
 
 ## InputPhone
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -23,15 +22,14 @@ remain available through the exported TypeScript type.
 
 ## InputPhoneCountrySelect
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| clearIcon | `ReactNode` | — |
-| searchIcon | `ReactNode` | — |
-| selectedIcon | `ReactNode` | — |
-| triggerIcon | `ReactNode` | — |
+| Prop | Type |
+| :--- | :--- |
+| clearIcon | `ReactNode` |
+| searchIcon | `ReactNode` |
+| selectedIcon | `ReactNode` |
+| triggerIcon | `ReactNode` |
 
 - `clearIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `searchIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
@@ -40,28 +38,26 @@ remain available through the exported TypeScript type.
 
 ## InputPhoneFlag
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| code | `string \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| code | `string \| undefined` |
 
 ## InputPhoneInput
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| undefined` | — |
-| clearIcon | `ReactNode` | — |
-| defaultValue | `string \| number \| readonly string[] \| undefined` | — |
-| nativeInput | `boolean \| undefined` | — |
-| onValueChange | `((value: string, eventDetails: { reason: "none"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element \| undefined; }) => void) \| undefined` | — |
-| size | `number \| "sm" \| "default" \| "lg" \| undefined` | — |
-| style | `CSSProperties \| undefined` | — |
-| unstyled | `boolean \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| undefined` |
+| clearIcon | `ReactNode` |
+| defaultValue | `string \| number \| readonly string[] \| undefined` |
+| nativeInput | `boolean \| undefined` |
+| onValueChange | `((value: string, eventDetails: { reason: "none"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element \| undefined; }) => void) \| undefined` |
+| size | `number \| "sm" \| "default" \| "lg" \| undefined` |
+| style | `CSSProperties \| undefined` |
+| unstyled | `boolean \| undefined` |
 
 - `clearIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `defaultValue` — The default value of the input. Use when uncontrolled.
@@ -69,32 +65,30 @@ remain available through the exported TypeScript type.
 
 ## PhoneInput
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| countries | `CountryData[] \| undefined` | — |
-| defaultCountry | `string \| undefined` | — |
-| defaultValue | `string \| undefined` | — |
-| disabled | `boolean \| undefined` | — |
-| onChange | `((e164: string, country: CountryData, nationalNumber: string) => void) \| undefined` | — |
-| readOnly | `boolean \| undefined` | — |
-| size | `"sm" \| "default" \| "lg" \| null \| undefined` | — |
-| value | `string \| undefined` | — |
-| variant | `"default" \| "ghost" \| "filled" \| null \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| countries | `CountryData[] \| undefined` |
+| defaultCountry | `string \| undefined` |
+| defaultValue | `string \| undefined` |
+| disabled | `boolean \| undefined` |
+| onChange | `((e164: string, country: CountryData, nationalNumber: string) => void) \| undefined` |
+| readOnly | `boolean \| undefined` |
+| size | `"sm" \| "default" \| "lg" \| null \| undefined` |
+| value | `string \| undefined` |
+| variant | `"default" \| "ghost" \| "filled" \| null \| undefined` |
 
 ## PhoneInputCountrySelect
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| clearIcon | `ReactNode` | — |
-| searchIcon | `ReactNode` | — |
-| selectedIcon | `ReactNode` | — |
-| triggerIcon | `ReactNode` | — |
+| Prop | Type |
+| :--- | :--- |
+| clearIcon | `ReactNode` |
+| searchIcon | `ReactNode` |
+| selectedIcon | `ReactNode` |
+| triggerIcon | `ReactNode` |
 
 - `clearIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `searchIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
@@ -103,28 +97,26 @@ remain available through the exported TypeScript type.
 
 ## PhoneInputFlag
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| code | `string \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| code | `string \| undefined` |
 
 ## PhoneInputInput
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| undefined` | — |
-| clearIcon | `ReactNode` | — |
-| defaultValue | `string \| number \| readonly string[] \| undefined` | — |
-| nativeInput | `boolean \| undefined` | — |
-| onValueChange | `((value: string, eventDetails: { reason: "none"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element \| undefined; }) => void) \| undefined` | — |
-| size | `number \| "sm" \| "default" \| "lg" \| undefined` | — |
-| style | `CSSProperties \| undefined` | — |
-| unstyled | `boolean \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| undefined` |
+| clearIcon | `ReactNode` |
+| defaultValue | `string \| number \| readonly string[] \| undefined` |
+| nativeInput | `boolean \| undefined` |
+| onValueChange | `((value: string, eventDetails: { reason: "none"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element \| undefined; }) => void) \| undefined` |
+| size | `number \| "sm" \| "default" \| "lg" \| undefined` |
+| style | `CSSProperties \| undefined` |
+| unstyled | `boolean \| undefined` |
 
 - `clearIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 - `defaultValue` — The default value of the input. Use when uncontrolled.
@@ -136,10 +128,14 @@ remain available through the exported TypeScript type.
 useInputPhone()
 ```
 
+Returns `{ containerRef: RefObject<HTMLDivElement | null>; selectedCountry: CountryData; setSelectedCountry: (country: CountryData) => void; nationalNumber: string; setNationalNumber: (num: string) => void; e164Value: string; disabled?: boolean | undefined; readOnly?: boolean | undefined; countries: CountryData[]; onChange?: ((e164: string, country: CountryData, nationalNumber: string) => void) | undefined }`.
+
 ## usePhoneInput
 
 ```tsx
 usePhoneInput()
 ```
+
+Returns `{ containerRef: RefObject<HTMLDivElement | null>; selectedCountry: CountryData; setSelectedCountry: (country: CountryData) => void; nationalNumber: string; setNationalNumber: (num: string) => void; e164Value: string; disabled?: boolean | undefined; readOnly?: boolean | undefined; countries: CountryData[]; onChange?: ((e164: string, country: CountryData, nationalNumber: string) => void) | undefined }`.
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

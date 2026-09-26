@@ -1,4 +1,4 @@
-# toast
+# Toast
 
 ```tsx
 import { anchoredToastManager, AnchoredToastProvider, toastManager, ToastProvider } from "xiod-ui/toast";
@@ -6,7 +6,11 @@ import { anchoredToastManager, AnchoredToastProvider, toastManager, ToastProvide
 
 ## anchoredToastManager
 
-Imperative manager export; it is not a React component.
+An object, not a component. Its methods work from anywhere in client
+code, even outside React, while the component that renders the toasts
+is mounted.
+
+Methods: `add`, `close`, `promise`, `update`.
 
 ## AnchoredToastProvider
 
@@ -26,7 +30,11 @@ Imperative manager export; it is not a React component.
 
 ## toastManager
 
-Imperative manager export; it is not a React component.
+An object, not a component. Its methods work from anywhere in client
+code, even outside React, while the component that renders the toasts
+is mounted.
+
+Methods: `add`, `close`, `promise`, `update`.
 
 ## ToastProvider
 

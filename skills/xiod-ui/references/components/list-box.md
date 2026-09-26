@@ -1,4 +1,4 @@
-# list-box
+# ListBox
 
 ```tsx
 import { ListBox, ListBoxGroup, ListBoxItem, ListBoxLabel, ListBoxSeparator } from "xiod-ui/list-box";
@@ -6,47 +6,33 @@ import { ListBox, ListBoxGroup, ListBoxItem, ListBoxLabel, ListBoxSeparator } fr
 
 ## ListBox
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| multiple | `boolean \| undefined` | — |
-| onValueChange | `((value: ListBoxValue) => void) \| undefined` | — |
-| value | `ListBoxValue \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| multiple | `boolean \| undefined` |
+| onValueChange | `((value: ListBoxValue) => void) \| undefined` |
+| value | `ListBoxValue \| undefined` |
 
 ## ListBoxGroup
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## ListBoxItem
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| disabled | `boolean \| undefined` | — |
-| **value** | `string` | — |
+| Prop | Type |
+| :--- | :--- |
+| disabled | `boolean \| undefined` |
+| **value** | `string` |
 
 ## ListBoxLabel
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## ListBoxSeparator
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

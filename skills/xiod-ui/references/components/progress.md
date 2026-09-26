@@ -1,4 +1,4 @@
-# progress
+# Progress
 
 ```tsx
 import { Progress, ProgressIndicator, ProgressLabel, ProgressTrack, ProgressValue } from "xiod-ui/progress";
@@ -6,8 +6,7 @@ import { Progress, ProgressIndicator, ProgressLabel, ProgressTrack, ProgressValu
 
 ## Progress
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -35,53 +34,49 @@ remain available through the exported TypeScript type.
 
 ## ProgressIndicator
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: ProgressIndicatorState) => string \| undefined) \| undefined` | — |
-| style | `CSSProperties \| ((state: ProgressIndicatorState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: ProgressIndicatorState) => string \| undefined) \| undefined` |
+| style | `CSSProperties \| ((state: ProgressIndicatorState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## ProgressLabel
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: ProgressLabelState) => string \| undefined) \| undefined` | — |
-| style | `CSSProperties \| ((state: ProgressLabelState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: ProgressLabelState) => string \| undefined) \| undefined` |
+| style | `CSSProperties \| ((state: ProgressLabelState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## ProgressTrack
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: ProgressTrackState) => string \| undefined) \| undefined` | — |
-| style | `CSSProperties \| ((state: ProgressTrackState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: ProgressTrackState) => string \| undefined) \| undefined` |
+| style | `CSSProperties \| ((state: ProgressTrackState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## ProgressValue
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| children | `((formattedValue: string \| null, value: number \| null) => ReactNode) \| null \| undefined` | — |
-| className | `string \| ((state: ProgressValueState) => string \| undefined) \| undefined` | — |
-| style | `CSSProperties \| ((state: ProgressValueState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| children | `((formattedValue: string \| null, value: number \| null) => ReactNode) \| null \| undefined` |
+| className | `string \| ((state: ProgressValueState) => string \| undefined) \| undefined` |
+| style | `CSSProperties \| ((state: ProgressValueState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.

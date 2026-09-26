@@ -1,4 +1,4 @@
-# timeline
+# Timeline
 
 ```tsx
 import { Timeline, TimelineContent, TimelineDate, TimelineHeader, TimelineIndicator, TimelineItem, TimelineSeparator, TimelineTitle, useTimeline } from "xiod-ui/timeline";
@@ -6,8 +6,7 @@ import { Timeline, TimelineContent, TimelineDate, TimelineHeader, TimelineIndica
 
 ## Timeline
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -18,32 +17,19 @@ remain available through the exported TypeScript type.
 
 ## TimelineContent
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## TimelineDate
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<time>` and takes its props. Pass `render` to render a different element.
 
 ## TimelineHeader
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## TimelineIndicator
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -52,34 +38,27 @@ remain available through the exported TypeScript type.
 
 ## TimelineItem
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| status | `"completed" \| "active" \| "pending" \| undefined` | — |
-| step | `number \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| status | `"completed" \| "active" \| "pending" \| undefined` |
+| step | `number \| undefined` |
 
 ## TimelineSeparator
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## TimelineTitle
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<h3>` and takes its props. Pass `render` to render a different element.
 
 ## useTimeline
 
 ```tsx
 useTimeline()
 ```
+
+Returns `undefined | { activeStep?: number | undefined; setActiveStep: (step: number) => void }`.
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

@@ -1,4 +1,4 @@
-# table
+# Table
 
 ```tsx
 import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "xiod-ui/table";
@@ -6,66 +6,34 @@ import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, Tabl
 
 ## Table
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<table>` and takes its props. Pass `render` to render a different element.
 
 ## TableBody
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<tbody>` and takes its props. Pass `render` to render a different element.
 
 ## TableCaption
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<caption>` and takes its props. Pass `render` to render a different element.
 
 ## TableCell
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<td>` and takes its props. Pass `render` to render a different element.
 
 ## TableFooter
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<tfoot>` and takes its props. Pass `render` to render a different element.
 
 ## TableHead
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<th>` and takes its props. Pass `render` to render a different element.
 
 ## TableHeader
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<thead>` and takes its props. Pass `render` to render a different element.
 
 ## TableRow
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<tr>` and takes its props. Pass `render` to render a different element.
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

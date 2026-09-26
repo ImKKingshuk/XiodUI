@@ -1,10 +1,12 @@
-# sidebar
+# Sidebar
 
 ```tsx
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupAction, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuAction, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, SidebarRail, SidebarSeparator, SidebarTrigger, useSidebar } from "xiod-ui/sidebar";
 ```
 
 ## Sidebar
+
+Renders a `<div>` and takes its props.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -14,72 +16,46 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupActio
 
 ## SidebarContent
 
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props.
 
 ## SidebarFooter
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## SidebarGroup
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## SidebarGroupAction
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<button>` and takes its props. Pass `render` to render a different element.
 
 ## SidebarGroupContent
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## SidebarGroupLabel
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## SidebarHeader
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## SidebarInput
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| undefined` | — |
-| defaultValue | `string \| number \| readonly string[] \| undefined` | — |
-| nativeInput | `boolean \| undefined` | — |
-| onValueChange | `((value: string, eventDetails: { reason: "none"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element \| undefined; }) => void) \| undefined` | — |
-| size | `number \| "sm" \| "default" \| "lg" \| undefined` | — |
-| style | `CSSProperties \| undefined` | — |
-| unstyled | `boolean \| undefined` | — |
-| value | `string \| number \| readonly string[] \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| undefined` |
+| defaultValue | `string \| number \| readonly string[] \| undefined` |
+| nativeInput | `boolean \| undefined` |
+| onValueChange | `((value: string, eventDetails: { reason: "none"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element \| undefined; }) => void) \| undefined` |
+| size | `number \| "sm" \| "default" \| "lg" \| undefined` |
+| style | `CSSProperties \| undefined` |
+| unstyled | `boolean \| undefined` |
+| value | `string \| number \| readonly string[] \| undefined` |
 
 - `defaultValue` — The default value of the input. Use when uncontrolled.
 - `onValueChange` — Callback fired when the `value` changes. Use when controlled.
@@ -87,24 +63,15 @@ remain available through the exported TypeScript type.
 
 ## SidebarInset
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<main>` and takes its props. Pass `render` to render a different element.
 
 ## SidebarMenu
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<ul>` and takes its props. Pass `render` to render a different element.
 
 ## SidebarMenuAction
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Renders a `<button>` and takes its props. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -112,16 +79,11 @@ remain available through the exported TypeScript type.
 
 ## SidebarMenuBadge
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## SidebarMenuButton
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Renders a `<button>` and takes its props. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -132,16 +94,11 @@ remain available through the exported TypeScript type.
 
 ## SidebarMenuItem
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<li>` and takes its props. Pass `render` to render a different element.
 
 ## SidebarMenuSkeleton
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -149,16 +106,11 @@ remain available through the exported TypeScript type.
 
 ## SidebarMenuSub
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<ul>` and takes its props. Pass `render` to render a different element.
 
 ## SidebarMenuSubButton
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Renders a `<a>` and takes its props. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -167,13 +119,11 @@ remain available through the exported TypeScript type.
 
 ## SidebarMenuSubItem
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<li>` and takes its props. Pass `render` to render a different element.
 
 ## SidebarProvider
+
+Renders a `<div>` and takes its props.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -183,22 +133,17 @@ TypeScript type for inherited element or primitive props.
 
 ## SidebarRail
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<button>` and takes its props. Pass `render` to render a different element.
 
 ## SidebarSeparator
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: SeparatorState) => string \| undefined) \| undefined` | — |
-| orientation | `Orientation \| undefined` | — |
-| style | `CSSProperties \| ((state: SeparatorState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: SeparatorState) => string \| undefined) \| undefined` |
+| orientation | `Orientation \| undefined` |
+| style | `CSSProperties \| ((state: SeparatorState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `orientation` — The orientation of the separator.
@@ -206,14 +151,13 @@ remain available through the exported TypeScript type.
 
 ## SidebarTrigger
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| icon | `ReactNode` | — |
-| size | `"sm" \| "default" \| "lg" \| "xs" \| "xl" \| "icon" \| "icon-lg" \| "icon-sm" \| "icon-xl" \| "icon-xs" \| null \| undefined` | — |
-| variant | `"link" \| "default" \| "secondary" \| "destructive" \| "destructive-outline" \| "ghost" \| "outline" \| null \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| icon | `ReactNode` |
+| size | `"sm" \| "default" \| "lg" \| "xs" \| "xl" \| "icon" \| "icon-lg" \| "icon-sm" \| "icon-xl" \| "icon-xs" \| null \| undefined` |
+| variant | `"link" \| "default" \| "secondary" \| "destructive" \| "destructive-outline" \| "ghost" \| "outline" \| null \| undefined` |
 
 - `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
@@ -222,5 +166,7 @@ remain available through the exported TypeScript type.
 ```tsx
 useSidebar()
 ```
+
+Returns `{ state: "expanded" | "collapsed"; open: boolean; setOpen: (open: boolean) => void; openMobile: boolean; setOpenMobile: (open: boolean) => void; isMobile: boolean; toggleSidebar: () => void }`.
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

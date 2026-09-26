@@ -1,4 +1,4 @@
-# sortable
+# Sortable
 
 ```tsx
 import { Sortable, SortableColumn, SortableColumnHeader, SortableColumnTitle, SortableItem, SortableItemHandle, SortableItemRemove } from "xiod-ui/sortable";
@@ -6,8 +6,7 @@ import { Sortable, SortableColumn, SortableColumnHeader, SortableColumnTitle, So
 
 ## Sortable
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -22,33 +21,23 @@ remain available through the exported TypeScript type.
 
 ## SortableColumn
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| **id** | `string` | — |
+| Prop | Type |
+| :--- | :--- |
+| **id** | `string` |
 
 ## SortableColumnHeader
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 ## SortableColumnTitle
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 ## SortableItem
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -60,25 +49,23 @@ remain available through the exported TypeScript type.
 
 ## SortableItemHandle
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| icon | `ReactNode` | — |
-| id | `string \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| icon | `ReactNode` |
+| id | `string \| undefined` |
 
 - `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## SortableItemRemove
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| icon | `ReactNode` | — |
-| **id** | `string` | — |
+| Prop | Type |
+| :--- | :--- |
+| icon | `ReactNode` |
+| **id** | `string` |
 
 - `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 

@@ -1,4 +1,4 @@
-# text
+# Text
 
 ```tsx
 import { Text } from "xiod-ui/text";
@@ -6,8 +6,7 @@ import { Text } from "xiod-ui/text";
 
 ## Text
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |

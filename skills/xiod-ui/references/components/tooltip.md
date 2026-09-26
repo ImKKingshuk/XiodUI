@@ -1,4 +1,4 @@
-# tooltip
+# Tooltip
 
 ```tsx
 import { Tooltip, TooltipArrow, TooltipCreateHandle, TooltipPopup, TooltipProvider, TooltipTrigger } from "xiod-ui/tooltip";
@@ -6,28 +6,31 @@ import { Tooltip, TooltipArrow, TooltipCreateHandle, TooltipPopup, TooltipProvid
 
 ## Tooltip
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| actionsRef | `RefObject<TooltipRootActions \| null> \| undefined` | — |
-| children | `ReactNode \| PayloadChildRenderFunction<Payload>` | — |
-| defaultOpen | `boolean \| undefined` | — |
-| defaultTriggerId | `string \| null \| undefined` | — |
-| disabled | `boolean \| undefined` | — |
-| disableHoverablePopup | `boolean \| undefined` | — |
-| handle | `TooltipHandle<Payload> \| undefined` | — |
-| onOpenChange | `((open: boolean, eventDetails: TooltipRootChangeEventDetails) => void) \| undefined` | — |
-| onOpenChangeComplete | `((open: boolean) => void) \| undefined` | — |
-| open | `boolean \| undefined` | — |
-| trackCursorAxis | `"none" \| "x" \| "y" \| "both" \| undefined` | — |
-| triggerId | `string \| null \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| actionsRef | `RefObject<TooltipRootActions \| null> \| undefined` |
+| children | `ReactNode \| PayloadChildRenderFunction<Payload>` |
+| defaultOpen | `boolean \| undefined` |
+| defaultTriggerId | `string \| null \| undefined` |
+| disabled | `boolean \| undefined` |
+| disableHoverablePopup | `boolean \| undefined` |
+| handle | `TooltipHandle<Payload> \| undefined` |
+| onOpenChange | `((open: boolean, eventDetails: TooltipRootChangeEventDetails) => void) \| undefined` |
+| onOpenChangeComplete | `((open: boolean) => void) \| undefined` |
+| open | `boolean \| undefined` |
+| trackCursorAxis | `"none" \| "x" \| "y" \| "both" \| undefined` |
+| triggerId | `string \| null \| undefined` |
 
-- `actionsRef` — A ref to imperative actions. - `unmount`: Unmounts the tooltip popup. - `close`: Closes the tooltip imperatively when called.
+- `actionsRef` — A ref to imperative actions.
+  - `unmount`: Unmounts the tooltip popup.
+  - `close`: Closes the tooltip imperatively when called.
 - `children` — The content of the tooltip. This can be a regular React node or a render function that receives the `payload` of the active trigger.
-- `defaultOpen` — Whether the tooltip is initially open. To render a controlled tooltip, use the `open` prop instead.
+- `defaultOpen` — Whether the tooltip is initially open.
+  To render a controlled tooltip, use the `open` prop instead.
 - `defaultTriggerId` — ID of the trigger that the tooltip is associated with. This is useful in conjunction with the `defaultOpen` prop to create an initially open tooltip.
 - `disabled` — Whether the tooltip is disabled.
 - `disableHoverablePopup` — Whether the tooltip contents can be hovered without closing the tooltip.
-- `handle` — A handle to associate the tooltip with a trigger. If specified, allows external triggers to control the tooltip's open state. Can be created with the Tooltip.createHandle() method.
+- `handle` — A handle to associate the tooltip with a trigger. If specified, allows external triggers to control the tooltip's open state. Can be created with the TooltipCreateHandle() method.
 - `onOpenChange` — Event handler called when the tooltip is opened or closed.
 - `onOpenChangeComplete` — Event handler called after any animations complete when the tooltip is opened or closed.
 - `open` — Whether the tooltip is currently open.
@@ -36,26 +39,33 @@ import { Tooltip, TooltipArrow, TooltipCreateHandle, TooltipPopup, TooltipProvid
 
 ## TooltipArrow
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: TooltipArrowState) => string \| undefined) \| undefined` | — |
-| style | `CSSProperties \| ((state: TooltipArrowState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: TooltipArrowState) => string \| undefined) \| undefined` |
+| style | `CSSProperties \| ((state: TooltipArrowState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## TooltipCreateHandle
 
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+A function, not a component. It creates a handle that connects triggers
+to a `Tooltip` they are not nested in:
+
+```tsx
+const handle = TooltipCreateHandle();
+
+<Tooltip handle={handle}>…</Tooltip>
+<TooltipTrigger handle={handle}>Open</TooltipTrigger>
+```
+
+Create it outside render, once per instance.
 
 ## TooltipPopup
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -72,12 +82,12 @@ remain available through the exported TypeScript type.
 
 ## TooltipProvider
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| children | `ReactNode` | — |
-| closeDelay | `number \| undefined` | — |
-| delay | `number \| undefined` | — |
-| timeout | `number \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| children | `ReactNode` |
+| closeDelay | `number \| undefined` |
+| delay | `number \| undefined` |
+| timeout | `number \| undefined` |
 
 - `closeDelay` — How long to wait before closing a tooltip. Specified in milliseconds.
 - `delay` — How long to wait before opening the tooltip on hover. Specified in milliseconds.
@@ -85,19 +95,18 @@ remain available through the exported TypeScript type.
 
 ## TooltipTrigger
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: TooltipTriggerState) => string \| undefined) \| undefined` | — |
-| closeDelay | `number \| undefined` | — |
-| closeOnClick | `boolean \| undefined` | — |
-| delay | `number \| undefined` | — |
-| disabled | `boolean \| undefined` | — |
-| handle | `TooltipHandle<unknown> \| undefined` | — |
-| payload | `unknown` | — |
-| style | `CSSProperties \| ((state: TooltipTriggerState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: TooltipTriggerState) => string \| undefined) \| undefined` |
+| closeDelay | `number \| undefined` |
+| closeOnClick | `boolean \| undefined` |
+| delay | `number \| undefined` |
+| disabled | `boolean \| undefined` |
+| handle | `TooltipHandle<unknown> \| undefined` |
+| payload | `unknown` |
+| style | `CSSProperties \| ((state: TooltipTriggerState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `closeDelay` — How long to wait before closing the tooltip. Specified in milliseconds.

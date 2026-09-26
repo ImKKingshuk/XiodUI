@@ -1,4 +1,4 @@
-# message
+# Message
 
 ```tsx
 import { Bubble, BubbleContent, BubbleReactions, Message, MessageAvatar, MessageContent, MessageFooter, MessageGroup, MessageHeader } from "xiod-ui/message";
@@ -6,8 +6,7 @@ import { Bubble, BubbleContent, BubbleReactions, Message, MessageAvatar, Message
 
 ## Bubble
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -16,16 +15,11 @@ remain available through the exported TypeScript type.
 
 ## BubbleContent
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## BubbleReactions
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -34,8 +28,7 @@ remain available through the exported TypeScript type.
 
 ## Message
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -43,42 +36,22 @@ remain available through the exported TypeScript type.
 
 ## MessageAvatar
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 ## MessageContent
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 ## MessageFooter
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 ## MessageGroup
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 ## MessageHeader
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

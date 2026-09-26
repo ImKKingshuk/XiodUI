@@ -1,4 +1,4 @@
-# textarea
+# Textarea
 
 ```tsx
 import { Textarea } from "xiod-ui/textarea";

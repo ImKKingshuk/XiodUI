@@ -1,4 +1,4 @@
-# checkbox
+# Checkbox
 
 ```tsx
 import { Checkbox, CheckboxGroup, CheckboxGroupItem } from "xiod-ui/checkbox";
@@ -6,8 +6,7 @@ import { Checkbox, CheckboxGroup, CheckboxGroupItem } from "xiod-ui/checkbox";
 
 ## Checkbox
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -30,9 +29,11 @@ remain available through the exported TypeScript type.
 | value | `string \| undefined` | — |
 | variant | `"default" \| "expressive" \| "sharp" \| "diamond" \| null \| undefined` | `"default"` |
 
-- `checked` — Whether the checkbox is currently ticked. To render an uncontrolled checkbox, use the `defaultChecked` prop instead.
+- `checked` — Whether the checkbox is currently ticked.
+  To render an uncontrolled checkbox, use the `defaultChecked` prop instead.
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `defaultChecked` — Whether the checkbox is initially ticked. To render a controlled checkbox, use the `checked` prop instead.
+- `defaultChecked` — Whether the checkbox is initially ticked.
+  To render a controlled checkbox, use the `checked` prop instead.
 - `disabled` — Whether the component should ignore user interaction.
 - `form` — Identifies the form that owns the hidden input. Useful when the checkbox is rendered outside the form.
 - `id` — The id of the input element.
@@ -41,7 +42,8 @@ remain available through the exported TypeScript type.
 - `name` — Identifies the field when a form is submitted.
 - `nativeButton` — Whether the component renders a native `<button>` element when replacing it via the `render` prop. Set to `true` if the rendered element is a native button.
 - `onCheckedChange` — Event handler called when the checkbox is ticked or unticked.
-- `parent` — Whether the checkbox controls a group of child checkboxes. Must be used in a [Checkbox Group](https://base-ui.com/react/components/checkbox-group).
+- `parent` — Whether the checkbox controls a group of child checkboxes.
+  Must be used in a [Checkbox Group](https://base-ui.com/react/components/checkbox-group).
 - `readOnly` — Whether the user should be unable to tick or untick the checkbox.
 - `required` — Whether the user must tick the checkbox before submitting a form.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
@@ -50,31 +52,31 @@ remain available through the exported TypeScript type.
 
 ## CheckboxGroup
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| allValues | `string[] \| undefined` | — |
-| className | `string \| ((state: CheckboxGroupState) => string \| undefined) \| undefined` | — |
-| defaultValue | `string[] \| undefined` | — |
-| disabled | `boolean \| undefined` | — |
-| onValueChange | `((value: string[], eventDetails: { reason: "none"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element \| undefined; }) => void) \| undefined` | — |
-| style | `CSSProperties \| ((state: CheckboxGroupState) => CSSProperties \| undefined) \| undefined` | — |
-| value | `string[] \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| allValues | `string[] \| undefined` |
+| className | `string \| ((state: CheckboxGroupState) => string \| undefined) \| undefined` |
+| defaultValue | `string[] \| undefined` |
+| disabled | `boolean \| undefined` |
+| onValueChange | `((value: string[], eventDetails: { reason: "none"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element \| undefined; }) => void) \| undefined` |
+| style | `CSSProperties \| ((state: CheckboxGroupState) => CSSProperties \| undefined) \| undefined` |
+| value | `string[] \| undefined` |
 
 - `allValues` — Names of all checkboxes in the group. Use this when creating a parent checkbox.
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `defaultValue` — Names of the checkboxes in the group that should be initially ticked. To render a controlled checkbox group, use the `value` prop instead.
+- `defaultValue` — Names of the checkboxes in the group that should be initially ticked.
+  To render a controlled checkbox group, use the `value` prop instead.
 - `disabled` — Whether the component should ignore user interaction.
 - `onValueChange` — Event handler called when a checkbox in the group is ticked or unticked. Provides the new value as an argument.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
-- `value` — Names of the checkboxes in the group that should be ticked. To render an uncontrolled checkbox group, use the `defaultValue` prop instead.
+- `value` — Names of the checkboxes in the group that should be ticked.
+  To render an uncontrolled checkbox group, use the `defaultValue` prop instead.
 
 ## CheckboxGroupItem
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -97,9 +99,11 @@ remain available through the exported TypeScript type.
 | value | `string \| undefined` | — |
 | variant | `"default" \| "expressive" \| "sharp" \| "diamond" \| null \| undefined` | `"default"` |
 
-- `checked` — Whether the checkbox is currently ticked. To render an uncontrolled checkbox, use the `defaultChecked` prop instead.
+- `checked` — Whether the checkbox is currently ticked.
+  To render an uncontrolled checkbox, use the `defaultChecked` prop instead.
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `defaultChecked` — Whether the checkbox is initially ticked. To render a controlled checkbox, use the `checked` prop instead.
+- `defaultChecked` — Whether the checkbox is initially ticked.
+  To render a controlled checkbox, use the `checked` prop instead.
 - `disabled` — Whether the component should ignore user interaction.
 - `form` — Identifies the form that owns the hidden input. Useful when the checkbox is rendered outside the form.
 - `id` — The id of the input element.
@@ -108,7 +112,8 @@ remain available through the exported TypeScript type.
 - `name` — Identifies the field when a form is submitted.
 - `nativeButton` — Whether the component renders a native `<button>` element when replacing it via the `render` prop. Set to `true` if the rendered element is a native button.
 - `onCheckedChange` — Event handler called when the checkbox is ticked or unticked.
-- `parent` — Whether the checkbox controls a group of child checkboxes. Must be used in a [Checkbox Group](https://base-ui.com/react/components/checkbox-group).
+- `parent` — Whether the checkbox controls a group of child checkboxes.
+  Must be used in a [Checkbox Group](https://base-ui.com/react/components/checkbox-group).
 - `readOnly` — Whether the user should be unable to tick or untick the checkbox.
 - `required` — Whether the user must tick the checkbox before submitting a form.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.

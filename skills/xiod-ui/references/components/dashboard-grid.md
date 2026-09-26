@@ -1,4 +1,4 @@
-# dashboard-grid
+# DashboardGrid
 
 ```tsx
 import { DashboardGrid, DashboardTile, DashboardTileControls, DashboardTileHandle, DashboardTileHeader, DashboardTileResizeHandle, DashboardTileTitle } from "xiod-ui/dashboard-grid";
@@ -6,8 +6,7 @@ import { DashboardGrid, DashboardTile, DashboardTileControls, DashboardTileHandl
 
 ## DashboardGrid
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -28,8 +27,7 @@ remain available through the exported TypeScript type.
 
 ## DashboardTile
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -41,54 +39,43 @@ remain available through the exported TypeScript type.
 
 ## DashboardTileControls
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| icon | `ReactNode` | — |
-| id | `string \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| icon | `ReactNode` |
+| id | `string \| undefined` |
 
 - `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## DashboardTileHandle
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| icon | `ReactNode` | — |
-| id | `string \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| icon | `ReactNode` |
+| id | `string \| undefined` |
 
 - `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## DashboardTileHeader
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| icon | `ReactNode` | — |
-| id | `string \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| icon | `ReactNode` |
+| id | `string \| undefined` |
 
 - `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## DashboardTileResizeHandle
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 ## DashboardTileTitle
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

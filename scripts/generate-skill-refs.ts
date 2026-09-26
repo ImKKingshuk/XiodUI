@@ -33,7 +33,7 @@ interface PropEntry {
   name: string;
   type: string;
   default?: string;
-  description?: string;
+  description?: string[];
   required: boolean;
 }
 
@@ -44,13 +44,19 @@ interface ParamEntry {
 }
 
 interface ExportEntry {
-  kind: "component" | "hook" | "manager";
+  kind: "component" | "hook" | "manager" | "handle";
   name: string;
   description?: string;
   props: PropEntry[];
   /** Undefined when the call signature could not be resolved. */
   params?: ParamEntry[];
   supportsRender: boolean;
+  /** The intrinsic element a component renders, when its props name one. */
+  element?: string;
+  /** A manager's methods. */
+  methods?: string[];
+  /** A hook's return type. */
+  returns?: string;
 }
 
 /** A prop declared in React's or TypeScript's own typings is not ours. */
@@ -225,11 +231,29 @@ function readParams(
   });
 }
 
-function describe(checker: ts.TypeChecker, symbol: ts.Symbol): string {
-  return ts
+/**
+ * A prop's doc comment as the lines of a list item. Prose is joined onto one
+ * line, but a list inside the comment (Base UI documents each option of a
+ * prop as `- \`value\`: …`) stays a list, one line per option, instead of
+ * being run together into a single paragraph.
+ */
+function describe(checker: ts.TypeChecker, symbol: ts.Symbol): string[] {
+  const blocks: string[] = [];
+  let open = false;
+  for (const raw of ts
     .displayPartsToString(symbol.getDocumentationComment(checker))
-    .replaceAll(/\s+/g, " ")
-    .trim();
+    .split("\n")) {
+    const line = raw.trim();
+    if (!line) {
+      open = false;
+    } else if (open && !line.startsWith("- ")) {
+      blocks[blocks.length - 1] += ` ${line}`;
+    } else {
+      blocks.push(line);
+      open = true;
+    }
+  }
+  return blocks.map((block) => block.replaceAll(/\s+/g, " "));
 }
 
 /**
@@ -278,7 +302,7 @@ function readProps(
           name: property.getName(),
           type: type.replaceAll(/\s+/g, " "),
           default: defaults.get(property.getName()),
-          description: describe(checker, property) || undefined,
+          description: describe(checker, property),
           required: (property.flags & ts.SymbolFlags.Optional) === 0,
         };
       })
@@ -288,11 +312,25 @@ function readProps(
 
 /** Public API values useful to an agent composing interfaces. */
 function publicValueKind(
+  checker: ts.TypeChecker,
   name: string,
   type: ts.Type,
 ): ExportEntry["kind"] | undefined {
   if (name.startsWith("use")) return "hook";
-  if (name.endsWith("Manager")) return "manager";
+  // An imperative API object: `toastManager`, `morphicToast`.
+  if (
+    /^[a-z]/.test(name) &&
+    type.getCallSignatures().length === 0 &&
+    type
+      .getProperties()
+      .some(
+        (member) =>
+          checker.getTypeOfSymbol(member).getCallSignatures().length > 0,
+      )
+  ) {
+    return "manager";
+  }
+  if (name.endsWith("CreateHandle")) return "handle";
   if (
     /^[A-Z]/.test(name) &&
     !name.endsWith("Context") &&
@@ -307,23 +345,57 @@ function cell(value: string): string {
   return value.replaceAll("|", "\\|").replaceAll("\n", " ");
 }
 
+/**
+ * Base UI's doc comments name parts the Base UI way — `Dialog.Root`,
+ * `<Popover.Close>`, `Dialog.createHandle()`. XiodUI exports them flat, as
+ * `Dialog`, `PopoverClose` and `DialogCreateHandle`, and an agent that copies
+ * the dotted form writes code that does not compile. Rewrite a dotted name
+ * only when the flat name really is an export of the library.
+ */
+let exportedNames = new Set<string>();
+
+function xiodNames(text: string): string {
+  return text.replaceAll(
+    /\b([A-Z][A-Za-z]*)\.(Root|createHandle|[A-Z][A-Za-z]*)\b/g,
+    (match, root: string, part: string) => {
+      const flat =
+        part === "Root"
+          ? root
+          : part === "createHandle"
+            ? `${root}CreateHandle`
+            : `${root}${part}`;
+      return exportedNames.has(flat) ? flat : match;
+    },
+  );
+}
+
 function propsTable(props: PropEntry[], firstHeading: string): string[] {
-  const lines = [
-    `| ${firstHeading} | Type | Default |`,
-    "| :--- | :--- | :--- |",
-  ];
+  // Most props leave their default to Base UI or to `undefined`; a column of
+  // dashes tells the reader nothing, so it appears only when a row fills it.
+  const withDefaults = props.some((prop) => prop.default);
+  const lines = withDefaults
+    ? [`| ${firstHeading} | Type | Default |`, "| :--- | :--- | :--- |"]
+    : [`| ${firstHeading} | Type |`, "| :--- | :--- |"];
 
   for (const prop of props) {
     const name = prop.required ? `**${prop.name}**` : prop.name;
-    lines.push(
-      `| ${name} | \`${cell(prop.type)}\` | ${prop.default ? `\`${cell(prop.default)}\`` : "—"} |`,
-    );
+    const type = `\`${cell(prop.type)}\``;
+    if (!withDefaults) {
+      lines.push(`| ${name} | ${type} |`);
+      continue;
+    }
+    const fallback = prop.default ? `\`${cell(prop.default)}\`` : "—";
+    lines.push(`| ${name} | ${type} | ${fallback} |`);
   }
   lines.push("");
 
-  const documented = props.filter((prop) => prop.description);
+  const documented = props.filter((prop) => prop.description?.length);
   for (const prop of documented) {
-    lines.push(`- \`${prop.name}\` — ${prop.description}`);
+    const [first, ...rest] = (prop.description ?? []).map(xiodNames);
+    lines.push(`- \`${prop.name}\` — ${first}`);
+    for (const block of rest) {
+      lines.push(`  ${block}`);
+    }
   }
   if (documented.length > 0) lines.push("");
 
@@ -358,6 +430,10 @@ function renderHook(entry: ExportEntry): string[] {
     "",
   ];
 
+  if (entry.returns && entry.returns !== "void") {
+    lines.push(`Returns \`${entry.returns}\`.`, "");
+  }
+
   if (params.length === 0) return lines;
 
   const [first, ...rest] = params;
@@ -380,8 +456,108 @@ function renderHook(entry: ExportEntry): string[] {
   return lines;
 }
 
+/**
+ * A hook's return type with named object types spelled out. `useTheme()`
+ * returning `ThemeContextValue` tells an agent nothing it can destructure;
+ * `{ theme: …; setTheme: … }` does. Unions keep their other members, so
+ * `TimelineContextValue | undefined` still reads as possibly undefined.
+ */
+function returnShape(
+  checker: ts.TypeChecker,
+  type: ts.Type,
+  at: ts.Node,
+): string {
+  const print = (inner: ts.Type): string =>
+    checker.typeToString(inner, undefined, ts.TypeFormatFlags.NoTruncation);
+
+  const expand = (inner: ts.Type): string => {
+    const named = inner.aliasSymbol ?? inner.getSymbol();
+    const properties = inner.getProperties();
+    // Only object shapes XiodUI declares itself. React's types and mapped
+    // types (`Partial<Record<IconName, …>>`) read better by name.
+    const declaration = named && firstDeclaration(named);
+    const ownShape =
+      declaration !== undefined &&
+      declaration.getSourceFile().fileName.startsWith(COMPONENTS_DIR) &&
+      (ts.isInterfaceDeclaration(declaration) ||
+        (ts.isTypeAliasDeclaration(declaration) &&
+          (ts.isTypeLiteralNode(declaration.type) ||
+            ts.isIntersectionTypeNode(declaration.type))));
+    if (
+      !named ||
+      !ownShape ||
+      properties.length === 0 ||
+      inner.getCallSignatures().length > 0 ||
+      checker.isArrayType(inner) ||
+      checker.isTupleType(inner)
+    ) {
+      return print(inner);
+    }
+    const members = properties.map((property) => {
+      const optional = property.flags & ts.SymbolFlags.Optional ? "?" : "";
+      return `${property.getName()}${optional}: ${print(checker.getTypeOfSymbolAtLocation(property, at))}`;
+    });
+    return `{ ${members.join("; ")} }`;
+  };
+
+  const text = type.isUnion()
+    ? type.types.map(expand).join(" | ")
+    : expand(type);
+  return text.replaceAll(/\s+/g, " ");
+}
+
+/** `input-otp` → `InputOtp`, the name of the component a page is about. */
+function pascalCase(slug: string): string {
+  return slug.replaceAll(/(?:^|-)([a-z])/g, (_, letter: string) =>
+    letter.toUpperCase(),
+  );
+}
+
+/**
+ * What a component renders and what that means for its props. The table lists
+ * only XiodUI's own props, so this line is where the reader learns that the
+ * element's DOM props (`className`, `children`, `aria-*`, handlers) are
+ * accepted too.
+ */
+function elementNote(entry: ExportEntry): string | undefined {
+  const renders = entry.element
+    ? `Renders a \`<${entry.element}>\` and takes its props`
+    : undefined;
+  if (renders && entry.supportsRender) {
+    return `${renders}. Pass \`render\` to render a different element.`;
+  }
+  if (renders) return `${renders}.`;
+  if (entry.supportsRender) {
+    return "Takes the DOM props of the element it renders. Pass `render` to render a different element.";
+  }
+  if (entry.props.length === 0) {
+    return "No props of its own. Takes the DOM props of the element it renders.";
+  }
+  return undefined;
+}
+
+function renderHandle(entry: ExportEntry, names: Set<string>): string[] {
+  const root = entry.name.replace(/CreateHandle$/, "");
+  const trigger = `${root}Trigger`;
+  const lines = [
+    "A function, not a component. It creates a handle that connects triggers",
+    `to a \`${root}\` they are not nested in:`,
+    "",
+    "```tsx",
+    `const handle = ${entry.name}();`,
+    "",
+    `<${root} handle={handle}>…</${root}>`,
+  ];
+  if (names.has(trigger)) {
+    lines.push(`<${trigger} handle={handle}>Open</${trigger}>`);
+  }
+  lines.push("```", "", "Create it outside render, once per instance.", "");
+  return lines;
+}
+
 function renderPage(slug: string, exports: ExportEntry[]): string {
-  const lines: string[] = [`# ${slug}`, ""];
+  const names = new Set(exports.map((entry) => entry.name));
+  const lines: string[] = [`# ${pascalCase(slug)}`, ""];
 
   lines.push(
     "```tsx",
@@ -392,42 +568,63 @@ function renderPage(slug: string, exports: ExportEntry[]): string {
 
   for (const entry of exports) {
     lines.push(`## ${entry.name}`, "");
-    if (entry.description) lines.push(entry.description, "");
-
-    if (entry.supportsRender) {
-      lines.push(
-        "Supports `render={<Element />}` for composition. Inherited DOM props",
-        "remain available through the exported TypeScript type.",
-        "",
-      );
-    }
+    if (entry.description) lines.push(xiodNames(entry.description), "");
 
     if (entry.kind === "hook") {
       lines.push(...renderHook(entry));
       continue;
     }
 
-    if (entry.props.length === 0) {
-      if (entry.kind === "manager") {
-        lines.push(
-          "Imperative manager export; it is not a React component.",
-          "",
-        );
-      } else {
-        lines.push(
-          "No XiodUI-specific props were detected. Refer to the exported",
-          "TypeScript type for inherited element or primitive props.",
-          "",
-        );
-      }
+    if (entry.kind === "handle") {
+      lines.push(...renderHandle(entry, names));
       continue;
     }
 
-    lines.push(...propsTable(entry.props, "Prop"));
+    if (entry.kind === "manager") {
+      const methods = entry.methods?.map((method) => `\`${method}\``);
+      lines.push(
+        "An object, not a component. Its methods work from anywhere in client",
+        "code, even outside React, while the component that renders the toasts",
+        "is mounted.",
+        "",
+      );
+      if (methods?.length) lines.push(`Methods: ${methods.join(", ")}.`, "");
+      continue;
+    }
+
+    const note = elementNote(entry);
+    if (note) lines.push(note, "");
+
+    if (entry.props.length > 0) {
+      lines.push(...propsTable(entry.props, "Prop"));
+    }
   }
 
   lines.push("Required props are bold. Full docs: https://ui.xiod.dev/docs");
   return `${lines.join("\n")}\n`;
+}
+
+/**
+ * The intrinsic element named in a component's props annotation:
+ * `ComponentProps<"div">`, `useRender.ComponentProps<"nav">`,
+ * `HTMLAttributes<HTMLSpanElement>`. Base UI parts are typed by their own
+ * props and name no element, so they return undefined.
+ */
+function renderedElement(declaration: ts.Declaration): string | undefined {
+  if (!ts.isFunctionLike(declaration)) return undefined;
+  const annotation = declaration.parameters[0]?.type?.getText();
+  if (!annotation) return undefined;
+  const intrinsic = annotation.match(/ComponentProps(?:WithoutRef)?<"(\w+)">/);
+  if (intrinsic) return intrinsic[1];
+  const element = annotation.match(/HTMLAttributes<HTML(\w+)Element>/);
+  if (!element) return undefined;
+  const known: Record<string, string> = {
+    Anchor: "a",
+    Div: "div",
+    Paragraph: "p",
+    Span: "span",
+  };
+  return known[element[1]];
 }
 
 const files = fs
@@ -449,6 +646,7 @@ const program = ts.createProgram(files, {
 });
 const checker = program.getTypeChecker();
 
+const entries = new Map<string, ExportEntry[]>();
 const pages = new Map<string, string>();
 
 for (const file of files) {
@@ -478,7 +676,7 @@ for (const file of files) {
     if (!declaration) continue;
 
     const type = checker.getTypeOfSymbolAtLocation(symbol, declaration);
-    const kind = publicValueKind(name, type);
+    const kind = publicValueKind(checker, name, type);
     if (!kind) continue;
 
     const propsType = propsTypeOf(checker, symbol, declaration);
@@ -491,13 +689,37 @@ for (const file of files) {
       props: readProps(checker, symbol, declaration, recipes),
       params: signature ? readParams(checker, signature) : undefined,
       supportsRender: propsType?.getProperty("render") !== undefined,
+      element: renderedElement(declaration),
+      returns:
+        kind === "hook" && signature
+          ? returnShape(checker, signature.getReturnType(), declaration)
+          : undefined,
+      methods:
+        kind === "manager"
+          ? type
+              .getProperties()
+              .map((member) => member.getName())
+              .filter((member) => /^[A-Za-z_$][\w$]*$/.test(member))
+              .toSorted()
+          : undefined,
     });
   }
 
   if (exports.length === 0) continue;
 
-  const sorted = exports.toSorted((a, b) => a.name.localeCompare(b.name));
-  pages.set(`${slug}.md`, renderPage(slug, sorted));
+  entries.set(
+    slug,
+    exports.toSorted((a, b) => a.name.localeCompare(b.name)),
+  );
+}
+
+// Every page is rendered after every export is known, so a description on
+// one page can be rewritten to a name exported from another.
+exportedNames = new Set(
+  [...entries.values()].flat().map((entry) => entry.name),
+);
+for (const [slug, exports] of entries) {
+  pages.set(`${slug}.md`, renderPage(slug, exports));
 }
 
 if (process.argv.includes("--check")) {

@@ -1,4 +1,4 @@
-# icon-provider
+# IconProvider
 
 ```tsx
 import { IconProvider, IconSlot, useIcon, useIconOverrides } from "xiod-ui/icon-provider";
@@ -20,10 +20,10 @@ import { X, Check } from "your-icon-library";
 Providers nest: an inner one is merged over the outer one, so a section of
 the app can override a single icon without restating the rest.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| children | `ReactNode` | — |
-| **icons** | `Partial<Record<IconName, IconComponent>>` | — |
+| Prop | Type |
+| :--- | :--- |
+| children | `ReactNode` |
+| **icons** | `Partial<Record<IconName, IconComponent>>` |
 
 - `icons` — Icons to use in place of the built-in ones, keyed by `IconName`. Any name left out keeps its default, so pass only what you want to change.
 
@@ -40,11 +40,11 @@ A node passed as `icon` renders exactly as given, so give it its own size
 classes. A component resolved from the provider or from `fallback` receives
 the remaining props, sizing included.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| **fallback** | `IconComponent` | — |
-| icon | `ReactNode` | — |
-| **name** | `IconName` | — |
+| Prop | Type |
+| :--- | :--- |
+| **fallback** | `IconComponent` |
+| icon | `ReactNode` |
+| **name** | `IconName` |
 
 - `fallback` — The icon to render when nothing replaces it.
 - `icon` — Replaces this icon. Accepts any node — an element from another icon library, a raw `<svg>`, or `null` to render nothing. Takes precedence over `IconProvider`.
@@ -60,6 +60,8 @@ icon overrides the library's own components respect.
 useIcon(name, fallback)
 ```
 
+Returns `ComponentClass<SVGProps<SVGSVGElement>, any> | FunctionComponent<SVGProps<SVGSVGElement>>`.
+
 - `name` — `IconName`
 - `fallback` — `IconComponent`
 
@@ -71,5 +73,7 @@ Returns the icons in effect at this point in the tree, or `null` when no
 ```tsx
 useIconOverrides()
 ```
+
+Returns `null | Partial<Record<IconName, IconComponent>>`.
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

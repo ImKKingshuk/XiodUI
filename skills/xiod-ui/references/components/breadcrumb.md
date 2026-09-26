@@ -1,4 +1,4 @@
-# breadcrumb
+# Breadcrumb
 
 ```tsx
 import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "xiod-ui/breadcrumb";
@@ -6,63 +6,41 @@ import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, Breadcr
 
 ## Breadcrumb
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<nav>` and takes its props. Pass `render` to render a different element.
 
 ## BreadcrumbEllipsis
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Renders a `<span>` and takes its props. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| icon | `ReactNode` | — |
+| Prop | Type |
+| :--- | :--- |
+| icon | `ReactNode` |
 
 - `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## BreadcrumbItem
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<li>` and takes its props. Pass `render` to render a different element.
 
 ## BreadcrumbLink
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<a>` and takes its props. Pass `render` to render a different element.
 
 ## BreadcrumbList
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<ol>` and takes its props. Pass `render` to render a different element.
 
 ## BreadcrumbPage
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<span>` and takes its props. Pass `render` to render a different element.
 
 ## BreadcrumbSeparator
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Renders a `<li>` and takes its props. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| icon | `ReactNode` | — |
+| Prop | Type |
+| :--- | :--- |
+| icon | `ReactNode` |
 
 - `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 

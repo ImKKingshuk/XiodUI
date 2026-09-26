@@ -1,4 +1,4 @@
-# avatar
+# Avatar
 
 ```tsx
 import { Avatar, AvatarFallback, AvatarGroup, AvatarImage } from "xiod-ui/avatar";
@@ -6,8 +6,7 @@ import { Avatar, AvatarFallback, AvatarGroup, AvatarImage } from "xiod-ui/avatar
 
 ## Avatar
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -21,14 +20,13 @@ remain available through the exported TypeScript type.
 
 ## AvatarFallback
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: AvatarFallbackState) => string \| undefined) \| undefined` | — |
-| delay | `number \| undefined` | — |
-| style | `CSSProperties \| ((state: AvatarFallbackState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: AvatarFallbackState) => string \| undefined) \| undefined` |
+| delay | `number \| undefined` |
+| style | `CSSProperties \| ((state: AvatarFallbackState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `delay` — How long to wait before showing the fallback. Specified in milliseconds.
@@ -36,23 +34,18 @@ remain available through the exported TypeScript type.
 
 ## AvatarGroup
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 ## AvatarImage
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: AvatarImageState) => string \| undefined) \| undefined` | — |
-| keepMounted | `boolean \| undefined` | — |
-| onLoadingStatusChange | `((status: ImageLoadingStatus) => void) \| undefined` | — |
-| style | `CSSProperties \| ((state: AvatarImageState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: AvatarImageState) => string \| undefined) \| undefined` |
+| keepMounted | `boolean \| undefined` |
+| onLoadingStatusChange | `((status: ImageLoadingStatus) => void) \| undefined` |
+| style | `CSSProperties \| ((state: AvatarImageState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `keepMounted` — Whether the image element stays mounted and loads in place instead of being preloaded. Supports `loading="lazy"` and optimized image components such as `next/image`.

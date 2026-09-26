@@ -1,4 +1,4 @@
-# number-field
+# NumberField
 
 ```tsx
 import { NumberField, NumberFieldDecrement, NumberFieldGroup, NumberFieldIncrement, NumberFieldInput, NumberFieldScrubArea } from "xiod-ui/number-field";
@@ -6,8 +6,7 @@ import { NumberField, NumberFieldDecrement, NumberFieldGroup, NumberFieldIncreme
 
 ## NumberField
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -39,7 +38,8 @@ remain available through the exported TypeScript type.
 - `allowOutOfRange` — When true, direct text entry may be outside the `min`/`max` range without clamping, so native range underflow/overflow validation can occur. Step-based interactions (keyboard arrows, buttons, wheel, scrub) still clamp.
 - `allowWheelScrub` — Whether to allow the user to scrub the input value with the mouse wheel while focused and hovering over the input.
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `defaultValue` — The uncontrolled value of the field when it's initially rendered. To render a controlled number field, use the `value` prop instead.
+- `defaultValue` — The uncontrolled value of the field when it's initially rendered.
+  To render a controlled number field, use the `value` prop instead.
 - `disabled` — Whether the component should ignore user interaction.
 - `form` — Identifies the form that owns the hidden input. Useful when the number field is rendered outside the form.
 - `format` — Options to format the input value.
@@ -50,8 +50,21 @@ remain available through the exported TypeScript type.
 - `max` — The maximum value of the input element.
 - `min` — The minimum value of the input element.
 - `name` — Identifies the field when a form is submitted.
-- `onValueChange` — Callback fired when the number value changes. The `eventDetails.reason` indicates what triggered the change: - `'input-change'` for parseable typing or programmatic text updates - `'input-clear'` when the field becomes empty - `'input-blur'` when formatting (and clamping, if enabled) occurs on blur - `'input-paste'` for paste interactions - `'keyboard'` for arrow-key/Home/End stepping (typing digits uses `'input-change'`/`'input-clear'`) - `'increment-press'` / `'decrement-press'` for button presses on the increment and decrement controls - `'wheel'` for wheel-based scrubbing - `'scrub'` for scrub area drags
-- `onValueCommitted` — Callback function that is fired when the value is committed. It runs later than `onValueChange`, when: - The input is blurred after typing a value. - The pointer is released after scrubbing or pressing the increment/decrement buttons. It runs simultaneously with `onValueChange` when interacting with the keyboard or the mouse wheel. **Warning**: This is a generic event not a change event.
+- `onValueChange` — Callback fired when the number value changes.
+  The `eventDetails.reason` indicates what triggered the change:
+  - `'input-change'` for parseable typing or programmatic text updates
+  - `'input-clear'` when the field becomes empty
+  - `'input-blur'` when formatting (and clamping, if enabled) occurs on blur
+  - `'input-paste'` for paste interactions
+  - `'keyboard'` for arrow-key/Home/End stepping (typing digits uses `'input-change'`/`'input-clear'`)
+  - `'increment-press'` / `'decrement-press'` for button presses on the increment and decrement controls
+  - `'wheel'` for wheel-based scrubbing
+  - `'scrub'` for scrub area drags
+- `onValueCommitted` — Callback function that is fired when the value is committed. It runs later than `onValueChange`, when:
+  - The input is blurred after typing a value.
+  - The pointer is released after scrubbing or pressing the increment/decrement buttons.
+  It runs simultaneously with `onValueChange` when interacting with the keyboard or the mouse wheel.
+  **Warning**: This is a generic event not a change event.
 - `readOnly` — Whether the user should be unable to change the field value.
 - `required` — Whether the user must enter a value before submitting a form.
 - `smallStep` — The small step value of the input element when incrementing while the alt key is held. Snaps to multiples of this value when `snapOnStep` is enabled.
@@ -62,15 +75,14 @@ remain available through the exported TypeScript type.
 
 ## NumberFieldDecrement
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: NumberFieldDecrementState) => string \| undefined) \| undefined` | — |
-| icon | `ReactNode` | — |
-| nativeButton | `boolean \| undefined` | — |
-| style | `CSSProperties \| ((state: NumberFieldDecrementState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: NumberFieldDecrementState) => string \| undefined) \| undefined` |
+| icon | `ReactNode` |
+| nativeButton | `boolean \| undefined` |
+| style | `CSSProperties \| ((state: NumberFieldDecrementState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
@@ -79,28 +91,26 @@ remain available through the exported TypeScript type.
 
 ## NumberFieldGroup
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: NumberFieldGroupState) => string \| undefined) \| undefined` | — |
-| style | `CSSProperties \| ((state: NumberFieldGroupState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: NumberFieldGroupState) => string \| undefined) \| undefined` |
+| style | `CSSProperties \| ((state: NumberFieldGroupState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## NumberFieldIncrement
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: NumberFieldIncrementState) => string \| undefined) \| undefined` | — |
-| icon | `ReactNode` | — |
-| nativeButton | `boolean \| undefined` | — |
-| style | `CSSProperties \| ((state: NumberFieldIncrementState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: NumberFieldIncrementState) => string \| undefined) \| undefined` |
+| icon | `ReactNode` |
+| nativeButton | `boolean \| undefined` |
+| style | `CSSProperties \| ((state: NumberFieldIncrementState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
@@ -109,32 +119,30 @@ remain available through the exported TypeScript type.
 
 ## NumberFieldInput
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| aria-roledescription | `string \| undefined` | — |
-| className | `string \| ((state: NumberFieldInputState) => string \| undefined) \| undefined` | — |
-| style | `CSSProperties \| ((state: NumberFieldInputState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| aria-roledescription | `string \| undefined` |
+| className | `string \| ((state: NumberFieldInputState) => string \| undefined) \| undefined` |
+| style | `CSSProperties \| ((state: NumberFieldInputState) => CSSProperties \| undefined) \| undefined` |
 
-- `aria-roledescription` — A user-friendly description of the input's role for assistive tech. This is a role description, not an accessible name — use `Field.Label` or `aria-label` to name the control.
+- `aria-roledescription` — A user-friendly description of the input's role for assistive tech. This is a role description, not an accessible name — use `FieldLabel` or `aria-label` to name the control.
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## NumberFieldScrubArea
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: NumberFieldScrubAreaState) => string \| undefined) \| undefined` | — |
-| direction | `"horizontal" \| "vertical" \| undefined` | — |
-| **label** | `string` | — |
-| pixelSensitivity | `number \| undefined` | — |
-| style | `CSSProperties \| ((state: NumberFieldScrubAreaState) => CSSProperties \| undefined) \| undefined` | — |
-| teleportDistance | `number \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: NumberFieldScrubAreaState) => string \| undefined) \| undefined` |
+| direction | `"horizontal" \| "vertical" \| undefined` |
+| **label** | `string` |
+| pixelSensitivity | `number \| undefined` |
+| style | `CSSProperties \| ((state: NumberFieldScrubAreaState) => CSSProperties \| undefined) \| undefined` |
+| teleportDistance | `number \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `direction` — Cursor movement direction in the scrub area.

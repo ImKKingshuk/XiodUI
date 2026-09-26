@@ -1,4 +1,4 @@
-# aspect-ratio
+# AspectRatio
 
 ```tsx
 import { AspectRatio } from "xiod-ui/aspect-ratio";
@@ -6,8 +6,7 @@ import { AspectRatio } from "xiod-ui/aspect-ratio";
 
 ## AspectRatio
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |

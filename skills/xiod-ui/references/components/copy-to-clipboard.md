@@ -1,4 +1,4 @@
-# copy-to-clipboard
+# CopyToClipboard
 
 ```tsx
 import { CopyToClipboard } from "xiod-ui/copy-to-clipboard";
@@ -6,8 +6,7 @@ import { CopyToClipboard } from "xiod-ui/copy-to-clipboard";
 
 ## CopyToClipboard
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |

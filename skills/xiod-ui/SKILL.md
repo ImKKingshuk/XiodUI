@@ -58,12 +58,26 @@ import { InputOtp } from "xiod-ui/input-otp";
 import { ThemeProvider, useTheme } from "xiod-ui/theme-provider";
 ```
 
-Hooks live under `xiod-ui/hooks/<name>`. There are exactly two:
+Standalone hooks live under `xiod-ui/hooks/<name>`. There are two modules:
 
 ```tsx
 import { useCopyToClipboard } from "xiod-ui/hooks/use-copy-to-clipboard";
-import { useMediaQuery } from "xiod-ui/hooks/use-media-query";
+import { useIsMobile, useMediaQuery } from "xiod-ui/hooks/use-media-query";
+
+const { copyToClipboard, isCopied } = useCopyToClipboard({ timeout: 2000 });
+
+const wide = useMediaQuery("lg"); // min-width: 1024px
+const narrow = useMediaQuery("max-md"); // below 800px
+const tablet = useMediaQuery({ min: "sm", max: "lg", pointer: "coarse" });
+const isMobile = useIsMobile(); // same as useMediaQuery("max-md")
 ```
+
+Named breakpoints follow Tailwind except `md`, which is **800px**, not 768. Pass
+a number (`{ max: 768 }`) to match Tailwind's `md:` exactly. Both hooks return
+`false` during server rendering.
+
+Hooks tied to one component (`useSidebar`, `useTheme`, `useCarousel`, …) come
+from that component's subpath and are listed on its reference page.
 
 There is **no root barrel**. `import { Button } from "xiod-ui"` throws
 `ERR_PACKAGE_PATH_NOT_EXPORTED` — the exports map has no `.` entry, on purpose.
@@ -203,15 +217,23 @@ ARIA relationships. Put the control inside it and pass state on the `Field`:
 
 ### Toasts
 
-Toasts are imperative. Mount the provider once near the root, then call the
-manager from anywhere:
+Toasts are imperative. Mount the provider once near the root:
 
 ```tsx
 // app/providers.tsx
+"use client";
+
 import { ToastProvider } from "xiod-ui/toast";
 
-// any client component
-("use client");
+export function Providers({ children }: { children: React.ReactNode }) {
+  return <ToastProvider position="bottom-right">{children}</ToastProvider>;
+}
+```
+
+Then call the manager from any client code — an event handler, a server
+action's result, a plain function:
+
+```tsx
 import { toastManager } from "xiod-ui/toast";
 
 toastManager.add({
@@ -220,8 +242,21 @@ toastManager.add({
 });
 ```
 
-`xiod-ui/morphic-toast` exports `MorphicToaster`, an alternative surface with a
-gooey merge animation. `xiod-ui/toast` also exports `AnchoredToastProvider`.
+`toastManager` only shows toasts while a `ToastProvider` is mounted. For toasts
+anchored to an element, mount `AnchoredToastProvider` and call
+`anchoredToastManager` instead.
+
+`xiod-ui/morphic-toast` is a separate toast system with a gooey merge
+animation. Mount `<MorphicToaster />` once, then call `morphicToast`:
+
+```tsx
+import { morphicToast } from "xiod-ui/morphic-toast";
+
+morphicToast.success({ title: "Saved", description: "All changes synced." });
+```
+
+The two systems are independent: `toastManager` does not reach
+`MorphicToaster`, and `morphicToast` does not reach `ToastProvider`.
 
 ### Icons
 

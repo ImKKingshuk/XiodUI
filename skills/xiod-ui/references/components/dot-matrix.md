@@ -1,4 +1,4 @@
-# dot-matrix
+# DotMatrix
 
 ```tsx
 import { DotMatrix } from "xiod-ui/dot-matrix";
@@ -6,8 +6,7 @@ import { DotMatrix } from "xiod-ui/dot-matrix";
 
 ## DotMatrix
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |

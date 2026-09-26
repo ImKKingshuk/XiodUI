@@ -1,4 +1,4 @@
-# toggle-group
+# ToggleGroup
 
 ```tsx
 import { ToggleGroup, ToggleGroupItem, ToggleGroupSeparator } from "xiod-ui/toggle-group";
@@ -6,8 +6,7 @@ import { ToggleGroup, ToggleGroupItem, ToggleGroupSeparator } from "xiod-ui/togg
 
 ## ToggleGroup
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -34,21 +33,20 @@ remain available through the exported TypeScript type.
 
 ## ToggleGroupItem
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: ToggleState) => string \| undefined) \| undefined` | — |
-| defaultPressed | `boolean \| undefined` | — |
-| disabled | `boolean \| undefined` | — |
-| nativeButton | `boolean \| undefined` | — |
-| onPressedChange | `((pressed: boolean, eventDetails: { reason: "none"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element \| undefined; }) => void) \| undefined` | — |
-| pressed | `boolean \| undefined` | — |
-| size | `"sm" \| "default" \| "lg" \| null \| undefined` | — |
-| style | `CSSProperties \| ((state: ToggleState) => CSSProperties \| undefined) \| undefined` | — |
-| value | `string \| undefined` | — |
-| variant | `"default" \| "outline" \| null \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: ToggleState) => string \| undefined) \| undefined` |
+| defaultPressed | `boolean \| undefined` |
+| disabled | `boolean \| undefined` |
+| nativeButton | `boolean \| undefined` |
+| onPressedChange | `((pressed: boolean, eventDetails: { reason: "none"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element \| undefined; }) => void) \| undefined` |
+| pressed | `boolean \| undefined` |
+| size | `"sm" \| "default" \| "lg" \| null \| undefined` |
+| style | `CSSProperties \| ((state: ToggleState) => CSSProperties \| undefined) \| undefined` |
+| value | `string \| undefined` |
+| variant | `"default" \| "outline" \| null \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `defaultPressed` — Whether the toggle button is currently pressed. This is the uncontrolled counterpart of `pressed`.
@@ -61,8 +59,7 @@ remain available through the exported TypeScript type.
 
 ## ToggleGroupSeparator
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |

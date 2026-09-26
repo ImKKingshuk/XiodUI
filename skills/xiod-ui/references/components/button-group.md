@@ -1,4 +1,4 @@
-# button-group
+# ButtonGroup
 
 ```tsx
 import { ButtonGroup, ButtonGroupSeparator, ButtonGroupText } from "xiod-ui/button-group";
@@ -6,8 +6,7 @@ import { ButtonGroup, ButtonGroupSeparator, ButtonGroupText } from "xiod-ui/butt
 
 ## ButtonGroup
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -15,8 +14,7 @@ remain available through the exported TypeScript type.
 
 ## ButtonGroupSeparator
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -30,10 +28,6 @@ remain available through the exported TypeScript type.
 
 ## ButtonGroupText
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

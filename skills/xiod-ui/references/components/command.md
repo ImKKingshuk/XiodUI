@@ -1,4 +1,4 @@
-# command
+# Command
 
 ```tsx
 import { Command, CommandCollection, CommandCreateHandle, CommandDialog, CommandDialogPopup, CommandDialogTrigger, CommandEmpty, CommandFooter, CommandGroup, CommandGroupLabel, CommandInput, CommandItem, CommandList, CommandPanel, CommandSeparator, CommandShortcut } from "xiod-ui/command";
@@ -43,10 +43,15 @@ import { Command, CommandCollection, CommandCreateHandle, CommandDialog, Command
 | value | `string \| number \| readonly string[] \| undefined` | — |
 | virtualized | `boolean \| undefined` | — |
 
-- `actionsRef` — A ref to imperative actions. - `unmount`: Manually unmounts the autocomplete. Call this after any externally controlled closing animation finishes.
-- `autoHighlight` — Whether the first matching item is highlighted automatically. - `true`: highlight after the user types and keep the highlight while the query changes. - `'always'`: always highlight the first item.
-- `defaultOpen` — Whether the popup is initially open. To render a controlled popup, use the `open` prop instead.
-- `defaultValue` — The uncontrolled input value of the autocomplete when it's initially rendered. To render a controlled autocomplete, use the `value` prop instead.
+- `actionsRef` — A ref to imperative actions.
+  - `unmount`: Manually unmounts the autocomplete. Call this after any externally controlled closing animation finishes.
+- `autoHighlight` — Whether the first matching item is highlighted automatically.
+  - `true`: highlight after the user types and keep the highlight while the query changes.
+  - `'always'`: always highlight the first item.
+- `defaultOpen` — Whether the popup is initially open.
+  To render a controlled popup, use the `open` prop instead.
+- `defaultValue` — The uncontrolled input value of the autocomplete when it's initially rendered.
+  To render a controlled autocomplete, use the `value` prop instead.
 - `disabled` — Whether the component should ignore user interaction.
 - `filter` — Filter function used to match items against the input query.
 - `filteredItems` — Filtered items to display in the list. When provided, the list uses these items instead of filtering the `items` prop internally. When `items` is also provided, this array must preserve its flat or grouped structure. Nullish entries are not supported, as in `items`. Use when you want to control filtering logic externally with the `useFilter()` hook.
@@ -54,18 +59,29 @@ import { Command, CommandCollection, CommandCreateHandle, CommandDialog, Command
 - `grid` — Whether list items are presented in a grid layout. When enabled, arrow keys navigate across rows and columns inferred from DOM rows.
 - `highlightItemOnHover` — Whether moving the pointer over items should highlight them. Disabling this prop allows CSS `:hover` to be differentiated from the `:focus` (`data-highlighted`) state.
 - `id` — The id of the component.
-- `inline` — Whether the list is rendered inline without using the component's own popup. Specify `open` unconditionally in conjunction with this prop so the list is considered visible: `<Autocomplete.Root inline open>`
+- `inline` — Whether the list is rendered inline without using the component's own popup.
+  Specify `open` unconditionally in conjunction with this prop so the list is considered visible: `<Autocomplete inline open>`
 - `inputRef` — A ref to the hidden input element.
 - `items` — The items to be displayed in the list. Can be either a flat array of items or an array of groups with items. Nullish entries are not supported: remove them from the data before passing it.
-- `itemToStringValue` — When the item values are objects (`<Autocomplete.Item value={object}>`), this function converts the object value to a string representation for both display in the input and form submission. If the shape of the object is `{ value, label }`, the label will be used automatically without needing to specify this prop.
+- `itemToStringValue` — When the item values are objects (`<AutocompleteItem value={object}>`), this function converts the object value to a string representation for both display in the input and form submission. If the shape of the object is `{ value, label }`, the label will be used automatically without needing to specify this prop.
 - `keepHighlight` — Whether the highlighted item should be preserved when the pointer leaves the list.
 - `limit` — The maximum number of items to display in the list.
 - `locale` — The locale to use for string comparison. Defaults to the user's runtime locale.
 - `loopFocus` — Whether to loop keyboard focus back to the input when the end of the list is reached while using the arrow keys. The first item can then be reached by pressing <kbd>ArrowDown</kbd> again from the input, or the last item can be reached by pressing <kbd>ArrowUp</kbd> from the input. The input is always included in the focus loop per [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/). When disabled, focus does not move when on the last element and the user presses <kbd>ArrowDown</kbd>, or when on the first element and the user presses <kbd>ArrowUp</kbd>.
-- `modal` — Determines if the popup enters a modal state when open. - `true`: user interaction is limited to the popup: document page scroll is locked and pointer interactions on outside elements are disabled. - `false`: user interaction with the rest of the document is allowed. On touch devices, a `true` modal blocks outside taps but leaves the page scrollable unless the popup spans nearly the full viewport width, matching native iOS behavior.
-- `mode` — Controls how the autocomplete behaves with respect to list filtering and inline autocompletion. - `list` (default): items are dynamically filtered based on the input value. The input value does not change based on the active item. - `both`: items are dynamically filtered based on the input value, which will temporarily change based on the active item (inline autocompletion). - `inline`: items are static (not filtered), and the input value will temporarily change based on the active item (inline autocompletion). - `none`: items are static (not filtered), and the input value will not change based on the active item.
+- `modal` — Determines if the popup enters a modal state when open.
+  - `true`: user interaction is limited to the popup: document page scroll is locked and pointer interactions on outside elements are disabled.
+  - `false`: user interaction with the rest of the document is allowed.
+  On touch devices, a `true` modal blocks outside taps but leaves the page scrollable unless the popup spans nearly the full viewport width, matching native iOS behavior.
+- `mode` — Controls how the autocomplete behaves with respect to list filtering and inline autocompletion.
+  - `list` (default): items are dynamically filtered based on the input value. The input value does not change based on the active item.
+  - `both`: items are dynamically filtered based on the input value, which will temporarily change based on the active item (inline autocompletion).
+  - `inline`: items are static (not filtered), and the input value will temporarily change based on the active item (inline autocompletion).
+  - `none`: items are static (not filtered), and the input value will not change based on the active item.
 - `name` — Identifies the field when a form is submitted.
-- `onItemHighlighted` — Callback fired when an item is highlighted or unhighlighted. Receives the highlighted item value (or `undefined` if no item is highlighted) and event details with a `reason` property describing why the highlight changed. The `reason` can be: - `'keyboard'`: the highlight changed due to keyboard navigation. - `'pointer'`: the highlight changed due to pointer hovering. - `'none'`: the highlight changed programmatically.
+- `onItemHighlighted` — Callback fired when an item is highlighted or unhighlighted. Receives the highlighted item value (or `undefined` if no item is highlighted) and event details with a `reason` property describing why the highlight changed. The `reason` can be:
+  - `'keyboard'`: the highlight changed due to keyboard navigation.
+  - `'pointer'`: the highlight changed due to pointer hovering.
+  - `'none'`: the highlight changed programmatically.
 - `onOpenChange` — Event handler called when the popup is opened or closed.
 - `onOpenChangeComplete` — Event handler called after any animations complete when the popup is opened or closed.
 - `onValueChange` — Event handler called when the input value of the autocomplete changes.
@@ -79,38 +95,53 @@ import { Command, CommandCollection, CommandCreateHandle, CommandDialog, Command
 
 ## CommandCollection
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| **children** | `(item: any, index: number) => ReactNode` | — |
+| Prop | Type |
+| :--- | :--- |
+| **children** | `(item: any, index: number) => ReactNode` |
 
 ## CommandCreateHandle
 
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+A function, not a component. It creates a handle that connects triggers
+to a `Command` they are not nested in:
+
+```tsx
+const handle = CommandCreateHandle();
+
+<Command handle={handle}>…</Command>
+```
+
+Create it outside render, once per instance.
 
 ## CommandDialog
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| actionsRef | `RefObject<DialogRootActions \| null> \| undefined` | — |
-| children | `ReactNode \| PayloadChildRenderFunction<Payload>` | — |
-| defaultOpen | `boolean \| undefined` | — |
-| defaultTriggerId | `string \| null \| undefined` | — |
-| disablePointerDismissal | `boolean \| undefined` | — |
-| handle | `DialogHandle<Payload> \| undefined` | — |
-| modal | `boolean \| "trap-focus" \| undefined` | — |
-| onOpenChange | `((open: boolean, eventDetails: DialogRootChangeEventDetails) => void) \| undefined` | — |
-| onOpenChangeComplete | `((open: boolean) => void) \| undefined` | — |
-| open | `boolean \| undefined` | — |
-| triggerId | `string \| null \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| actionsRef | `RefObject<DialogRootActions \| null> \| undefined` |
+| children | `ReactNode \| PayloadChildRenderFunction<Payload>` |
+| defaultOpen | `boolean \| undefined` |
+| defaultTriggerId | `string \| null \| undefined` |
+| disablePointerDismissal | `boolean \| undefined` |
+| handle | `DialogHandle<Payload> \| undefined` |
+| modal | `boolean \| "trap-focus" \| undefined` |
+| onOpenChange | `((open: boolean, eventDetails: DialogRootChangeEventDetails) => void) \| undefined` |
+| onOpenChangeComplete | `((open: boolean) => void) \| undefined` |
+| open | `boolean \| undefined` |
+| triggerId | `string \| null \| undefined` |
 
-- `actionsRef` — A ref to imperative actions. - `unmount`: Manually unmounts the dialog. Call this after any externally controlled closing animation finishes. - `close`: Closes the dialog imperatively when called.
+- `actionsRef` — A ref to imperative actions.
+  - `unmount`: Manually unmounts the dialog. Call this after any externally controlled closing animation finishes.
+  - `close`: Closes the dialog imperatively when called.
 - `children` — The content of the dialog. This can be a regular React node or a render function that receives the `payload` of the active trigger.
-- `defaultOpen` — Whether the dialog is initially open. To render a controlled dialog, use the `open` prop instead.
+- `defaultOpen` — Whether the dialog is initially open.
+  To render a controlled dialog, use the `open` prop instead.
 - `defaultTriggerId` — ID of the trigger that the dialog is associated with. This is useful in conjunction with the `defaultOpen` prop to create an initially open dialog.
 - `disablePointerDismissal` — Whether to prevent the dialog from closing on outside presses. For non-modal dialogs, this also prevents the dialog from closing when focus moves outside of it.
-- `handle` — A handle to associate the dialog with a trigger. If specified, allows external triggers to control the dialog's open state. Can be created with the Dialog.createHandle() method.
-- `modal` — Determines if the dialog enters a modal state when open. - `true`: user interaction is limited to just the dialog: focus is trapped, document page scroll is locked, and pointer interactions on outside elements are disabled. - `false`: user interaction with the rest of the document is allowed. - `'trap-focus'`: focus is trapped inside the dialog, but document page scroll is not locked and pointer interactions outside of it remain enabled. When `modal` is `true` or `'trap-focus'`, render `<Dialog.Close>` inside `<Dialog.Popup>` so touch screen readers can escape the popup.
+- `handle` — A handle to associate the dialog with a trigger. If specified, allows external triggers to control the dialog's open state. Can be created with the DialogCreateHandle() method.
+- `modal` — Determines if the dialog enters a modal state when open.
+  - `true`: user interaction is limited to just the dialog: focus is trapped, document page scroll is locked, and pointer interactions on outside elements are disabled.
+  - `false`: user interaction with the rest of the document is allowed.
+  - `'trap-focus'`: focus is trapped inside the dialog, but document page scroll is not locked and pointer interactions outside of it remain enabled.
+  When `modal` is `true` or `'trap-focus'`, render `<DialogClose>` inside `<DialogPopup>` so touch screen readers can escape the popup.
 - `onOpenChange` — Event handler called when the dialog is opened or closed.
 - `onOpenChangeComplete` — Event handler called after any animations complete when the dialog is opened or closed.
 - `open` — Whether the dialog is currently open.
@@ -118,37 +149,43 @@ TypeScript type for inherited element or primitive props.
 
 ## CommandDialogPopup
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: DialogPopupState) => string \| undefined) \| undefined` | — |
-| finalFocus | `boolean \| RefObject<HTMLElement \| null> \| ((closeType: InteractionType) => boolean \| void \| HTMLElement \| null) \| undefined` | — |
-| initialFocus | `boolean \| RefObject<HTMLElement \| null> \| ((openType: InteractionType) => boolean \| void \| HTMLElement \| null) \| undefined` | — |
-| style | `CSSProperties \| ((state: DialogPopupState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: DialogPopupState) => string \| undefined) \| undefined` |
+| finalFocus | `boolean \| RefObject<HTMLElement \| null> \| ((closeType: InteractionType) => boolean \| void \| HTMLElement \| null) \| undefined` |
+| initialFocus | `boolean \| RefObject<HTMLElement \| null> \| ((openType: InteractionType) => boolean \| void \| HTMLElement \| null) \| undefined` |
+| style | `CSSProperties \| ((state: DialogPopupState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `finalFocus` — Determines the element to focus when the dialog is closed. - `false`: Do not move focus. - `true`: Move focus based on the default behavior (trigger or previously focused element). - `RefObject`: Move focus to the ref element. - `function`: Called with the interaction type (`mouse`, `touch`, `pen`, or `keyboard`). Return an element to focus, `true` to use the default behavior, `null` to fall back to the default behavior, or `false`/`undefined` to do nothing.
-- `initialFocus` — Determines the element to focus when the dialog is opened. By default, focus moves to the first tabbable element inside the popup, except when the dialog is opened by touch — then the popup itself is focused to avoid opening the virtual keyboard. - `false`: Do not move focus. - `true`: Move focus based on the default behavior (first tabbable element or popup). - `RefObject`: Move focus to the ref element. - `function`: Called with the interaction type (`mouse`, `touch`, `pen`, or `keyboard`). Return an element to focus, `true` to use the default behavior, `null` to fall back to the default behavior, or `false`/`undefined` to do nothing.
+- `finalFocus` — Determines the element to focus when the dialog is closed.
+  - `false`: Do not move focus.
+  - `true`: Move focus based on the default behavior (trigger or previously focused element).
+  - `RefObject`: Move focus to the ref element.
+  - `function`: Called with the interaction type (`mouse`, `touch`, `pen`, or `keyboard`). Return an element to focus, `true` to use the default behavior, `null` to fall back to the default behavior, or `false`/`undefined` to do nothing.
+- `initialFocus` — Determines the element to focus when the dialog is opened. By default, focus moves to the first tabbable element inside the popup, except when the dialog is opened by touch — then the popup itself is focused to avoid opening the virtual keyboard.
+  - `false`: Do not move focus.
+  - `true`: Move focus based on the default behavior (first tabbable element or popup).
+  - `RefObject`: Move focus to the ref element.
+  - `function`: Called with the interaction type (`mouse`, `touch`, `pen`, or `keyboard`). Return an element to focus, `true` to use the default behavior, `null` to fall back to the default behavior, or `false`/`undefined` to do nothing.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## CommandDialogTrigger
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: DialogTriggerState) => string \| undefined) \| undefined` | — |
-| handle | `DialogHandle<unknown> \| undefined` | — |
-| id | `string \| undefined` | — |
-| nativeButton | `boolean \| undefined` | — |
-| payload | `unknown` | — |
-| style | `CSSProperties \| ((state: DialogTriggerState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: DialogTriggerState) => string \| undefined) \| undefined` |
+| handle | `DialogHandle<unknown> \| undefined` |
+| id | `string \| undefined` |
+| nativeButton | `boolean \| undefined` |
+| payload | `unknown` |
+| style | `CSSProperties \| ((state: DialogTriggerState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
-- `handle` — A handle to associate the trigger with a dialog. Can be created with the Dialog.createHandle() method.
+- `handle` — A handle to associate the trigger with a dialog. Can be created with the DialogCreateHandle() method.
 - `id` — ID of the trigger. In addition to being forwarded to the rendered element, it is also used to specify the active trigger for the dialog in controlled mode (with the DialogRoot `triggerId` prop).
 - `nativeButton` — Whether the component renders a native `<button>` element when replacing it via the `render` prop. Set to `false` if the rendered element is not a button (for example, `<div>`).
 - `payload` — A payload to pass to the dialog when it is opened.
@@ -156,35 +193,29 @@ remain available through the exported TypeScript type.
 
 ## CommandEmpty
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: ComboboxEmptyState) => string \| undefined) \| undefined` | — |
-| style | `CSSProperties \| ((state: ComboboxEmptyState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: ComboboxEmptyState) => string \| undefined) \| undefined` |
+| style | `CSSProperties \| ((state: ComboboxEmptyState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## CommandFooter
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## CommandGroup
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: ComboboxGroupState) => string \| undefined) \| undefined` | — |
-| items | `readonly any[] \| undefined` | — |
-| style | `CSSProperties \| ((state: ComboboxGroupState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: ComboboxGroupState) => string \| undefined) \| undefined` |
+| items | `readonly any[] \| undefined` |
+| style | `CSSProperties \| ((state: ComboboxGroupState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `items` — Items to be rendered within this group. When provided, child `Collection` components will use these items.
@@ -192,36 +223,34 @@ remain available through the exported TypeScript type.
 
 ## CommandGroupLabel
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: ComboboxGroupLabelState) => string \| undefined) \| undefined` | — |
-| style | `CSSProperties \| ((state: ComboboxGroupLabelState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: ComboboxGroupLabelState) => string \| undefined) \| undefined` |
+| style | `CSSProperties \| ((state: ComboboxGroupLabelState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## CommandInput
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: ComboboxInputState) => string \| undefined) \| undefined` | — |
-| clearIcon | `ReactNode` | — |
-| clearProps | `ComboboxClearProps \| undefined` | — |
-| disabled | `boolean \| undefined` | — |
-| icon | `ReactNode` | — |
-| showClear | `boolean \| undefined` | — |
-| showTrigger | `boolean \| undefined` | — |
-| size | `number \| "sm" \| "default" \| "lg" \| undefined` | — |
-| startAddon | `ReactNode` | — |
-| style | `CSSProperties \| ((state: ComboboxInputState) => CSSProperties \| undefined) \| undefined` | — |
-| triggerIcon | `ReactNode` | — |
-| triggerProps | `AutocompleteTriggerProps \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: ComboboxInputState) => string \| undefined) \| undefined` |
+| clearIcon | `ReactNode` |
+| clearProps | `ComboboxClearProps \| undefined` |
+| disabled | `boolean \| undefined` |
+| icon | `ReactNode` |
+| showClear | `boolean \| undefined` |
+| showTrigger | `boolean \| undefined` |
+| size | `number \| "sm" \| "default" \| "lg" \| undefined` |
+| startAddon | `ReactNode` |
+| style | `CSSProperties \| ((state: ComboboxInputState) => CSSProperties \| undefined) \| undefined` |
+| triggerIcon | `ReactNode` |
+| triggerProps | `AutocompleteTriggerProps \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `clearIcon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
@@ -232,19 +261,18 @@ remain available through the exported TypeScript type.
 
 ## CommandItem
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| children | `ReactNode` | — |
-| className | `string \| ((state: AutocompleteItemState) => string \| undefined) \| undefined` | — |
-| disabled | `boolean \| undefined` | — |
-| index | `number \| undefined` | — |
-| nativeButton | `boolean \| undefined` | — |
-| onClick | `((event: BaseUIEvent<MouseEvent<HTMLDivElement, MouseEvent>>) => void) \| undefined` | — |
-| style | `CSSProperties \| ((state: AutocompleteItemState) => CSSProperties \| undefined) \| undefined` | — |
-| value | `any` | — |
+| Prop | Type |
+| :--- | :--- |
+| children | `ReactNode` |
+| className | `string \| ((state: AutocompleteItemState) => string \| undefined) \| undefined` |
+| disabled | `boolean \| undefined` |
+| index | `number \| undefined` |
+| nativeButton | `boolean \| undefined` |
+| onClick | `((event: BaseUIEvent<MouseEvent<HTMLDivElement, MouseEvent>>) => void) \| undefined` |
+| style | `CSSProperties \| ((state: AutocompleteItemState) => CSSProperties \| undefined) \| undefined` |
+| value | `any` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `disabled` — Whether the component should ignore user interaction.
@@ -256,36 +284,30 @@ remain available through the exported TypeScript type.
 
 ## CommandList
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| children | `ReactNode \| ((item: any, index: number) => ReactNode)` | — |
-| className | `string \| ((state: ComboboxListState) => string \| undefined) \| undefined` | — |
-| style | `CSSProperties \| ((state: ComboboxListState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| children | `ReactNode \| ((item: any, index: number) => ReactNode)` |
+| className | `string \| ((state: ComboboxListState) => string \| undefined) \| undefined` |
+| style | `CSSProperties \| ((state: ComboboxListState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `style` — Style applied to the element, or a function that returns a style object based on the component's state.
 
 ## CommandPanel
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<div>` and takes its props. Pass `render` to render a different element.
 
 ## CommandSeparator
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| className | `string \| ((state: AutocompleteSeparatorState) => string \| undefined) \| undefined` | — |
-| orientation | `Orientation \| undefined` | — |
-| style | `CSSProperties \| ((state: AutocompleteSeparatorState) => CSSProperties \| undefined) \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| className | `string \| ((state: AutocompleteSeparatorState) => string \| undefined) \| undefined` |
+| orientation | `Orientation \| undefined` |
+| style | `CSSProperties \| ((state: AutocompleteSeparatorState) => CSSProperties \| undefined) \| undefined` |
 
 - `className` — CSS class applied to the element, or a function that returns a class based on the component's state.
 - `orientation` — The orientation of the separator.
@@ -293,10 +315,6 @@ remain available through the exported TypeScript type.
 
 ## CommandShortcut
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<kbd>` and takes its props. Pass `render` to render a different element.
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

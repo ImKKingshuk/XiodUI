@@ -1,4 +1,4 @@
-# grid
+# Grid
 
 ```tsx
 import { Grid, GridItem } from "xiod-ui/grid";
@@ -6,8 +6,7 @@ import { Grid, GridItem } from "xiod-ui/grid";
 
 ## Grid
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -20,16 +19,15 @@ remain available through the exported TypeScript type.
 
 ## GridItem
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| colEnd | `1 \| 2 \| 3 \| 4 \| 5 \| 6 \| 7 \| 8 \| 9 \| 10 \| 11 \| 12 \| 13 \| null \| undefined` | — |
-| colSpan | `1 \| "auto" \| 2 \| 3 \| 4 \| 5 \| 6 \| 7 \| 8 \| 9 \| 10 \| 11 \| 12 \| "full" \| null \| undefined` | — |
-| colStart | `1 \| 2 \| 3 \| 4 \| 5 \| 6 \| 7 \| 8 \| 9 \| 10 \| 11 \| 12 \| 13 \| null \| undefined` | — |
-| rowEnd | `1 \| 2 \| 3 \| 4 \| 5 \| 6 \| 7 \| 8 \| 9 \| 10 \| 11 \| 12 \| 13 \| null \| undefined` | — |
-| rowSpan | `1 \| "auto" \| 2 \| 3 \| 4 \| 5 \| 6 \| 7 \| 8 \| 9 \| 10 \| 11 \| 12 \| "full" \| null \| undefined` | — |
-| rowStart | `1 \| 2 \| 3 \| 4 \| 5 \| 6 \| 7 \| 8 \| 9 \| 10 \| 11 \| 12 \| 13 \| null \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| colEnd | `1 \| 2 \| 3 \| 4 \| 5 \| 6 \| 7 \| 8 \| 9 \| 10 \| 11 \| 12 \| 13 \| null \| undefined` |
+| colSpan | `1 \| "auto" \| 2 \| 3 \| 4 \| 5 \| 6 \| 7 \| 8 \| 9 \| 10 \| 11 \| 12 \| "full" \| null \| undefined` |
+| colStart | `1 \| 2 \| 3 \| 4 \| 5 \| 6 \| 7 \| 8 \| 9 \| 10 \| 11 \| 12 \| 13 \| null \| undefined` |
+| rowEnd | `1 \| 2 \| 3 \| 4 \| 5 \| 6 \| 7 \| 8 \| 9 \| 10 \| 11 \| 12 \| 13 \| null \| undefined` |
+| rowSpan | `1 \| "auto" \| 2 \| 3 \| 4 \| 5 \| 6 \| 7 \| 8 \| 9 \| 10 \| 11 \| 12 \| "full" \| null \| undefined` |
+| rowStart | `1 \| 2 \| 3 \| 4 \| 5 \| 6 \| 7 \| 8 \| 9 \| 10 \| 11 \| 12 \| 13 \| null \| undefined` |
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

@@ -1,4 +1,4 @@
-# wheel-picker
+# WheelPicker
 
 ```tsx
 import { useWheelPickerGroup, WheelPicker, WheelPickerGroup } from "xiod-ui/wheel-picker";
@@ -10,10 +10,11 @@ import { useWheelPickerGroup, WheelPicker, WheelPickerGroup } from "xiod-ui/whee
 useWheelPickerGroup()
 ```
 
+Returns `null | { activeIndex: number; setActiveIndex: (index: number) => void; register: (existingIndex: number | null, ref: HTMLDivElement) => number; getPickerRef: (index: number) => HTMLDivElement | null; getPickerIndices: () => number[] }`.
+
 ## WheelPicker
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -31,11 +32,10 @@ remain available through the exported TypeScript type.
 
 ## WheelPickerGroup
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| children | `ReactNode` | — |
+| Prop | Type |
+| :--- | :--- |
+| children | `ReactNode` |
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

@@ -1,8 +1,16 @@
-# morphic-toast
+# MorphicToast
 
 ```tsx
-import { MorphicToaster } from "xiod-ui/morphic-toast";
+import { morphicToast, MorphicToaster } from "xiod-ui/morphic-toast";
 ```
+
+## morphicToast
+
+An object, not a component. Its methods work from anywhere in client
+code, even outside React, while the component that renders the toasts
+is mounted.
+
+Methods: `action`, `clear`, `dismiss`, `error`, `info`, `promise`, `show`, `success`, `warning`.
 
 ## MorphicToaster
 

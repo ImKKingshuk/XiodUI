@@ -1,4 +1,4 @@
-# theme-provider
+# ThemeProvider
 
 ```tsx
 import { ThemeProvider, useTheme } from "xiod-ui/theme-provider";
@@ -30,5 +30,7 @@ import { ThemeProvider, useTheme } from "xiod-ui/theme-provider";
 ```tsx
 useTheme()
 ```
+
+Returns `{ theme: ThemeMode; resolvedTheme: ResolvedTheme; setTheme: (theme: ThemeMode) => void; palette: string | undefined; setPalette: (palette: string | undefined) => void }`.
 
 Required props are bold. Full docs: https://ui.xiod.dev/docs

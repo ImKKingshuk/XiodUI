@@ -1,4 +1,4 @@
-# pagination
+# Pagination
 
 ```tsx
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationFirst, PaginationInput, PaginationItem, PaginationLast, PaginationLink, PaginationNext, PaginationPrevious } from "xiod-ui/pagination";
@@ -6,77 +6,61 @@ import { Pagination, PaginationContent, PaginationEllipsis, PaginationFirst, Pag
 
 ## Pagination
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<nav>` and takes its props. Pass `render` to render a different element.
 
 ## PaginationContent
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<ul>` and takes its props. Pass `render` to render a different element.
 
 ## PaginationEllipsis
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Renders a `<span>` and takes its props. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| icon | `ReactNode` | — |
+| Prop | Type |
+| :--- | :--- |
+| icon | `ReactNode` |
 
 - `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## PaginationFirst
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| icon | `ReactNode` | — |
-| isActive | `boolean \| undefined` | — |
-| size | `"sm" \| "default" \| "lg" \| "xs" \| "xl" \| "icon" \| "icon-lg" \| "icon-sm" \| "icon-xl" \| "icon-xs" \| null \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| icon | `ReactNode` |
+| isActive | `boolean \| undefined` |
+| size | `"sm" \| "default" \| "lg" \| "xs" \| "xl" \| "icon" \| "icon-lg" \| "icon-sm" \| "icon-xl" \| "icon-xs" \| null \| undefined` |
 
 - `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## PaginationInput
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| onChange | `((page: number) => void) \| undefined` | — |
-| totalPages | `number \| undefined` | — |
-| value | `number \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| onChange | `((page: number) => void) \| undefined` |
+| totalPages | `number \| undefined` |
+| value | `number \| undefined` |
 
 ## PaginationItem
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
-
-No XiodUI-specific props were detected. Refer to the exported
-TypeScript type for inherited element or primitive props.
+Renders a `<li>` and takes its props. Pass `render` to render a different element.
 
 ## PaginationLast
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| icon | `ReactNode` | — |
-| isActive | `boolean \| undefined` | — |
-| size | `"sm" \| "default" \| "lg" \| "xs" \| "xl" \| "icon" \| "icon-lg" \| "icon-sm" \| "icon-xl" \| "icon-xs" \| null \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| icon | `ReactNode` |
+| isActive | `boolean \| undefined` |
+| size | `"sm" \| "default" \| "lg" \| "xs" \| "xl" \| "icon" \| "icon-lg" \| "icon-sm" \| "icon-xl" \| "icon-xs" \| null \| undefined` |
 
 - `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## PaginationLink
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -85,27 +69,25 @@ remain available through the exported TypeScript type.
 
 ## PaginationNext
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| icon | `ReactNode` | — |
-| isActive | `boolean \| undefined` | — |
-| size | `"sm" \| "default" \| "lg" \| "xs" \| "xl" \| "icon" \| "icon-lg" \| "icon-sm" \| "icon-xl" \| "icon-xs" \| null \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| icon | `ReactNode` |
+| isActive | `boolean \| undefined` |
+| size | `"sm" \| "default" \| "lg" \| "xs" \| "xl" \| "icon" \| "icon-lg" \| "icon-sm" \| "icon-xl" \| "icon-xs" \| null \| undefined` |
 
 - `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## PaginationPrevious
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
-| Prop | Type | Default |
-| :--- | :--- | :--- |
-| icon | `ReactNode` | — |
-| isActive | `boolean \| undefined` | — |
-| size | `"sm" \| "default" \| "lg" \| "xs" \| "xl" \| "icon" \| "icon-lg" \| "icon-sm" \| "icon-xl" \| "icon-xs" \| null \| undefined` | — |
+| Prop | Type |
+| :--- | :--- |
+| icon | `ReactNode` |
+| isActive | `boolean \| undefined` |
+| size | `"sm" \| "default" \| "lg" \| "xs" \| "xl" \| "icon" \| "icon-lg" \| "icon-sm" \| "icon-xl" \| "icon-xs" \| null \| undefined` |
 
 - `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 

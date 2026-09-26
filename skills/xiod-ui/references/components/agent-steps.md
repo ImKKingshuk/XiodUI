@@ -1,4 +1,4 @@
-# agent-steps
+# AgentSteps
 
 ```tsx
 import { AgentStep, AgentStepIcon, AgentStepIndicator, AgentStepLabel, AgentSteps } from "xiod-ui/agent-steps";
@@ -6,8 +6,7 @@ import { AgentStep, AgentStepIcon, AgentStepIndicator, AgentStepLabel, AgentStep
 
 ## AgentStep
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -15,8 +14,7 @@ remain available through the exported TypeScript type.
 
 ## AgentStepIcon
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -25,8 +23,7 @@ remain available through the exported TypeScript type.
 
 ## AgentStepIndicator
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -51,8 +48,7 @@ remain available through the exported TypeScript type.
 
 ## AgentStepLabel
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
@@ -60,8 +56,7 @@ remain available through the exported TypeScript type.
 
 ## AgentSteps
 
-Supports `render={<Element />}` for composition. Inherited DOM props
-remain available through the exported TypeScript type.
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
 
 | Prop | Type | Default |
 | :--- | :--- | :--- |
