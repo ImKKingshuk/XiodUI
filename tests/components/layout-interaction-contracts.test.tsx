@@ -197,6 +197,33 @@ describe("movable and sortable layout contracts", () => {
     expect(panel).not.toBeInTheDocument();
   });
 
+  it("names the draggable panel and moves and resizes it from the keyboard", async () => {
+    const user = userEvent.setup();
+    render(
+      <Draggable defaultX={100} defaultY={100} bounds="none">
+        <DraggableHeader />
+        <DraggableBody>Panel body</DraggableBody>
+      </Draggable>,
+    );
+
+    const panel = screen.getByRole("dialog", { name: "Draggable Panel" });
+    screen.getByRole("button", { name: "Move panel" }).focus();
+    await user.keyboard("{ArrowRight}{Shift>}{ArrowDown}{/Shift}");
+    expect(panel).toHaveStyle({ left: "110px", top: "150px" });
+
+    screen.getByRole("button", { name: "Resize panel" }).focus();
+    await user.keyboard("{ArrowLeft}");
+    expect(panel).toHaveStyle({ width: "350px" });
+
+    const maximize = screen.getByRole("button", { name: "Maximize" });
+    expect(maximize).toHaveAttribute("aria-pressed", "false");
+    await user.click(maximize);
+    expect(maximize).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.queryByRole("button", { name: "Move panel" }),
+    ).not.toBeInTheDocument();
+  });
+
   it("renders dashboard geometry and provides an accessible remove action", async () => {
     const user = userEvent.setup();
     const onRemove = vi.fn();

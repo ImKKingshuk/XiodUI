@@ -63,9 +63,27 @@ interface DraggableContextValue {
   isResizable: boolean;
   onDragStart: (e: React.PointerEvent) => void;
   onResizeStart: (e: React.PointerEvent) => void;
+  onMoveKeyDown: (e: React.KeyboardEvent) => void;
+  titleId: string;
   onToggleMinimize: () => void;
   onToggleMaximize: () => void;
   onClose: () => void;
+}
+
+function getArrowDelta(e: React.KeyboardEvent): [number, number] | null {
+  const step = e.shiftKey ? 50 : 10;
+  switch (e.key) {
+    case "ArrowLeft":
+      return [-step, 0];
+    case "ArrowRight":
+      return [step, 0];
+    case "ArrowUp":
+      return [0, -step];
+    case "ArrowDown":
+      return [0, step];
+    default:
+      return null;
+  }
 }
 
 const DraggableContext = React.createContext<DraggableContextValue | null>(
@@ -132,6 +150,7 @@ function Draggable({
     height: defaultHeight,
   });
   const prevPosRef = React.useRef({ x: defaultX, y: defaultY });
+  const titleId = React.useId();
 
   const handleClose = React.useCallback(() => {
     if (controlledOpen === undefined) setUncontrolledOpen(false);
@@ -159,48 +178,87 @@ function Draggable({
     }
   }, [isMaximized, size, position]);
 
+  // Removes the window listeners of a pointer drag or resize in progress.
+  const pointerCleanupRef = React.useRef<(() => void) | null>(null);
+  React.useEffect(() => () => pointerCleanupRef.current?.(), []);
+
+  // Keeps the panel inside `bounds`. The panel is position: fixed, so both
+  // the viewport and the parent's rect are in viewport coordinates.
+  const clampPosition = React.useCallback(
+    (x: number, y: number) => {
+      const height = isMinimized
+        ? (panelRef.current?.offsetHeight ?? 44)
+        : size.height;
+      let rect: { left: number; top: number; right: number; bottom: number };
+      if (bounds === "viewport") {
+        rect = {
+          left: 0,
+          top: 0,
+          right: window.innerWidth,
+          bottom: window.innerHeight,
+        };
+      } else if (bounds === "parent" && panelRef.current?.parentElement) {
+        rect = panelRef.current.parentElement.getBoundingClientRect();
+      } else {
+        return { x, y };
+      }
+      return {
+        x: Math.max(rect.left, Math.min(rect.right - size.width, x)),
+        y: Math.max(rect.top, Math.min(rect.bottom - height, y)),
+      };
+    },
+    [bounds, size, isMinimized],
+  );
+
+  // Tracks a pointer on window until it's released or cancelled.
+  const trackPointer = React.useCallback(
+    (onMove: (e: PointerEvent) => void, onEnd: () => void) => {
+      pointerCleanupRef.current?.();
+      const detach = () => {
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", end);
+        window.removeEventListener("pointercancel", end);
+        pointerCleanupRef.current = null;
+      };
+      function end() {
+        detach();
+        onEnd();
+      }
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", end);
+      window.addEventListener("pointercancel", end);
+      pointerCleanupRef.current = detach;
+    },
+    [],
+  );
+
   const handleDragStart = React.useCallback(
     (e: React.PointerEvent) => {
-      if (!isDraggable || isMaximized) return;
+      if (!isDraggable || isMaximized || e.button !== 0) return;
       e.preventDefault();
 
       setIsDragging(true);
       const startX = e.clientX - position.x;
       const startY = e.clientY - position.y;
 
-      const onPointerMove = (moveEvent: PointerEvent) => {
-        let newX = moveEvent.clientX - startX;
-        let newY = moveEvent.clientY - startY;
-
-        if (bounds === "viewport") {
-          newX = Math.max(0, Math.min(window.innerWidth - size.width, newX));
-          newY = Math.max(
-            0,
-            Math.min(
-              window.innerHeight - (isMinimized ? 44 : size.height),
-              newY,
+      trackPointer(
+        (moveEvent) => {
+          setPosition(
+            clampPosition(
+              moveEvent.clientX - startX,
+              moveEvent.clientY - startY,
             ),
           );
-        }
-
-        setPosition({ x: newX, y: newY });
-      };
-
-      const onPointerUp = () => {
-        window.removeEventListener("pointermove", onPointerMove);
-        window.removeEventListener("pointerup", onPointerUp);
-        setIsDragging(false);
-      };
-
-      window.addEventListener("pointermove", onPointerMove);
-      window.addEventListener("pointerup", onPointerUp);
+        },
+        () => setIsDragging(false),
+      );
     },
-    [isDraggable, isMaximized, position, bounds, size, isMinimized],
+    [isDraggable, isMaximized, position, clampPosition, trackPointer],
   );
 
   const handleResizeStart = React.useCallback(
     (e: React.PointerEvent) => {
-      if (!isResizable || isMaximized || isMinimized) return;
+      if (!isResizable || isMaximized || isMinimized || e.button !== 0) return;
       e.preventDefault();
       e.stopPropagation();
 
@@ -210,30 +268,61 @@ function Draggable({
       const startWidth = size.width;
       const startHeight = size.height;
 
-      const onPointerMove = (moveEvent: PointerEvent) => {
-        const deltaX = moveEvent.clientX - startX;
-        const deltaY = moveEvent.clientY - startY;
+      trackPointer(
+        (moveEvent) => {
+          setSize({
+            width: Math.max(
+              minWidth,
+              Math.min(maxWidth, startWidth + moveEvent.clientX - startX),
+            ),
+            height: Math.max(
+              minHeight,
+              Math.min(maxHeight, startHeight + moveEvent.clientY - startY),
+            ),
+          });
+        },
+        () => setIsResizing(false),
+      );
+    },
+    [
+      isResizable,
+      isMaximized,
+      isMinimized,
+      size,
+      minWidth,
+      maxWidth,
+      minHeight,
+      maxHeight,
+      trackPointer,
+    ],
+  );
 
-        const newWidth = Math.max(
-          minWidth,
-          Math.min(maxWidth, startWidth + deltaX),
-        );
-        const newHeight = Math.max(
+  // Keyboard counterparts: arrow keys move or resize by 10px (50px with
+  // Shift), within the same limits as the pointer.
+  const handleMoveKeyDown = React.useCallback(
+    (e: React.KeyboardEvent) => {
+      if (!isDraggable || isMaximized) return;
+      const delta = getArrowDelta(e);
+      if (!delta) return;
+      e.preventDefault();
+      setPosition(clampPosition(position.x + delta[0], position.y + delta[1]));
+    },
+    [isDraggable, isMaximized, position, clampPosition],
+  );
+
+  const handleResizeKeyDown = React.useCallback(
+    (e: React.KeyboardEvent) => {
+      if (!isResizable || isMaximized || isMinimized) return;
+      const delta = getArrowDelta(e);
+      if (!delta) return;
+      e.preventDefault();
+      setSize({
+        width: Math.max(minWidth, Math.min(maxWidth, size.width + delta[0])),
+        height: Math.max(
           minHeight,
-          Math.min(maxHeight, startHeight + deltaY),
-        );
-
-        setSize({ width: newWidth, height: newHeight });
-      };
-
-      const onPointerUp = () => {
-        window.removeEventListener("pointermove", onPointerMove);
-        window.removeEventListener("pointerup", onPointerUp);
-        setIsResizing(false);
-      };
-
-      window.addEventListener("pointermove", onPointerMove);
-      window.addEventListener("pointerup", onPointerUp);
+          Math.min(maxHeight, size.height + delta[1]),
+        ),
+      });
     },
     [
       isResizable,
@@ -256,6 +345,8 @@ function Draggable({
       isResizable,
       onDragStart: handleDragStart,
       onResizeStart: handleResizeStart,
+      onMoveKeyDown: handleMoveKeyDown,
+      titleId,
       onToggleMinimize: handleToggleMinimize,
       onToggleMaximize: handleToggleMaximize,
       onClose: handleClose,
@@ -268,6 +359,8 @@ function Draggable({
       isResizable,
       handleDragStart,
       handleResizeStart,
+      handleMoveKeyDown,
+      titleId,
       handleToggleMinimize,
       handleToggleMaximize,
       handleClose,
@@ -291,12 +384,18 @@ function Draggable({
       width: size.width,
       height: isMinimized ? "auto" : size.height,
     },
+    // A non-modal window: named by its DraggableTitle.
+    role: "dialog",
+    "aria-labelledby": titleId,
     "data-slot": "draggable",
     children: (
       <DraggableContext.Provider value={contextValue}>
         {children}
         {isResizable && !isMinimized && !isMaximized && (
-          <DraggableResizeHandle onPointerDown={handleResizeStart} />
+          <DraggableResizeHandle
+            onPointerDown={handleResizeStart}
+            onKeyDown={handleResizeKeyDown}
+          />
         )}
       </DraggableContext.Provider>
     ),
@@ -332,7 +431,7 @@ function DraggableHeader({
 
   const defaultProps = {
     className: cn(
-      "flex items-center justify-between gap-2 px-3 py-2 border-b border-border/40 bg-muted/30 cursor-grab active:cursor-grabbing select-none text-xs font-medium text-foreground shrink-0",
+      "flex items-center justify-between gap-2 px-3 py-2 border-b border-border/40 bg-muted/30 cursor-grab active:cursor-grabbing select-none text-xs font-medium text-foreground shrink-0 touch-none",
       className,
     ),
     onPointerDown: context?.onDragStart,
@@ -340,12 +439,7 @@ function DraggableHeader({
     children: children || (
       <>
         <div className="flex items-center gap-1.5 truncate">
-          <IconSlot
-            name="GripHorizontal"
-            icon={icon}
-            fallback={GripHorizontal}
-            className="size-3.5 text-muted-foreground/60 shrink-0"
-          />
+          <DraggableHandle icon={icon} />
           <DraggableTitle />
         </div>
         <DraggableControls />
@@ -360,6 +454,56 @@ function DraggableHeader({
   });
 }
 
+export interface DraggableHandleProps extends useRender.ComponentProps<"span"> {}
+
+// The keyboard way to move the panel (arrow keys), since the header itself
+// can't be a button: it holds the window controls.
+function DraggableHandle({
+  className,
+  render,
+  children,
+  icon,
+  ...props
+}: DraggableHandleProps & {
+  /** Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`. */
+  icon?: React.ReactNode;
+}): React.ReactElement {
+  const context = React.useContext(DraggableContext);
+  const movable = !!context?.isDraggable && !context.isMaximized;
+
+  const defaultProps = {
+    className: cn(
+      "inline-flex shrink-0 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring",
+      className,
+    ),
+    ...(movable
+      ? {
+          role: "button",
+          tabIndex: 0,
+          "aria-label": "Move panel",
+          "aria-roledescription": "draggable",
+          "aria-keyshortcuts": "ArrowUp ArrowDown ArrowLeft ArrowRight",
+          onKeyDown: context.onMoveKeyDown,
+        }
+      : {}),
+    "data-slot": "draggable-handle",
+    children: children || (
+      <IconSlot
+        name="GripHorizontal"
+        icon={icon}
+        fallback={GripHorizontal}
+        className="size-3.5 text-muted-foreground/60 shrink-0"
+      />
+    ),
+  };
+
+  return useRender({
+    defaultTagName: "span",
+    props: mergeProps<"span">(defaultProps, props),
+    render,
+  });
+}
+
 export interface DraggableTitleProps extends useRender.ComponentProps<"span"> {}
 
 function DraggableTitle({
@@ -368,7 +512,10 @@ function DraggableTitle({
   children,
   ...props
 }: DraggableTitleProps): React.ReactElement {
+  const context = React.useContext(DraggableContext);
+
   const defaultProps = {
+    id: context?.titleId,
     className: cn("font-semibold truncate text-xs", className),
     "data-slot": "draggable-title",
     children: children || "Draggable Panel",
@@ -413,6 +560,7 @@ function DraggableControls({
         <button
           type="button"
           onClick={context?.onToggleMinimize}
+          aria-pressed={context?.isMinimized ?? false}
           className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors pointer-coarse:after:absolute pointer-coarse:after:size-11"
           aria-label="Minimize"
         >
@@ -426,6 +574,7 @@ function DraggableControls({
         <button
           type="button"
           onClick={context?.onToggleMaximize}
+          aria-pressed={context?.isMaximized ?? false}
           className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors pointer-coarse:after:absolute pointer-coarse:after:size-11"
           aria-label="Maximize"
         >
@@ -536,12 +685,17 @@ function DraggableResizeHandle({
 }: DraggableResizeHandleProps): React.ReactElement {
   const defaultProps = {
     className: cn(
-      "absolute bottom-1 right-1 size-4 cursor-se-resize flex items-center justify-center opacity-40 hover:opacity-100 transition-opacity touch-none pointer-coarse:after:absolute pointer-coarse:after:size-8",
+      "absolute bottom-1 right-1 size-4 cursor-se-resize flex items-center justify-center rounded-sm opacity-40 hover:opacity-100 focus-visible:opacity-100 transition-opacity touch-none outline-none focus-visible:ring-2 focus-visible:ring-ring pointer-coarse:after:absolute pointer-coarse:after:size-8",
       className,
     ),
     "data-slot": "draggable-resize-handle",
+    role: "button",
+    tabIndex: 0,
+    "aria-label": "Resize panel",
+    "aria-keyshortcuts": "ArrowUp ArrowDown ArrowLeft ArrowRight",
     children: (
       <svg
+        aria-hidden="true"
         className="size-3 text-muted-foreground"
         viewBox="0 0 6 6"
         fill="currentColor"
@@ -565,6 +719,7 @@ export {
   DraggableBody,
   DraggableControls,
   DraggableFooter,
+  DraggableHandle,
   DraggableHeader,
   DraggableResizeHandle,
   DraggableTitle,

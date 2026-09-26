@@ -1,7 +1,7 @@
 # Draggable
 
 ```tsx
-import { Draggable, DraggableBody, DraggableControls, DraggableFooter, DraggableHeader, DraggableResizeHandle, DraggableTitle } from "xiod-ui/draggable";
+import { Draggable, DraggableBody, DraggableControls, DraggableFooter, DraggableHandle, DraggableHeader, DraggableResizeHandle, DraggableTitle } from "xiod-ui/draggable";
 ```
 
 ## Draggable
@@ -52,6 +52,16 @@ Takes the DOM props of the element it renders. Pass `render` to render a differe
 ## DraggableFooter
 
 Takes the DOM props of the element it renders. Pass `render` to render a different element.
+
+## DraggableHandle
+
+Takes the DOM props of the element it renders. Pass `render` to render a different element.
+
+| Prop | Type |
+| :--- | :--- |
+| icon | `ReactNode` |
+
+- `icon` — Replaces this icon. Accepts any node; `null` renders no icon. Takes precedence over `IconProvider`.
 
 ## DraggableHeader
 
