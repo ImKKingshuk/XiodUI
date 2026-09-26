@@ -14,11 +14,14 @@ Takes the DOM props of the element it renders. Pass `render` to render a differe
 | defaultCountry | `string \| undefined` | `"US"` |
 | defaultValue | `string \| undefined` | `""` |
 | disabled | `boolean \| undefined` | — |
+| name | `string \| undefined` | — |
 | onChange | `((e164: string, country: CountryData, nationalNumber: string) => void) \| undefined` | — |
 | readOnly | `boolean \| undefined` | — |
 | size | `"sm" \| "default" \| "lg" \| null \| undefined` | `"default"` |
 | value | `string \| undefined` | — |
 | variant | `"default" \| "ghost" \| "filled" \| null \| undefined` | `"default"` |
+
+- `name` — Submits the E.164 value (e.g. "+15550000000") with a form under this name.
 
 ## InputPhoneCountrySelect
 
@@ -73,11 +76,14 @@ Takes the DOM props of the element it renders. Pass `render` to render a differe
 | defaultCountry | `string \| undefined` |
 | defaultValue | `string \| undefined` |
 | disabled | `boolean \| undefined` |
+| name | `string \| undefined` |
 | onChange | `((e164: string, country: CountryData, nationalNumber: string) => void) \| undefined` |
 | readOnly | `boolean \| undefined` |
 | size | `"sm" \| "default" \| "lg" \| null \| undefined` |
 | value | `string \| undefined` |
 | variant | `"default" \| "ghost" \| "filled" \| null \| undefined` |
+
+- `name` — Submits the E.164 value (e.g. "+15550000000") with a form under this name.
 
 ## PhoneInputCountrySelect
 

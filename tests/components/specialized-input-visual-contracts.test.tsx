@@ -171,11 +171,11 @@ describe("specialized phone and color input contracts", () => {
         name: "Select country, current United States (+1)",
       }),
     );
-    const search = await screen.findByRole("textbox", {
+    const search = await screen.findByRole("combobox", {
       name: "Search countries",
     });
     await user.type(search, "India");
-    await user.click(screen.getByRole("button", { name: /India/ }));
+    await user.click(screen.getByRole("option", { name: /India/ }));
     expect(
       screen.getByRole("button", {
         name: "Select country, current India (+91)",
@@ -183,9 +183,60 @@ describe("specialized phone and color input contracts", () => {
     ).toBeVisible();
 
     await user.click(
-      screen.getByRole("button", { name: "Clear Phone Number" }),
+      screen.getByRole("button", { name: "Clear phone number" }),
     );
     expect(phone).toHaveValue("");
+    expect(phone).toHaveFocus();
+  });
+
+  it("edits through the mask and picks a country from the keyboard", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <form>
+        <InputPhone name="phone" defaultValue="+15551234567" />
+      </form>,
+    );
+    const phone = screen.getByRole("textbox", { name: "Phone number" });
+    const hidden = () =>
+      container.querySelector<HTMLInputElement>("input[name=phone]")?.value;
+    expect(phone).toHaveAttribute("autocomplete", "tel-national");
+    expect(hidden()).toBe("+15551234567");
+
+    // Backspace right after ")" deletes the digit before it, not nothing.
+    await user.click(phone);
+    (phone as HTMLInputElement).setSelectionRange(5, 5);
+    await user.keyboard("{Backspace}");
+    expect(phone).toHaveValue("(551) 234-567");
+    // The caret stays where the edit was, not at the end.
+    expect((phone as HTMLInputElement).selectionStart).toBe(3);
+    expect(hidden()).toBe("+1551234567");
+
+    await user.click(screen.getByRole("button", { name: /Select country/ }));
+    const search = await screen.findByRole("combobox", {
+      name: "Search countries",
+    });
+    await waitFor(() => expect(search).toHaveFocus());
+    const active = () =>
+      document.getElementById(search.getAttribute("aria-activedescendant")!);
+    expect(active()).toHaveAttribute("aria-selected", "true");
+    expect(active()).toHaveTextContent("United States");
+
+    await user.type(search, "united");
+    expect(active()).toHaveTextContent("United States");
+    await user.keyboard("{ArrowUp}");
+    expect(active()).not.toHaveTextContent("United States");
+    // Flag, name, dial code.
+    const [, name, dialCode] = Array.from(
+      active()!.querySelectorAll("span"),
+      (span) => span.textContent,
+    );
+    await user.keyboard("{Enter}");
+    expect(
+      screen.getByRole("button", {
+        name: `Select country, current ${name} (${dialCode})`,
+      }),
+    ).toBeVisible();
+    expect(hidden()).toBe(`${dialCode}551234567`);
   });
 
   it("parses a pasted international value and honors disabled state", async () => {

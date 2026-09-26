@@ -495,6 +495,8 @@ export interface InputPhoneProps
   countries?: CountryData[];
   disabled?: boolean;
   readOnly?: boolean;
+  /** Submits the E.164 value (e.g. "+15550000000") with a form under this name. */
+  name?: string;
   onChange?: (
     e164: string,
     country: CountryData,
@@ -514,6 +516,7 @@ function InputPhone({
   countries = COUNTRIES,
   disabled,
   readOnly,
+  name,
   onChange,
   children,
   ...props
@@ -640,6 +643,15 @@ function InputPhone({
           </>
         )}
       </InputPhoneContext.Provider>
+      {name && (
+        <input
+          type="hidden"
+          name={name}
+          value={e164Value}
+          disabled={disabled}
+          data-slot="input-phone-value"
+        />
+      )}
     </InputGroup>
   );
 }
@@ -681,6 +693,14 @@ function InputPhoneCountrySelect({
 
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
+  const [highlightedCode, setHighlightedCode] = React.useState<string | null>(
+    null,
+  );
+  const searchRef = React.useRef<HTMLInputElement>(null);
+  const listRef = React.useRef<HTMLDivElement>(null);
+  const idPrefix = React.useId();
+  const listId = `${idPrefix}-countries`;
+  const optionId = (code: string) => `${idPrefix}-country-${code}`;
 
   const filteredCountries = React.useMemo(() => {
     if (!search.trim()) return countries;
@@ -692,6 +712,77 @@ function InputPhoneCountrySelect({
         c.dialCode.includes(query),
     );
   }, [search, countries]);
+
+  // Keep the highlight on a visible option: the selected country when the
+  // list opens, the first match while searching.
+  const activeCode = filteredCountries.some((c) => c.code === highlightedCode)
+    ? highlightedCode
+    : (filteredCountries[0]?.code ?? null);
+
+  const highlight = (code: string | null) => {
+    setHighlightedCode(code);
+    if (!code) return;
+    const option = listRef.current?.querySelector(
+      `[data-code="${CSS.escape(code)}"]`,
+    );
+    option?.scrollIntoView?.({ block: "nearest" });
+  };
+
+  const selectCountry = (country: CountryData) => {
+    setSelectedCountry(country);
+    setOpen(false);
+    setSearch("");
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!filteredCountries.length) return;
+    const index = filteredCountries.findIndex((c) => c.code === activeCode);
+    const last = filteredCountries.length - 1;
+    let next: number | null = null;
+    switch (e.key) {
+      case "ArrowDown":
+        next = index < last ? index + 1 : 0;
+        break;
+      case "ArrowUp":
+        next = index > 0 ? index - 1 : last;
+        break;
+      case "PageDown":
+        next = Math.min(index + 8, last);
+        break;
+      case "PageUp":
+        next = Math.max(index - 8, 0);
+        break;
+      case "Enter": {
+        const country = filteredCountries[index];
+        if (country) {
+          e.preventDefault();
+          selectCountry(country);
+        }
+        return;
+      }
+      default:
+        return;
+    }
+    e.preventDefault();
+    highlight(filteredCountries[next]?.code ?? null);
+  };
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    setOpen(nextOpen);
+    if (nextOpen) setHighlightedCode(selectedCountry.code);
+    else setSearch("");
+  };
+
+  // Bring the selected country into view when the list opens.
+  React.useEffect(() => {
+    if (!open) return;
+    const frame = requestAnimationFrame(() => {
+      listRef.current
+        ?.querySelector("[aria-selected=true]")
+        ?.scrollIntoView?.({ block: "nearest" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [open]);
 
   const defaultTriggerProps = {
     type: "button" as const,
@@ -725,7 +816,7 @@ function InputPhoneCountrySelect({
 
   return (
     <InputGroupAddon align="inline-start" className="pe-0">
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger
           render={useRender({
             defaultTagName: "button",
@@ -739,6 +830,7 @@ function InputPhoneCountrySelect({
           side="bottom"
           sideOffset={4}
           hideArrow
+          initialFocus={searchRef}
           collisionAvoidance={{ fallbackAxisSide: "none" }}
           className="w-(--anchor-width) **:data-[slot=popover-viewport]:p-2 **:data-[slot=popover-viewport]:[--viewport-inline-padding:--spacing(2)] z-50"
           data-slot="input-phone-country-content"
@@ -752,20 +844,35 @@ function InputPhoneCountrySelect({
               className="size-3.5 text-muted-foreground shrink-0"
             />
             <input
+              ref={searchRef}
               type="text"
+              role="combobox"
               aria-label="Search countries"
+              aria-expanded
+              aria-controls={listId}
+              aria-autocomplete="list"
+              aria-activedescendant={
+                activeCode ? optionId(activeCode) : undefined
+              }
+              autoComplete="off"
+              spellCheck={false}
               placeholder="Search country or code..."
               value={search}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setSearch(e.target.value)
-              }
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setSearch(e.target.value);
+                setHighlightedCode(null);
+              }}
+              onKeyDown={handleSearchKeyDown}
               className="w-full bg-transparent text-xs text-foreground placeholder:text-muted-foreground/60 outline-none border-0 p-0"
             />
             {search && (
               <button
                 type="button"
                 aria-label="Clear country search"
-                onClick={() => setSearch("")}
+                onClick={() => {
+                  setSearch("");
+                  searchRef.current?.focus();
+                }}
                 className="p-0.5 rounded text-muted-foreground hover:text-foreground"
               >
                 <IconSlot
@@ -781,27 +888,42 @@ function InputPhoneCountrySelect({
           {/* Scrollable Country List */}
           <ScrollArea className="max-h-[min(11rem,calc(var(--available-height,11rem)-3.5rem))] flex flex-col gap-0.5 text-xs">
             {filteredCountries.length === 0 ? (
-              <div className="p-2 text-center text-muted-foreground text-xs">
+              <div
+                role="status"
+                className="p-2 text-center text-muted-foreground text-xs"
+              >
                 No country found
               </div>
-            ) : (
-              filteredCountries.map((c, index) => {
+            ) : null}
+            <div
+              ref={listRef}
+              id={listId}
+              role="listbox"
+              aria-label="Countries"
+              className="flex flex-col gap-0.5"
+            >
+              {filteredCountries.map((c, index) => {
                 const isSelected = c.code === selectedCountry.code;
+                const isHighlighted = c.code === activeCode;
                 return (
-                  <button
+                  <div
                     key={`${c.code}-${index}`}
-                    type="button"
-                    aria-pressed={isSelected}
-                    onClick={() => {
-                      setSelectedCountry(c);
-                      setOpen(false);
-                      setSearch("");
+                    id={optionId(c.code)}
+                    role="option"
+                    tabIndex={-1}
+                    aria-selected={isSelected}
+                    data-code={c.code}
+                    data-highlighted={isHighlighted || undefined}
+                    // Keep focus in the search field while clicking.
+                    onMouseDown={(e) => e.preventDefault()}
+                    onPointerMove={() => {
+                      if (!isHighlighted) setHighlightedCode(c.code);
                     }}
+                    onClick={() => selectCountry(c)}
                     className={cn(
-                      "flex items-center justify-between gap-2 px-2 py-1 rounded-md text-left transition-colors w-full",
-                      isSelected
-                        ? "bg-accent text-accent-foreground font-medium"
-                        : "hover:bg-muted/60 text-foreground",
+                      "flex w-full cursor-default items-center justify-between gap-2 rounded-md px-2 py-1 text-left text-foreground transition-colors data-highlighted:bg-muted/60",
+                      isSelected &&
+                        "bg-accent text-accent-foreground font-medium data-highlighted:bg-accent",
                     )}
                   >
                     <div className="flex items-center gap-1.5 truncate">
@@ -819,10 +941,10 @@ function InputPhoneCountrySelect({
                         />
                       )}
                     </div>
-                  </button>
+                  </div>
                 );
-              })
-            )}
+              })}
+            </div>
           </ScrollArea>
         </PopoverPopup>
       </Popover>
@@ -863,8 +985,51 @@ function InputPhoneInput({
     return formatPhoneNumber(nationalNumber, selectedCountry.mask);
   }, [nationalNumber, selectedCountry.mask]);
 
+  // Where the caret should land after the next render, counted in digits,
+  // since the mask adds and removes separators around it.
+  const caretRef = React.useRef<{
+    input: HTMLInputElement;
+    digits: number;
+  } | null>(null);
+
+  React.useLayoutEffect(() => {
+    const pending = caretRef.current;
+    caretRef.current = null;
+    if (!pending || pending.input !== document.activeElement) return;
+    const value = pending.input.value;
+    let position = 0;
+    let seen = 0;
+    while (position < value.length && seen < pending.digits) {
+      if (/\d/.test(value[position])) seen++;
+      position++;
+    }
+    pending.input.setSelectionRange(position, position);
+  });
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNationalNumber(e.target.value);
+    const input = e.target;
+    const value = input.value;
+    if (value.trim().startsWith("+")) {
+      setNationalNumber(value);
+      return;
+    }
+    const caret = input.selectionStart ?? value.length;
+    let digits = value.replace(/\D/g, "");
+    let digitsBeforeCaret = value.slice(0, caret).replace(/\D/g, "").length;
+    // Deleting a separator changes no digit, so the mask would put it straight
+    // back: delete the digit before it instead.
+    if (
+      digits === nationalNumber &&
+      value.length < formattedDisplay.length &&
+      digitsBeforeCaret > 0
+    ) {
+      digits =
+        digits.slice(0, digitsBeforeCaret - 1) +
+        digits.slice(digitsBeforeCaret);
+      digitsBeforeCaret--;
+    }
+    caretRef.current = { input, digits: digitsBeforeCaret };
+    setNationalNumber(digits);
   };
 
   return (
@@ -877,6 +1042,8 @@ function InputPhoneInput({
         readOnly={readOnly}
         placeholder={selectedCountry.mask || "Phone number"}
         aria-label="Phone number"
+        autoComplete="tel-national"
+        inputMode="tel"
         className={cn(
           "w-full bg-transparent px-[calc(--spacing(3)-1px)] py-1.5 text-foreground placeholder:text-muted-foreground/60 font-mono border-0 shadow-none ring-0",
           className,
@@ -888,9 +1055,17 @@ function InputPhoneInput({
         <InputGroupAddon align="inline-end">
           <button
             type="button"
-            onClick={() => setNationalNumber("")}
+            onClick={(e) => {
+              setNationalNumber("");
+              e.currentTarget
+                .closest("[data-slot=input-phone]")
+                ?.querySelector<HTMLInputElement>(
+                  "[data-slot=input-phone-number]",
+                )
+                ?.focus();
+            }}
             className="p-1 rounded-full text-muted-foreground/60 hover:text-foreground hover:bg-muted/40 transition-colors pointer-coarse:after:absolute pointer-coarse:after:size-8"
-            aria-label="Clear Phone Number"
+            aria-label="Clear phone number"
           >
             <IconSlot
               name="Cancel"
@@ -924,7 +1099,9 @@ function InputPhoneFlag({
 }: InputPhoneFlagProps): React.ReactElement {
   const context = React.useContext(InputPhoneContext);
   const targetCountry = code
-    ? COUNTRIES.find((c) => c.code.toUpperCase() === code.toUpperCase())
+    ? (context?.countries ?? COUNTRIES).find(
+        (c) => c.code.toUpperCase() === code.toUpperCase(),
+      )
     : context?.selectedCountry;
 
   const defaultProps = {
