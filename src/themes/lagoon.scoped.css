@@ -16,7 +16,8 @@
  * palette import "xiod-ui/themes/lagoon" instead, which needs no attribute.
  */
 
-[data-palette="lagoon"] {
+[data-palette="lagoon"],
+:root:where(:has(> body > .xiod-palette-lagoon)) {
   --radius: 0.5rem;
   --background: #f5faf9;
   --foreground: #10231f;
@@ -53,7 +54,8 @@
   --sidebar-ring: #0a6b72;
 }
 
-.dark[data-palette="lagoon"] {
+.dark[data-palette="lagoon"],
+:root:root:where(:has(> body > .xiod-dark.xiod-palette-lagoon)) {
   --background: #0c1614;
   --foreground: #e0eeea;
   --card: #12201d;

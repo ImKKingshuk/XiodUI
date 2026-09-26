@@ -85,10 +85,11 @@ Providers and globals:
   --primary: #1976d2;
   --primary-foreground: #fff;
   --radius: 0.25rem;
-}
-.dark {
-  --primary: #90caf9;
-  --primary-foreground: #0a1929;
+
+  @variant dark {
+    --primary: #90caf9;
+    --primary-foreground: #0a1929;
+  }
 }
 ```
 

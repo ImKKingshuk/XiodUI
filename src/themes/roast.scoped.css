@@ -16,7 +16,8 @@
  * palette import "xiod-ui/themes/roast" instead, which needs no attribute.
  */
 
-[data-palette="roast"] {
+[data-palette="roast"],
+:root:where(:has(> body > .xiod-palette-roast)) {
   --radius: 0.5rem;
   --background: #f9f9f9;
   --foreground: #202020;
@@ -53,7 +54,8 @@
   --sidebar-ring: #5a4238;
 }
 
-.dark[data-palette="roast"] {
+.dark[data-palette="roast"],
+:root:root:where(:has(> body > .xiod-dark.xiod-palette-roast)) {
   --background: #111111;
   --foreground: #eeeeee;
   --card: #191919;

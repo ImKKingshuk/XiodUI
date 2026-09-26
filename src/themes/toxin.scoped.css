@@ -16,7 +16,8 @@
  * palette import "xiod-ui/themes/toxin" instead, which needs no attribute.
  */
 
-[data-palette="toxin"] {
+[data-palette="toxin"],
+:root:where(:has(> body > .xiod-palette-toxin)) {
   --radius: 0.125rem;
   --background: #e8eae6;
   --foreground: #16180f;
@@ -53,7 +54,8 @@
   --sidebar-ring: #4a6b1f;
 }
 
-.dark[data-palette="toxin"] {
+.dark[data-palette="toxin"],
+:root:root:where(:has(> body > .xiod-dark.xiod-palette-toxin)) {
   --background: #0e100c;
   --foreground: #dfe3d8;
   --card: #171a13;

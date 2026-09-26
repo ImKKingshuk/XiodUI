@@ -60,9 +60,10 @@ that value** below the imports. Don't copy the whole block:
 ```css
 :root {
   --primary: oklch(0.55 0.22 264);
-}
-.dark {
-  --primary: oklch(0.7 0.18 264);
+
+  @variant dark {
+    --primary: oklch(0.7 0.18 264);
+  }
 }
 ```
 
@@ -80,8 +81,9 @@ Providers:
 | `<SidebarProvider>`                                      | `SidebarProvider` from `xiod-ui/sidebar` (same name)                         |
 
 `useTheme` from XiodUI returns `theme`, `resolvedTheme`, and `setTheme`, like
-next-themes. Remove next-themes' `suppressHydrationWarning` only if nothing
-else needs it; keeping it on `<html>` is harmless.
+next-themes. Remove next-themes' `suppressHydrationWarning` from `<html>`:
+XiodUI's provider doesn't need it. Move any `.dark { … }` token overrides into
+`:root { @variant dark { … } }` (below), or they apply only after hydration.
 
 ## 3. Components
 

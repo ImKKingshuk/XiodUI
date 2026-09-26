@@ -16,7 +16,8 @@
  * palette import "xiod-ui/themes/afterglow" instead, which needs no attribute.
  */
 
-[data-palette="afterglow"] {
+[data-palette="afterglow"],
+:root:where(:has(> body > .xiod-palette-afterglow)) {
   --radius: 0.75rem;
   --background: #f7f6fb;
   --foreground: #1a1a33;
@@ -53,7 +54,8 @@
   --sidebar-ring: #c93f1c;
 }
 
-.dark[data-palette="afterglow"] {
+.dark[data-palette="afterglow"],
+:root:root:where(:has(> body > .xiod-dark.xiod-palette-afterglow)) {
   --background: #0d1030;
   --foreground: #e8eafc;
   --card: #151a42;

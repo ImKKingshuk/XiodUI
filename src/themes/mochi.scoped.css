@@ -16,7 +16,8 @@
  * palette import "xiod-ui/themes/mochi" instead, which needs no attribute.
  */
 
-[data-palette="mochi"] {
+[data-palette="mochi"],
+:root:where(:has(> body > .xiod-palette-mochi)) {
   --radius: 1.5rem;
   --background: #fbf9fd;
   --foreground: #3a3348;
@@ -53,7 +54,8 @@
   --sidebar-ring: #a04d92;
 }
 
-.dark[data-palette="mochi"] {
+.dark[data-palette="mochi"],
+:root:root:where(:has(> body > .xiod-dark.xiod-palette-mochi)) {
   --background: #1c1824;
   --foreground: #efe9f5;
   --card: #251f2e;

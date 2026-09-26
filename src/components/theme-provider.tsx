@@ -58,12 +58,39 @@ export interface ThemeProviderProps {
   nonce?: string;
 }
 
+/*
+ * How the theme reaches the page before React has hydrated
+ * ─────────────────────────────────────────────────────────
+ * React compares `<html>` with the server's HTML when it hydrates, and reports
+ * any class or attribute added to it before then as a mismatch. So until
+ * hydration the theme lives on a marker instead: a `<style>` element, first
+ * child of `<body>`, whose classes name the mode and palette. React skips
+ * elements it didn't render at that level and keeps `<style>` elements even
+ * when it re-renders the whole document. `xiod-ui/styles` and the palette
+ * stylesheets read it with `body:has(> .xiod-dark)`, a form browsers can check
+ * without restyling the page when unrelated parts of it change.
+ *
+ * Once hydrated, the provider writes the theme to `<html>` and removes the
+ * marker, when the browser is idle: the page already looks right, and the swap
+ * restyles it once.
+ */
+const MARKER_ID = "xiod-theme";
+
+function markerClassName(
+  resolvedTheme: ResolvedTheme,
+  palette: string | undefined,
+): string {
+  return `xiod-${resolvedTheme}${palette ? ` xiod-palette-${palette}` : ""}`;
+}
+
 const ThemeContext = React.createContext<ThemeContextValue | undefined>(
   undefined,
 );
 
 const useIsomorphicLayoutEffect =
   typeof window === "undefined" ? React.useEffect : React.useLayoutEffect;
+
+const DARK_QUERY = "(prefers-color-scheme: dark)";
 
 function isThemeMode(theme: string | null): theme is ThemeMode {
   return theme === "light" || theme === "dark" || theme === "system";
@@ -78,21 +105,28 @@ function readStorage(key: string): string | null {
   }
 }
 
+function writeStorage(key: string, value: string | undefined): void {
+  try {
+    if (value) localStorage.setItem(key, value);
+    else localStorage.removeItem(key);
+  } catch {
+    // The theme still applies, it just won't survive a reload.
+  }
+}
+
 /**
- * Applies the saved theme and palette to `<html>` before the first paint.
- * Rendered as an inline script, so it must be self-contained: no imports,
- * no helpers from this module, nothing a bundler would rewrite.
+ * Adds the marker for the saved theme and palette while the page is parsing,
+ * before the first paint. Rendered as an inline script, so it must be
+ * self-contained: no imports, no helpers from this module.
  */
 function initTheme(
-  attribute: string,
+  markerId: string,
   storageKey: string,
   defaultTheme: string,
   enableSystemTheme: boolean,
-  paletteAttribute: string,
   paletteStorageKey: string,
   defaultPalette: string | null,
 ): void {
-  const root = document.documentElement;
   // Inside on purpose: the script is serialised on its own and can't reach
   // anything outside this function.
   // oxlint-disable-next-line unicorn/consistent-function-scoping
@@ -108,24 +142,20 @@ function initTheme(
   if (theme !== "light" && theme !== "dark" && theme !== "system") {
     theme = defaultTheme;
   }
-  const resolved =
-    theme === "system"
-      ? enableSystemTheme &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light"
-      : theme;
-
-  if (attribute === "class") {
-    root.classList.remove("light", "dark");
-    root.classList.add(resolved);
-  } else {
-    root.setAttribute(attribute, resolved);
-  }
-  root.style.colorScheme = resolved;
-
+  const dark =
+    theme === "dark" ||
+    (theme === "system" &&
+      enableSystemTheme &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches);
   const palette = read(paletteStorageKey) || defaultPalette;
-  if (palette) root.setAttribute(paletteAttribute, palette);
+
+  document.getElementById(markerId)?.remove();
+  const marker = document.createElement("style");
+  marker.id = markerId;
+  marker.className =
+    (dark ? "xiod-dark" : "xiod-light") +
+    (palette ? " xiod-palette-" + palette : "");
+  document.body.prepend(marker);
 }
 
 function subscribeNever(): () => void {
@@ -144,19 +174,15 @@ function useIsServerRender(): boolean {
   );
 }
 
-function getResolvedTheme(
-  theme: ThemeMode,
-  enableSystemTheme: boolean,
-): ResolvedTheme {
-  if (theme === "system") {
-    // With system detection off there is nothing to resolve against, so fall
-    // back to light — that is what `:root` renders as without the `dark` class.
-    if (!enableSystemTheme) return "light";
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
+function onIdle(callback: () => void): () => void {
+  if (typeof window.requestIdleCallback === "function") {
+    const id = window.requestIdleCallback(callback, { timeout: 1000 });
+    return () => window.cancelIdleCallback(id);
   }
-  return theme;
+  // Safari has no requestIdleCallback; a new task still keeps the work out of
+  // hydration.
+  const id = window.setTimeout(callback, 1);
+  return () => window.clearTimeout(id);
 }
 
 /**
@@ -164,8 +190,6 @@ function getResolvedTheme(
  * transitioned property doesn't animate from the old palette to the new one.
  */
 function disableThemeTransitions(): () => void {
-  if (typeof document === "undefined") return () => {};
-
   const style = document.createElement("style");
   style.dataset.themeTransitionGuard = "true";
   style.appendChild(
@@ -187,10 +211,24 @@ function disableThemeTransitions(): () => void {
   };
 }
 
-function applyTheme(
-  theme: ResolvedTheme,
-  attribute: string,
-  disableTransitions = false,
+interface DocumentTheme {
+  resolvedTheme: ResolvedTheme;
+  palette: string | undefined;
+  /** Whether to touch the palette attribute at all. */
+  writePalette: boolean;
+  attribute: string;
+  paletteAttribute: string;
+}
+
+function applyToDocument(
+  {
+    resolvedTheme,
+    palette,
+    writePalette,
+    attribute,
+    paletteAttribute,
+  }: DocumentTheme,
+  disableTransitions: boolean,
 ): void {
   const removeTransitionGuard = disableTransitions
     ? disableThemeTransitions()
@@ -199,29 +237,41 @@ function applyTheme(
 
   if (attribute === "class") {
     root.classList.remove("light", "dark");
-    root.classList.add(theme);
+    root.classList.add(resolvedTheme);
   } else {
-    root.setAttribute(attribute, theme);
+    root.setAttribute(attribute, resolvedTheme);
   }
-
-  root.style.colorScheme = theme;
-  removeTransitionGuard?.();
-}
-
-function applyPalette(
-  palette: string | undefined,
-  attribute: string,
-  disableTransitions = false,
-): void {
-  const removeTransitionGuard = disableTransitions
-    ? disableThemeTransitions()
-    : undefined;
-  const root = document.documentElement;
+  root.style.colorScheme = resolvedTheme;
 
   // No palette means no attribute at all, so the base tokens from
   // `xiod-ui/styles` apply untouched rather than through an empty-string match.
-  if (palette) root.setAttribute(attribute, palette);
-  else root.removeAttribute(attribute);
+  if (writePalette) {
+    if (palette) root.setAttribute(paletteAttribute, palette);
+    else root.removeAttribute(paletteAttribute);
+  }
+
+  // XiodUI's stylesheets read `.dark` and `data-palette` on `<html>`. With any
+  // other names they can't see what was just written, so keep the marker for
+  // them.
+  const keepMode = attribute !== "class";
+  const keepPalette = paletteAttribute !== "data-palette" && palette;
+  let marker = document.getElementById(MARKER_ID);
+
+  if (!keepMode && !keepPalette) {
+    marker?.remove();
+  } else {
+    if (!marker) {
+      marker = document.createElement("style");
+      marker.id = MARKER_ID;
+      document.body.prepend(marker);
+    }
+    marker.className = [
+      keepMode && `xiod-${resolvedTheme}`,
+      keepPalette && `xiod-palette-${palette}`,
+    ]
+      .filter(Boolean)
+      .join(" ");
+  }
 
   removeTransitionGuard?.();
 }
@@ -239,12 +289,15 @@ function ThemeProvider({
 }: ThemeProviderProps): React.ReactElement {
   const isServerRender = useIsServerRender();
   const [theme, setThemeState] = React.useState<ThemeMode>(defaultTheme);
-  const [resolvedTheme, setResolvedTheme] =
-    React.useState<ResolvedTheme>("light");
   const [palette, setPaletteState] = React.useState<string | undefined>(
     defaultPalette,
   );
+  const [systemDark, setSystemDark] = React.useState(false);
   const [mounted, setMounted] = React.useState(false);
+  // Leave the palette attribute alone until a palette is in play, so apps that
+  // import a palette stylesheet the plain way never get one written to <html>.
+  const paletteInPlay = React.useRef(defaultPalette !== undefined);
+  const handedOff = React.useRef(false);
 
   if (process.env.NODE_ENV !== "production" && attribute === paletteAttribute) {
     console.warn(
@@ -254,81 +307,85 @@ function ThemeProvider({
     );
   }
 
-  const setTheme = React.useCallback(
-    (newTheme: ThemeMode) => {
-      const newResolvedTheme = getResolvedTheme(newTheme, enableSystemTheme);
+  // With system detection off there is nothing to resolve against, so
+  // "system" falls back to light — what `:root` renders as without `dark`.
+  const resolvedTheme: ResolvedTheme =
+    theme === "system"
+      ? enableSystemTheme && systemDark
+        ? "dark"
+        : "light"
+      : theme;
 
-      applyTheme(newResolvedTheme, attribute, true);
-      setThemeState(newTheme);
-      setResolvedTheme(newResolvedTheme);
-
-      try {
-        localStorage.setItem(storageKey, newTheme);
-      } catch {
-        // Private mode / disabled storage: the theme still applies, it just
-        // won't survive a reload.
-      }
-    },
-    [attribute, enableSystemTheme, storageKey],
-  );
-
-  const setPalette = React.useCallback(
-    (newPalette: string | undefined) => {
-      applyPalette(newPalette, paletteAttribute, true);
-      setPaletteState(newPalette);
-
-      try {
-        if (newPalette) localStorage.setItem(paletteStorageKey, newPalette);
-        else localStorage.removeItem(paletteStorageKey);
-      } catch {
-        // See above.
-      }
-    },
-    [paletteAttribute, paletteStorageKey],
-  );
-
-  // A layout effect, so a render that starts in the browser applies the saved
-  // theme before the first paint too. Server-rendered pages already have it
-  // from the inline script; applying it again below changes nothing.
+  // Layout effects, so a render that starts in the browser applies the saved
+  // theme before the first paint too.
   useIsomorphicLayoutEffect(() => {
     const savedTheme = readStorage(storageKey);
     if (isThemeMode(savedTheme)) setThemeState(savedTheme);
 
     const savedPalette = readStorage(paletteStorageKey);
-    if (savedPalette) setPaletteState(savedPalette);
+    if (savedPalette) {
+      paletteInPlay.current = true;
+      setPaletteState(savedPalette);
+    }
 
     setMounted(true);
   }, [storageKey, paletteStorageKey]);
 
   useIsomorphicLayoutEffect(() => {
-    if (!mounted) return;
+    if (!enableSystemTheme) return;
 
-    const newResolvedTheme = getResolvedTheme(theme, enableSystemTheme);
-    applyTheme(newResolvedTheme, attribute);
-    setResolvedTheme(newResolvedTheme);
-  }, [theme, mounted, attribute, enableSystemTheme]);
-
-  useIsomorphicLayoutEffect(() => {
-    // Skipped entirely while no palette is set, so apps importing a palette
-    // stylesheet the plain way never get an attribute written to `<html>`.
-    if (!mounted || palette === undefined) return;
-
-    applyPalette(palette, paletteAttribute);
-  }, [palette, mounted, paletteAttribute]);
-
-  React.useEffect(() => {
-    if (!mounted || theme !== "system" || !enableSystemTheme) return;
-
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = (): void => {
-      const newTheme = mediaQuery.matches ? "dark" : "light";
-      setResolvedTheme(newTheme);
-      applyTheme(newTheme, attribute);
-    };
-
+    const mediaQuery = window.matchMedia(DARK_QUERY);
+    const handleChange = (): void => setSystemDark(mediaQuery.matches);
+    handleChange();
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
-  }, [theme, mounted, attribute, enableSystemTheme]);
+  }, [enableSystemTheme]);
+
+  useIsomorphicLayoutEffect(() => {
+    if (!mounted) return;
+
+    const documentTheme: DocumentTheme = {
+      resolvedTheme,
+      palette,
+      writePalette: paletteInPlay.current,
+      attribute,
+      paletteAttribute,
+    };
+    const marker = document.getElementById(MARKER_ID);
+
+    if (
+      !handedOff.current &&
+      marker?.className === markerClassName(resolvedTheme, palette)
+    ) {
+      // The page already shows this theme through the pre-paint marker.
+      return onIdle(() => {
+        handedOff.current = true;
+        applyToDocument(documentTheme, false);
+      });
+    }
+
+    // A real change (or the first paint of a client-only app): apply it now.
+    const visibleChange = handedOff.current || marker !== null;
+    handedOff.current = true;
+    applyToDocument(documentTheme, visibleChange);
+  }, [mounted, resolvedTheme, palette, attribute, paletteAttribute]);
+
+  const setTheme = React.useCallback(
+    (newTheme: ThemeMode) => {
+      setThemeState(newTheme);
+      writeStorage(storageKey, newTheme);
+    },
+    [storageKey],
+  );
+
+  const setPalette = React.useCallback(
+    (newPalette: string | undefined) => {
+      paletteInPlay.current = true;
+      setPaletteState(newPalette);
+      writeStorage(paletteStorageKey, newPalette);
+    },
+    [paletteStorageKey],
+  );
 
   const value = React.useMemo<ThemeContextValue>(
     () => ({ theme, resolvedTheme, setTheme, palette, setPalette }),
@@ -336,11 +393,10 @@ function ThemeProvider({
   );
 
   const scriptArgs = JSON.stringify([
-    attribute,
+    MARKER_ID,
     storageKey,
     defaultTheme,
     enableSystemTheme,
-    paletteAttribute,
     paletteStorageKey,
     defaultPalette ?? null,
   ]).slice(1, -1);
@@ -349,7 +405,9 @@ function ThemeProvider({
     <ThemeContext.Provider value={value}>
       {/* Only server HTML needs it: the browser runs it while parsing, before
           the first paint. React never runs scripts it creates itself, so a
-          render that starts in the browser leaves it out. */}
+          render that starts in the browser leaves it out. The warning is
+          suppressed on this element alone, because browsers hide a script's
+          `nonce` attribute once it has run. */}
       {isServerRender ? (
         <script nonce={nonce} suppressHydrationWarning>
           {`(${initTheme.toString()})(${scriptArgs})`}

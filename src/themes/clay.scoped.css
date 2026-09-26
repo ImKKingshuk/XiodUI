@@ -16,7 +16,8 @@
  * palette import "xiod-ui/themes/clay" instead, which needs no attribute.
  */
 
-[data-palette="clay"] {
+[data-palette="clay"],
+:root:where(:has(> body > .xiod-palette-clay)) {
   --radius: 0.5rem;
   --background: #faf9f5;
   --foreground: #3d3929;
@@ -53,7 +54,8 @@
   --sidebar-ring: #a9512b;
 }
 
-.dark[data-palette="clay"] {
+.dark[data-palette="clay"],
+:root:root:where(:has(> body > .xiod-dark.xiod-palette-clay)) {
   --background: #262624;
   --foreground: #e8e6df;
   --card: #2d2d2a;

@@ -16,7 +16,8 @@
  * palette import "xiod-ui/themes/cel" instead, which needs no attribute.
  */
 
-[data-palette="cel"] {
+[data-palette="cel"],
+:root:where(:has(> body > .xiod-palette-cel)) {
   --radius: 1rem;
   --background: #fdfcf7;
   --foreground: #1f2430;
@@ -53,7 +54,8 @@
   --sidebar-ring: #1a72bd;
 }
 
-.dark[data-palette="cel"] {
+.dark[data-palette="cel"],
+:root:root:where(:has(> body > .xiod-dark.xiod-palette-cel)) {
   --background: #131722;
   --foreground: #eef1f7;
   --card: #1b2130;

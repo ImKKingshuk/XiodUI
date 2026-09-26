@@ -331,11 +331,16 @@ Provider props and their defaults: `defaultTheme` (`"system"`),
 `paletteAttribute` must differ, or the two axes overwrite each other on the
 same element.
 
-The provider applies the saved theme and palette before the first paint, with
-an inline script in server-rendered HTML. Do not add a theme script to `<head>`,
-and remove one when migrating.
-Put `suppressHydrationWarning` on `<html>`, render the provider inside
-`<body>`, and pass `nonce` when a CSP requires one for inline scripts.
+The provider applies the saved theme and palette before the first paint, on
+server-rendered pages too, without touching `<html>` before React hydrates.
+Render it inside `<body>` and pass `nonce` when a CSP requires one for inline
+scripts. Nothing else: do not add a theme script to `<head>` or
+`suppressHydrationWarning` to `<html>`, and remove both when migrating.
+
+Write dark styles as `dark:` classes, or in CSS with `@variant dark`, including
+dark token overrides: `:root { @variant dark { --primary: …; } }`. Never a
+plain `.dark { … }` or `html.dark …` rule: it only applies once React has
+hydrated, so it flashes on server-rendered pages.
 
 ### Palettes
 

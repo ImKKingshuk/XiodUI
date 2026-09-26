@@ -16,7 +16,8 @@
  * palette import "xiod-ui/themes/taffy" instead, which needs no attribute.
  */
 
-[data-palette="taffy"] {
+[data-palette="taffy"],
+:root:where(:has(> body > .xiod-palette-taffy)) {
   --radius: 1.25rem;
   --background: #fff7fb;
   --foreground: #3d1f30;
@@ -53,7 +54,8 @@
   --sidebar-ring: #e01e3c;
 }
 
-.dark[data-palette="taffy"] {
+.dark[data-palette="taffy"],
+:root:root:where(:has(> body > .xiod-dark.xiod-palette-taffy)) {
   --background: #24121c;
   --foreground: #ffe9f3;
   --card: #2e1826;

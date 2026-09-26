@@ -16,7 +16,8 @@
  * palette import "xiod-ui/themes/sorbet" instead, which needs no attribute.
  */
 
-[data-palette="sorbet"] {
+[data-palette="sorbet"],
+:root:where(:has(> body > .xiod-palette-sorbet)) {
   --radius: 0.5rem;
   --background: #fdfbfd;
   --foreground: #2b2430;
@@ -53,7 +54,8 @@
   --sidebar-ring: #c2306b;
 }
 
-.dark[data-palette="sorbet"] {
+.dark[data-palette="sorbet"],
+:root:root:where(:has(> body > .xiod-dark.xiod-palette-sorbet)) {
   --background: #1a151f;
   --foreground: #f0eaf3;
   --card: #221c28;

@@ -16,7 +16,8 @@
  * palette import "xiod-ui/themes/ion" instead, which needs no attribute.
  */
 
-[data-palette="ion"] {
+[data-palette="ion"],
+:root:where(:has(> body > .xiod-palette-ion)) {
   --radius: 0rem;
   --background: #f4f3f7;
   --foreground: #17141f;
@@ -53,7 +54,8 @@
   --sidebar-ring: #5b2d8e;
 }
 
-.dark[data-palette="ion"] {
+.dark[data-palette="ion"],
+:root:root:where(:has(> body > .xiod-dark.xiod-palette-ion)) {
   --background: #100c18;
   --foreground: #e9e4f2;
   --card: #191322;

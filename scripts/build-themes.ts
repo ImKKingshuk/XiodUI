@@ -8,6 +8,10 @@
  *   <name>.css          `:root` + `.dark`
  *   <name>.scoped.css   `[data-palette="<name>"]` + `.dark[data-palette=...]`
  *
+ * Each dark or scoped selector also matches the marker ThemeProvider puts in
+ * <body> before React hydrates (see theme-provider.tsx), with the same
+ * specificity, so the palette is right from the first paint.
+ *
  * Run via `bun run themes`, which `bun run build` does before tsdown so the
  * files exist for the `copy` step and for publint's export validation.
  */
@@ -61,11 +65,22 @@ function header(name: string, palette: Palette, scoped: boolean): string {
  */`;
 }
 
+/** Matches `:root` while ThemeProvider's pre-hydration marker carries these classes. */
+function marker(classes: string): string {
+  return `:where(:has(> body > ${classes}))`;
+}
+
 function render(name: string, palette: Palette, scoped: boolean): string {
-  const lightSelector = scoped ? `[data-palette="${name}"]` : ":root";
+  // Pairs of selectors with equal specificity: the attribute form on <html>,
+  // and the pre-hydration marker form (`:root` repeated to match two classes).
+  const lightSelector = scoped
+    ? `[data-palette="${name}"],\n:root${marker(`.xiod-palette-${name}`)}`
+    : ":root";
   // Both the palette attribute and the `dark` class land on <html>, so this is
   // one element matching two selectors rather than a descendant relationship.
-  const darkSelector = scoped ? `.dark[data-palette="${name}"]` : ".dark";
+  const darkSelector = scoped
+    ? `.dark[data-palette="${name}"],\n:root:root${marker(`.xiod-dark.xiod-palette-${name}`)}`
+    : `.dark,\n:root${marker(".xiod-dark")}`;
 
   return `${header(name, palette, scoped)}
 

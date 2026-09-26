@@ -16,7 +16,8 @@
  * palette import "xiod-ui/themes/cathode" instead, which needs no attribute.
  */
 
-[data-palette="cathode"] {
+[data-palette="cathode"],
+:root:where(:has(> body > .xiod-palette-cathode)) {
   --radius: 0.125rem;
   --background: #eaecec;
   --foreground: #101314;
@@ -53,7 +54,8 @@
   --sidebar-ring: #ab0f7d;
 }
 
-.dark[data-palette="cathode"] {
+.dark[data-palette="cathode"],
+:root:root:where(:has(> body > .xiod-dark.xiod-palette-cathode)) {
   --background: #0b0e0f;
   --foreground: #dfe6e7;
   --card: #141819;

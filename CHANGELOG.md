@@ -9,12 +9,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **No light flash on load in dark mode.** `ThemeProvider` now applies the saved
-  theme and palette before the first paint, on server-rendered pages as well as
-  client-only apps. Before, a server-rendered page painted in light mode until
-  React hydrated, and apps needed their own `<head>` script to avoid it. Remove
-  that script when you upgrade. With a Content Security Policy that requires a
-  nonce for inline scripts, pass it with the new `nonce` prop.
+- **No light flash on load in dark mode, with nothing to add to your layout.**
+  `ThemeProvider` now applies the saved theme and palette before the first
+  paint, on server-rendered pages as well as client-only apps. Before, a
+  server-rendered page painted in light mode until React hydrated, and apps
+  needed their own `<head>` script plus `suppressHydrationWarning` on `<html>`.
+  Remove both when you upgrade. The provider leaves `<html>` alone until React
+  has hydrated, so there is no hydration warning to suppress, then moves the
+  theme there when the browser is idle. With a Content Security Policy that
+  requires a nonce for inline scripts, pass it with the new `nonce` prop.
+- `useTheme()` settles on the saved theme before the browser paints, so a
+  switcher no longer shows the wrong mode for a frame after load.
+- `Orb` picks the right colours before hydration.
+
+### Changed
+
+- `color-scheme: dark` is set by the stylesheet with the dark tokens, so
+  scrollbars and native form controls are dark from the first paint.
+- The `dark:` variant also matches `<html>` itself, so `@variant dark` works
+  inside `:root { … }`. Override dark tokens that way rather than with a plain
+  `.dark { … }` rule, which only applies once React has hydrated:
+
+  ```css
+  :root {
+    --primary: oklch(0.55 0.22 264);
+    @variant dark {
+      --primary: oklch(0.72 0.19 264);
+    }
+  }
+  ```
 
 ## [1.1.0] — 2026-09-26
 

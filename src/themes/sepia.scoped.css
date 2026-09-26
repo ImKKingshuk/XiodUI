@@ -16,7 +16,8 @@
  * palette import "xiod-ui/themes/sepia" instead, which needs no attribute.
  */
 
-[data-palette="sepia"] {
+[data-palette="sepia"],
+:root:where(:has(> body > .xiod-palette-sepia)) {
   --radius: 0.25rem;
   --background: #f5f1e6;
   --foreground: #4a3f35;
@@ -53,7 +54,8 @@
   --sidebar-ring: #8a6440;
 }
 
-.dark[data-palette="sepia"] {
+.dark[data-palette="sepia"],
+:root:root:where(:has(> body > .xiod-dark.xiod-palette-sepia)) {
   --background: #2d2621;
   --foreground: #ece5d8;
   --card: #3a322c;

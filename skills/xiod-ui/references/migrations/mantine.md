@@ -62,7 +62,7 @@ Providers and document setup:
 | `import "@mantine/core/styles.css"` (and other `@mantine/*/styles.css`)  | Remove; `xiod-ui/styles` covers every component                                   |
 | `<MantineProvider theme={createTheme(…)}>`                               | `ThemeProvider` from `xiod-ui/theme-provider`; colours move to CSS tokens (below) |
 | `defaultColorScheme="auto"`                                              | `defaultTheme="system"`                                                           |
-| `<ColorSchemeScript />` in `<head>`, `{...mantineHtmlProps}` on `<html>` | Remove both; keep `suppressHydrationWarning` on `<html>`                          |
+| `<ColorSchemeScript />` in `<head>`, `{...mantineHtmlProps}` on `<html>` | Remove both, and `suppressHydrationWarning` too                                   |
 | `useMantineColorScheme()` (`setColorScheme`, `toggleColorScheme`)        | `useTheme()` (`setTheme`, `resolvedTheme`)                                        |
 | `useComputedColorScheme()`                                               | `useTheme().resolvedTheme`                                                        |
 | `<Notifications />` (`@mantine/notifications`)                           | `<ToastProvider>` from `xiod-ui/toast`, wrapping the app                          |
@@ -84,9 +84,10 @@ Providers and document setup:
   --primary: #228be6; /* blue.6 */
   --primary-foreground: #fff;
   --radius: 0.25rem;
-}
-.dark {
-  --primary: #1971c2; /* blue.8 */
+
+  @variant dark {
+    --primary: #1971c2; /* blue.8 */
+  }
 }
 ```
 

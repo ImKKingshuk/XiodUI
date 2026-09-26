@@ -67,9 +67,10 @@ after the imports:
 :root {
   --primary: #006fee; /* HeroUI "primary" (v2) or "accent" (v3) */
   --primary-foreground: #fff;
-}
-.dark {
-  --primary: #338ef7;
+
+  @variant dark {
+    --primary: #338ef7;
+  }
 }
 ```
 

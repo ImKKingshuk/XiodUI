@@ -16,7 +16,8 @@
  * palette import "xiod-ui/themes/blacklight" instead, which needs no attribute.
  */
 
-[data-palette="blacklight"] {
+[data-palette="blacklight"],
+:root:where(:has(> body > .xiod-palette-blacklight)) {
   --radius: 0.75rem;
   --background: #f7f3ff;
   --foreground: #1f1233;
@@ -53,7 +54,8 @@
   --sidebar-ring: #7b16d6;
 }
 
-.dark[data-palette="blacklight"] {
+.dark[data-palette="blacklight"],
+:root:root:where(:has(> body > .xiod-dark.xiod-palette-blacklight)) {
   --background: #0d0418;
   --foreground: #f0e4ff;
   --card: #170a26;

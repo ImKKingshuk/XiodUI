@@ -19,7 +19,17 @@
 
 @source "../dist";
 
-@custom-variant dark (&:is(.dark *));
+/*
+ * Dark mode is the `dark` class on <html>. Before React hydrates a server-
+ * rendered page, ThemeProvider marks it instead with an element that is the
+ * first child of <body> (see theme-provider.tsx), so each dark selector also
+ * matches that marker. `:where()` keeps the specificity of the `.dark` forms.
+ *
+ * The variant matches <html> itself too, so dark token overrides can be
+ * written as `:root { @variant dark { --primary: …; } }` and apply from the
+ * first paint, which a plain `.dark { … }` rule can't.
+ */
+@custom-variant dark (&:is(.dark, .dark *, :where(:root:has(> body > .xiod-dark), body:has(> .xiod-dark), body:has(> .xiod-dark) *)));
 
 @theme inline {
   --color-background: var(--background);
@@ -157,7 +167,9 @@
   --morphic-state-action: oklch(0.623 0.214 259.815);
 }
 
-.dark {
+.dark,
+:root:where(:has(> body > .xiod-dark)) {
+  color-scheme: dark;
   --background: color-mix(
     in srgb,
     var(--color-neutral-950) 95%,

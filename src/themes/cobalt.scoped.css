@@ -16,7 +16,8 @@
  * palette import "xiod-ui/themes/cobalt" instead, which needs no attribute.
  */
 
-[data-palette="cobalt"] {
+[data-palette="cobalt"],
+:root:where(:has(> body > .xiod-palette-cobalt)) {
   --radius: 0.375rem;
   --background: #f7f9fc;
   --foreground: #131a24;
@@ -53,7 +54,8 @@
   --sidebar-ring: #1e4fa8;
 }
 
-.dark[data-palette="cobalt"] {
+.dark[data-palette="cobalt"],
+:root:root:where(:has(> body > .xiod-dark.xiod-palette-cobalt)) {
   --background: #0f1620;
   --foreground: #e4eaf2;
   --card: #16202c;

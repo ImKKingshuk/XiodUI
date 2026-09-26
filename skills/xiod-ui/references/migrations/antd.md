@@ -93,9 +93,10 @@ Providers:
   --primary: #1677ff;
   --primary-foreground: #fff;
   --radius: 0.375rem;
-}
-.dark {
-  --primary: #1668dc;
+
+  @variant dark {
+    --primary: #1668dc;
+  }
 }
 ```
 

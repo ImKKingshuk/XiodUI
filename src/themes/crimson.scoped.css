@@ -16,7 +16,8 @@
  * palette import "xiod-ui/themes/crimson" instead, which needs no attribute.
  */
 
-[data-palette="crimson"] {
+[data-palette="crimson"],
+:root:where(:has(> body > .xiod-palette-crimson)) {
   --radius: 0rem;
   --background: #c9c9c7;
   --foreground: #1f1f1f;
@@ -53,7 +54,8 @@
   --sidebar-ring: #8f1d1d;
 }
 
-.dark[data-palette="crimson"] {
+.dark[data-palette="crimson"],
+:root:root:where(:has(> body > .xiod-dark.xiod-palette-crimson)) {
   --background: #1a1a1a;
   --foreground: #e0e0e0;
   --card: #242424;

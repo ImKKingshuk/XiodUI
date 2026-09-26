@@ -16,7 +16,8 @@
  * palette import "xiod-ui/themes/riso" instead, which needs no attribute.
  */
 
-[data-palette="riso"] {
+[data-palette="riso"],
+:root:where(:has(> body > .xiod-palette-riso)) {
   --radius: 0rem;
   --background: #f6f2e9;
   --foreground: #171310;
@@ -53,7 +54,8 @@
   --sidebar-ring: #e0007f;
 }
 
-.dark[data-palette="riso"] {
+.dark[data-palette="riso"],
+:root:root:where(:has(> body > .xiod-dark.xiod-palette-riso)) {
   --background: #12100f;
   --foreground: #f2ede2;
   --card: #1b1917;

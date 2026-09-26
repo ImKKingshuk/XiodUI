@@ -16,7 +16,8 @@
  * palette import "xiod-ui/themes/sage" instead, which needs no attribute.
  */
 
-[data-palette="sage"] {
+[data-palette="sage"],
+:root:where(:has(> body > .xiod-palette-sage)) {
   --radius: 0.35rem;
   --background: #f8f7f4;
   --foreground: #1f2a24;
@@ -53,7 +54,8 @@
   --sidebar-ring: #4f6b56;
 }
 
-.dark[data-palette="sage"] {
+.dark[data-palette="sage"],
+:root:root:where(:has(> body > .xiod-dark.xiod-palette-sage)) {
   --background: #141815;
   --foreground: #e6ebe6;
   --card: #1b201c;

@@ -52,7 +52,8 @@
   --sidebar-ring: #ab0f7d;
 }
 
-.dark {
+.dark,
+:root:where(:has(> body > .xiod-dark)) {
   --background: #0b0e0f;
   --foreground: #dfe6e7;
   --card: #141819;

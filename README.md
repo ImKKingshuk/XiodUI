@@ -221,11 +221,11 @@ Override design tokens after the stylesheet imports to customize colors and the 
   --radius: 0.5rem;
   --primary: oklch(0.55 0.22 264);
   --primary-foreground: white;
-}
 
-.dark {
-  --primary: oklch(0.72 0.19 264);
-  --primary-foreground: oklch(0.15 0.02 264);
+  @variant dark {
+    --primary: oklch(0.72 0.19 264);
+    --primary-foreground: oklch(0.15 0.02 264);
+  }
 }
 ```
 
@@ -331,7 +331,9 @@ export function Providers({ children }: { children: ReactNode }) {
 
 The provider follows your system's theme preference and remembers your selection. Within the provider, `useTheme()` returns `theme`, `resolvedTheme`, and `setTheme`. Call `setTheme` with `"light"`, `"dark"`, or `"system"` to change the theme.
 
-The saved theme is applied before the page first paints, so server-rendered pages don't flash light mode and you don't need a script of your own. Add `suppressHydrationWarning` to `<html>`, since the class is set before React hydrates. If your Content Security Policy requires a nonce for inline scripts, pass it as `nonce`.
+The saved theme and palette apply before the page first paints, including on server-rendered pages, with nothing else to add: no script of your own and no `suppressHydrationWarning` on `<html>`. If your Content Security Policy requires a nonce for inline scripts, pass it as `nonce`.
+
+Write your own dark styles with `dark:` classes or `@variant dark`, as in [Theming](#theming). A plain `.dark { … }` rule in your CSS still works, but only from the moment React hydrates, not from the first paint.
 
 ## AI Agents
 

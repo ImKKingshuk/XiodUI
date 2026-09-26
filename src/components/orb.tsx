@@ -1859,6 +1859,17 @@ function useResolvedDark(
         }
         node = node.parentElement;
       }
+      // Before hydration ThemeProvider marks the theme on this element instead
+      // of <html> (see theme-provider.tsx).
+      const marker = document.getElementById("xiod-theme");
+      if (marker?.classList.contains("xiod-dark")) {
+        setDark(true);
+        return;
+      }
+      if (marker?.classList.contains("xiod-light")) {
+        setDark(false);
+        return;
+      }
       const systemDark =
         typeof matchMedia !== "undefined" &&
         matchMedia("(prefers-color-scheme: dark)").matches;

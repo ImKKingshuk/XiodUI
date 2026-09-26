@@ -16,7 +16,8 @@
  * palette import "xiod-ui/themes/iris" instead, which needs no attribute.
  */
 
-[data-palette="iris"] {
+[data-palette="iris"],
+:root:where(:has(> body > .xiod-palette-iris)) {
   --radius: 0.625rem;
   --background: #faf9fd;
   --foreground: #1e1a2e;
@@ -53,7 +54,8 @@
   --sidebar-ring: #5544c4;
 }
 
-.dark[data-palette="iris"] {
+.dark[data-palette="iris"],
+:root:root:where(:has(> body > .xiod-dark.xiod-palette-iris)) {
   --background: #14111f;
   --foreground: #ece8f6;
   --card: #1c1829;
