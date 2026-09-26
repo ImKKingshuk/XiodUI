@@ -8,6 +8,7 @@ import * as React from "react";
 import { ChevronLeft } from "xiod-icons/icons/ChevronLeft";
 import { ChevronRight } from "xiod-icons/icons/ChevronRight";
 
+import { useMediaQuery } from "../hooks/use-media-query";
 import { Button } from "./button";
 import { IconSlot } from "./icon-provider";
 
@@ -98,7 +99,11 @@ export function useCarouselViewport(
     const container = containerRef.current;
     if (!container) return;
 
-    if (animate) {
+    // Reduced motion: slides change in place, without the slide animation.
+    if (
+      animate &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
       container.style.transition =
         "transform 400ms cubic-bezier(0.25, 1, 0.5, 1)";
       // Force reflow to ensure the browser registers the transition style update
@@ -552,6 +557,9 @@ export function Carousel({
   );
   const isHoveredRef = React.useRef(false);
   const isFocusedRef = React.useRef(false);
+  // Moving content the user didn't ask for is what reduced motion opts out
+  // of, so autoplay doesn't run under it.
+  const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 
   const onSelect = React.useCallback((carouselApi: CarouselApi) => {
     if (!carouselApi) return;
@@ -577,14 +585,16 @@ export function Carousel({
   }, []);
 
   const startAutoplay = React.useCallback(() => {
-    if (!autoplay || !api) return;
+    if (!autoplay || !api || reducedMotion) return;
     stopAutoplay();
     autoplayTimerRef.current = setInterval(() => {
+      // Hidden tab: don't advance slides nobody can see.
+      if (document.hidden) return;
       if (!isHoveredRef.current && !isFocusedRef.current) {
         api.scrollNext();
       }
     }, autoplayInterval);
-  }, [autoplay, autoplayInterval, api, stopAutoplay]);
+  }, [autoplay, autoplayInterval, api, stopAutoplay, reducedMotion]);
 
   React.useEffect(() => {
     if (!api) return;
@@ -603,6 +613,16 @@ export function Carousel({
 
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
+      // Leave arrow keys to whatever inside the slide already handled them,
+      // and to text fields, where they move the caret.
+      if (event.defaultPrevented) return;
+      const target = event.target as HTMLElement;
+      if (
+        target.isContentEditable ||
+        target.closest("input, textarea, select, [role=slider]")
+      ) {
+        return;
+      }
       if (orientation === "horizontal") {
         if (event.key === "ArrowLeft") {
           event.preventDefault();
@@ -653,7 +673,7 @@ export function Carousel({
   );
 
   const defaultProps = {
-    onKeyDownCapture: handleKeyDown,
+    onKeyDown: handleKeyDown,
     onMouseEnter: () => {
       isHoveredRef.current = true;
       stopAutoplay();
@@ -696,14 +716,20 @@ export function CarouselContent({
   children,
   ...props
 }: useRender.ComponentProps<"div">): React.JSX.Element {
-  const { carouselRef, orientation } = useCarousel();
+  const { carouselRef, orientation, autoplay } = useCarousel();
 
   const defaultProps = {
     className: cn(
-      "flex h-full w-full touch-pan-y pointer-events-auto will-change-transform",
-      orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col",
+      "flex h-full w-full pointer-events-auto will-change-transform",
+      // Let the page scroll along the axis the carousel doesn't drag on.
+      orientation === "horizontal"
+        ? "-ml-4 touch-pan-y"
+        : "-mt-4 flex-col touch-pan-x",
       className,
     ),
+    // Announce the slide that comes into view, except while autoplay is
+    // changing slides on its own.
+    "aria-live": autoplay ? ("off" as const) : ("polite" as const),
     "data-slot": "carousel-content",
     children,
   };
@@ -839,8 +865,10 @@ export function CarouselDots({
 
   const defaultProps = {
     className: cn("flex justify-center items-center gap-1.5", className),
-    role: "tablist",
-    "aria-label": "Carousel pagination",
+    // Buttons, not tabs: there are no tab panels, and each dot is its own
+    // stop. The current one is marked with aria-current.
+    role: "group",
+    "aria-label": "Choose slide",
     "data-slot": "carousel-dots",
     children:
       children ??
@@ -848,8 +876,7 @@ export function CarouselDots({
         <button
           key={i}
           type="button"
-          role="tab"
-          aria-selected={i === activeIndex}
+          aria-current={i === activeIndex ? "true" : undefined}
           aria-label={`Go to slide ${i + 1}`}
           className={cn(
             "h-1.5 rounded-full transition-[width,background-color] duration-300 pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none",

@@ -97,6 +97,9 @@ describe("carousel and drawer contracts", () => {
     expect(
       container.querySelector('[data-slot="carousel-viewport"]'),
     ).not.toBeNull();
+    expect(
+      container.querySelector('[data-slot="carousel-content"]'),
+    ).toHaveAttribute("aria-live", "polite");
 
     rerender(
       <Carousel aria-label="Featured products" orientation="vertical">
@@ -109,7 +112,19 @@ describe("carousel and drawer contracts", () => {
     );
     expect(
       container.querySelector('[data-slot="carousel-content"]'),
-    ).toHaveClass("flex-col");
+    ).toHaveClass("flex-col", "touch-pan-x");
+
+    rerender(
+      <Carousel aria-label="Featured products" autoplay>
+        <CarouselContent>
+          <CarouselItem>First</CarouselItem>
+        </CarouselContent>
+      </Carousel>,
+    );
+    // Autoplay changes slides on its own: don't announce each one.
+    expect(
+      container.querySelector('[data-slot="carousel-content"]'),
+    ).toHaveAttribute("aria-live", "off");
   });
 
   it("opens a semantic drawer, covers menu item states, and restores focus", async () => {
