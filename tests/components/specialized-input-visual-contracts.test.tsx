@@ -357,13 +357,18 @@ describe("canvas and animated feedback contracts", () => {
         document.querySelectorAll('[data-slot="kinetic-click-canvas"]'),
       ).toHaveLength(1),
     );
-    expect(
-      document.querySelector('[data-slot="kinetic-click-canvas"]'),
-    ).toHaveAttribute("aria-hidden", "true");
-    fireEvent.click(container.querySelector('[data-slot="kinetic-click"]')!, {
-      clientX: 10,
-      clientY: 20,
-    });
+    const canvas = document.querySelector<HTMLCanvasElement>(
+      '[data-slot="kinetic-click-canvas"]',
+    )!;
+    expect(canvas).toHaveAttribute("aria-hidden", "true");
+    // No composited layer while idle.
+    expect(canvas.style.visibility).toBe("hidden");
+    const wrapper = container.querySelector('[data-slot="kinetic-click"]')!;
+    // Only the primary button bursts.
+    fireEvent.click(wrapper, { button: 1, clientX: 10, clientY: 20 });
+    expect(canvas.style.visibility).toBe("hidden");
+    fireEvent.click(wrapper, { clientX: 10, clientY: 20 });
+    expect(canvas.style.visibility).toBe("visible");
     unmount();
     expect(
       document.querySelector('[data-slot="kinetic-click-canvas"]'),

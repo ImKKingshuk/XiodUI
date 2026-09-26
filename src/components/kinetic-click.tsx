@@ -158,18 +158,22 @@ class GlobalCanvasManager {
       height: "100vh",
       pointerEvents: "none",
       zIndex: "999999",
+      // Hidden while idle so the page doesn't keep a full-screen layer.
+      visibility: "hidden",
     });
-    this.canvas.width = window.innerWidth;
-    this.canvas.height = window.innerHeight;
     document.body.appendChild(this.canvas);
     this.ctx = this.canvas.getContext("2d");
+    this.handleResize();
   }
 
+  // Size the backing store in device pixels so particles stay sharp on HiDPI
+  // screens; drawing stays in CSS pixels through the transform.
   private handleResize = () => {
-    if (this.canvas) {
-      this.canvas.width = window.innerWidth;
-      this.canvas.height = window.innerHeight;
-    }
+    if (!this.canvas) return;
+    const dpr = window.devicePixelRatio || 1;
+    this.canvas.width = Math.round(window.innerWidth * dpr);
+    this.canvas.height = Math.round(window.innerHeight * dpr);
+    this.ctx?.setTransform(dpr, 0, 0, dpr, 0, 0);
   };
 
   public addParticles(newParticles: Particle[]) {
@@ -188,6 +192,7 @@ class GlobalCanvasManager {
 
   private startLoop() {
     if (this.animId !== null) return;
+    if (this.canvas) this.canvas.style.visibility = "visible";
     const loop = (timestamp: number) => {
       this.updateAndDraw(timestamp);
       if (this.particles.length > 0) {
@@ -196,6 +201,7 @@ class GlobalCanvasManager {
         this.animId = null;
         if (this.ctx && this.canvas) {
           this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+          this.canvas.style.visibility = "hidden";
         }
       }
     };
@@ -882,7 +888,10 @@ function KineticClick({
 
   const handleTrigger = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!manager) return;
+      if (!manager || e.button !== 0) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        return;
+      }
 
       const resolveTargetColor = (el: HTMLElement) => {
         if (color && color !== "currentColor") return color;
@@ -932,8 +941,17 @@ function KineticClick({
           "button, a, [role='button']",
         ) || e.currentTarget;
       const computedColor = resolveTargetColor(target as HTMLElement);
-      const x = e.clientX;
-      const y = e.clientY;
+      // A click from the keyboard (Enter/Space) has no pointer position
+      // (detail 0, coordinates 0,0): burst from the element's centre.
+      let x = e.clientX;
+      let y = e.clientY;
+      if (e.detail === 0 && x === 0 && y === 0) {
+        // The wrapper is display: contents and has no box of its own.
+        const origin = target === e.currentTarget ? e.target : target;
+        const rect = (origin as HTMLElement).getBoundingClientRect();
+        x = rect.left + rect.width / 2;
+        y = rect.top + rect.height / 2;
+      }
 
       const list: Particle[] = [];
       const pid = Math.random().toString(36).slice(2, 9);
