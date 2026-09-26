@@ -122,6 +122,9 @@ match Base UI's keyboard, screen reader, touch and reduced-motion behaviour.
 - KineticClick is sharp on high-density screens and bursts from the element
   when triggered from the keyboard.
 - Waveform draws only while something changes, instead of every frame.
+- `SidebarMenuButton variant="outline"` draws its border again, and a
+  SidebarMenuButton or SidebarMenuAction that opens a Menu keeps its open
+  styles while the menu is open.
 
 ## [1.0.3] — 2026-09-19
 
